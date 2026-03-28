@@ -30,8 +30,8 @@ export default function ContactSection() {
 
   return (
     <section id="contact" className="section-pad bg-gray-50 relative overflow-hidden">
-      <SectionBackground overlayClass="bg-gray-50/93" offset={15} />
-      <div className="container">
+      <SectionBackground overlayClass="bg-gray-50/85" offset={9} />
+      <div className="container relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 

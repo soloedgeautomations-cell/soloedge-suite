@@ -168,3 +168,8 @@
 - [x] Add subtle rotating industry photo background to Industries section
 - [x] Add subtle rotating industry photo background to Pricing section
 - [x] Add subtle rotating industry photo background to Contact section
+
+## Section Background Fixes Round 2 (user request)
+- [x] Fix contact form z-index — container set to relative z-10, background at z-0
+- [x] Increase background photo visibility — overlay reduced to 85% across all sections
+- [x] Rebalance photo pool — 3 photos per industry in round-robin order (12 total, no industry dominates)
