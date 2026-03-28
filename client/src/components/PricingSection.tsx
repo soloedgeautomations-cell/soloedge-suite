@@ -133,7 +133,7 @@ export default function PricingSection() {
 
   return (
     <section id="pricing" className="section-pad bg-white relative overflow-hidden">
-      <SectionBackground overlayClass="bg-white/85" offset={6} />
+      <SectionBackground overlayClass="bg-white/72" offset={6} />
       <div className="container relative z-10">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-semibold mb-4">

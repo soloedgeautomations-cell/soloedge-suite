@@ -200,3 +200,9 @@
 - [x] Find and upload Caucasian female gym photo
 - [x] Add 2 new gym photos to assets.ts and rotation pools
 - [x] Confirm barber/restaurant photos are NOT in hero rotation (section background only)
+
+## Glass Transparency Pass (user request)
+- [x] Services cards: frosted glass background, dark text
+- [x] Pricing cards (Field Starter + Field Team): frosted glass, dark text
+- [x] Contact left info panel: frosted glass, black text
+- [x] Reduce section overlay opacity from 85% to 72% so background photos show through more

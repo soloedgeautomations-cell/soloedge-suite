@@ -30,13 +30,13 @@ export default function ContactSection() {
 
   return (
     <section id="contact" className="section-pad bg-gray-50 relative overflow-hidden">
-      <SectionBackground overlayClass="bg-gray-50/85" offset={9} />
+      <SectionBackground overlayClass="bg-gray-50/72" offset={9} />
       <div className="container relative z-10">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
             {/* Left — info */}
-            <div>
+            <div className="glass rounded-2xl p-8">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-5 tracking-wide uppercase">
                 Get in Touch
               </div>
