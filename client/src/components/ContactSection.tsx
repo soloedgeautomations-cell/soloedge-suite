@@ -32,10 +32,11 @@ export default function ContactSection() {
       <div className="container">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
-            {/* Left */}
+
+            {/* Left — info */}
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-5">
-                GET STARTED
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-5 tracking-wide uppercase">
+                Get in Touch
               </div>
               <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
                 {t.contact.title}
@@ -44,25 +45,46 @@ export default function ContactSection() {
                 {t.contact.subtitle}
               </p>
 
-              {/* Contact info */}
-              <div className="space-y-4">
-                <a href="https://soloedgeautomations.com" className="flex items-center gap-3 text-gray-600 hover:text-blue-700 transition-colors group">
-                  <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center group-hover:bg-blue-100 transition-colors">
-                    <Phone size={16} className="text-blue-600" />
-                  </div>
-                  <span className="text-sm font-medium">soloedgeautomations.com</span>
-                </a>
-                <a href="mailto:hello@soloedgeautomations.com" className="flex items-center gap-3 text-gray-600 hover:text-blue-700 transition-colors group">
-                  <div className="w-10 h-10 rounded-xl bg-cyan-50 border border-cyan-200 flex items-center justify-center group-hover:bg-cyan-100 transition-colors">
-                    <Mail size={16} className="text-cyan-600" />
-                  </div>
-                  <span className="text-sm font-medium">hello@soloedgeautomations.com</span>
-                </a>
-                <div className="flex items-center gap-3 text-gray-500">
-                  <div className="w-10 h-10 rounded-xl bg-green-50 border border-green-200 flex items-center justify-center">
-                    <MessageSquare size={16} className="text-green-600" />
-                  </div>
-                  <span className="text-sm font-medium">Response within 24 hours</span>
+              {/* Phone — primary, prominent */}
+              <a
+                href="tel:+15127029685"
+                className="flex items-center gap-4 mb-4 group"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200 group-hover:bg-blue-700 transition-colors">
+                  <Phone size={20} className="text-white" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-medium mb-0.5">{t.contact.demoLabel}</p>
+                  <p className="text-xl font-bold text-gray-900 tracking-tight group-hover:text-blue-700 transition-colors">
+                    {t.contact.demoNumber}
+                  </p>
+                </div>
+              </a>
+
+              {/* Email */}
+              <a
+                href="mailto:hello@soloedgeautomations.com"
+                className="flex items-center gap-4 mb-4 group"
+              >
+                <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center group-hover:bg-cyan-100 transition-colors">
+                  <Mail size={18} className="text-cyan-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-medium mb-0.5">Email</p>
+                  <p className="text-sm font-medium text-gray-700 group-hover:text-cyan-700 transition-colors">
+                    hello@soloedgeautomations.com
+                  </p>
+                </div>
+              </a>
+
+              {/* Response time */}
+              <div className="flex items-center gap-4">
+                <div className="w-12 h-12 rounded-2xl bg-green-50 border border-green-200 flex items-center justify-center">
+                  <MessageSquare size={18} className="text-green-600" />
+                </div>
+                <div>
+                  <p className="text-xs text-gray-400 font-medium mb-0.5">Response time</p>
+                  <p className="text-sm font-medium text-gray-700">Within 24 hours</p>
                 </div>
               </div>
             </div>
@@ -74,7 +96,7 @@ export default function ContactSection() {
                   <div className="w-16 h-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center mb-4">
                     <CheckCircle size={32} className="text-green-600" />
                   </div>
-                  <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+                  <h3 className="text-xl font-bold text-gray-900 mb-2">Message Sent</h3>
                   <p className="text-gray-500 text-sm">{t.contact.success}</p>
                 </div>
               ) : (
@@ -135,7 +157,7 @@ export default function ContactSection() {
                       value={form.message}
                       onChange={e => setForm(f => ({ ...f, message: e.target.value }))}
                       className="w-full px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100 transition-all resize-none"
-                      placeholder="Tell us about your business and what you need help with..."
+                      placeholder="What's taking up the most time in your day?"
                     />
                   </div>
 
@@ -146,9 +168,17 @@ export default function ContactSection() {
                   >
                     {submitLead.isPending ? "Sending..." : t.contact.submit}
                   </button>
+
+                  <p className="text-center text-xs text-gray-400 pt-1">
+                    Prefer to talk? Call us at{" "}
+                    <a href="tel:+15127029685" className="text-blue-600 font-medium hover:underline">
+                      (512) 702-9685
+                    </a>
+                  </p>
                 </form>
               )}
             </div>
+
           </div>
         </div>
       </div>

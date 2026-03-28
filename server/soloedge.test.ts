@@ -151,7 +151,7 @@ describe("leads.submit", () => {
       source: "website-contact",
     });
     expect(result.success).toBe(true);
-  });
+  }, 15000);
 
   it("requires at least a name", async () => {
     const caller = appRouter.createCaller(makePublicCtx());

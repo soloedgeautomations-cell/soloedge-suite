@@ -122,3 +122,18 @@
 - [ ] Pricing section: Riley explains each tier on hover/click (future)
 - [ ] Contact section: Riley greets user when form is focused (future)
 - [x] Checkpoint AI interactivity update
+
+## Copy & Brand Voice Update (user request)
+- [x] Add (512) 702-9685 as the demo/contact number in Navbar CTA, Hero, Contact section, Footer
+- [x] Replace all "Murphy" references with "SoloEdge Team" across all components and routers
+- [x] Reframe brand voice: solo operator focus — one person, every edge, every task handled
+- [x] Hero: headline/subtext updated to solo operator framing
+- [x] Services section: copy updated to solo operator framing
+- [x] Industries section: copy updated to solo operator framing
+- [x] Pricing section: copy updated, CTA funnels to demo number
+- [x] Contact section: demo number prominently displayed, CTA copy updated
+- [x] Footer: demo number added, tagline updated to solo operator framing
+- [x] FloatingRiley: quick prompts updated, Riley intro updated to funnel to booking
+- [x] Navbar CTA: "Book a Session" links to contact section with phone number
+- [x] Riley system prompt: replace "Murphy" with "SoloEdge Team", add phone number for handoff
+- [x] Checkpoint copy update

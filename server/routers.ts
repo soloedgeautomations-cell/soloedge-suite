@@ -13,7 +13,7 @@ import { eq, desc } from "drizzle-orm";
 const RILEY_RECEPTIONIST_PROMPT = `
 You are Riley, the SoloEdge AI Receptionist and multilingual communication assistant.
 
-You represent SoloEdge Automations, owned by Murphy.
+You represent SoloEdge Automations and the SoloEdge Team.
 Your job: answer questions, capture leads, handle scheduling, and explain SoloEdge services in short, practical language.
 
 CORE SERVICES:
@@ -32,6 +32,11 @@ Scheduling Suite:
 - Scheduling Plus: $349 setup + $149/mo
 
 SETUP: "We typically have your system up and running within 24–48 hours."
+
+HANDOFF: When someone wants to speak with a person, schedule a demo, or needs more detail, direct them to:
+- Call or text: (512) 702-9685
+- Or fill out the contact form at soloedgeautomations.com
+Do not say "call us now" — say "feel free to reach the SoloEdge Team at (512) 702-9685 whenever you're ready."
 
 LANGUAGE RULES:
 - Reply in the same language the user writes in (English, Spanish, or Chinese)
@@ -114,7 +119,7 @@ async function sendSmsNotification(body: string) {
   }
 }
 
-async function notifyMurphy(message: string, smsShort: string) {
+async function notifySoloEdgeTeam(message: string, smsShort: string) {
   await Promise.allSettled([
     sendTelegramNotification(message),
     sendSmsNotification(smsShort),
@@ -299,7 +304,7 @@ export const appRouter = router({
         ].join("\n");
 
         const smsMsg = `New SoloEdge Lead: ${input.name} | ${input.phone ?? input.email ?? "—"} | ${input.businessType ?? "—"}`;
-        await notifyMurphy(notifMsg, smsMsg);
+        await notifySoloEdgeTeam(notifMsg, smsMsg);
         return { success: true };
       }),
   }),
@@ -385,7 +390,7 @@ export const appRouter = router({
         const rawContent = response.choices?.[0]?.message?.content;
         const reply = (typeof rawContent === "string" ? rawContent : null) ?? `Check-in confirmed for ${input.workerName} at ${input.jobSite}.`;
 
-        await notifyMurphy(
+        await notifySoloEdgeTeam(
           `🏗️ <b>Field Check-In</b>\n👷 ${input.workerName}\n📍 ${input.jobSite} — ${input.location}${input.notes ? `\n📝 ${input.notes}` : ""}`,
           `Check-in: ${input.workerName} @ ${input.jobSite}`
         );
@@ -413,7 +418,7 @@ export const appRouter = router({
         }
 
         const severityEmoji: Record<string, string> = { low: "🟡", medium: "🟠", high: "🔴", critical: "🚨" };
-        await notifyMurphy(
+        await notifySoloEdgeTeam(
           `${severityEmoji[input.severity]} <b>Safety Alert [${input.severity.toUpperCase()}]</b>\n📍 ${input.location}\n⚠️ ${input.alertType}\n📝 ${input.description}`,
           `SAFETY ${input.severity.toUpperCase()}: ${input.alertType} @ ${input.location}`
         );

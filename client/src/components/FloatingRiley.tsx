@@ -10,17 +10,17 @@ const SESSION_ID = nanoid();
 type Msg = { role: "riley" | "user"; text: string };
 
 const QUICK_PROMPTS = [
-  "What does SoloEdge do?",
-  "How much does it cost?",
-  "Can Riley speak Spanish?",
-  "How fast is setup?",
+  "What problems does SoloEdge solve?",
+  "What does it cost?",
+  "Does Riley speak Spanish?",
+  "How long does setup take?",
 ];
 
 export default function FloatingRiley() {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "riley", text: "Hi! I'm Riley — SoloEdge's AI assistant. Ask me anything about our services, pricing, or how we can help your business. 👋" },
+    { role: "riley", text: "Hi, I'm Riley — the AI behind SoloEdge. Happy to answer questions about what we do, how it works, or whether it's a good fit for your business." },
   ]);
   const [input, setInput] = useState("");
   const [pulse, setPulse] = useState(true);
@@ -144,6 +144,12 @@ export default function FloatingRiley() {
                   {q}
                 </button>
               ))}
+              <a
+                href="tel:+15127029685"
+                className="px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
+              >
+                📞 Call (512) 702-9685
+              </a>
             </div>
           )}
 
