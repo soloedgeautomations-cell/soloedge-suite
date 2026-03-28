@@ -9,6 +9,8 @@ import Home from "./pages/Home";
 import AppDashboard from "./pages/AppDashboard";
 import AdminPanel from "./pages/AdminPanel";
 import Bookings from "./pages/Bookings";
+import Contacts from "./pages/Contacts";
+import Settings from "./pages/Settings";
 
 function Router() {
   return (
@@ -16,6 +18,8 @@ function Router() {
       <Route path="/" component={Home} />
       <Route path="/app" component={AppDashboard} />
       <Route path="/app/bookings" component={Bookings} />
+      <Route path="/app/contacts" component={Contacts} />
+      <Route path="/app/settings" component={Settings} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

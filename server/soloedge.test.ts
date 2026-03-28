@@ -295,7 +295,31 @@ describe("bookings", () => {
   });
 });
 
-// ─── Admin Panel ──────────────────────────────────────────────────────────────
+/// ─── Contacts / Leads Management ─────────────────────────────────────────────────────
+describe("leads.management", () => {
+  it("leads.list requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.leads.list()).rejects.toThrow();
+  });
+
+  it("leads.list returns array for authenticated user without DB", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.leads.list();
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("leads.updateStatus requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.leads.updateStatus({ id: 1, status: "contacted" })).rejects.toThrow();
+  });
+
+  it("leads.updateStatus throws when DB is unavailable", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    await expect(caller.leads.updateStatus({ id: 1, status: "contacted" })).rejects.toThrow();
+  });
+});
+
+// ─── Admin Panel ─────────────────────────────────────────────────────
 describe("admin", () => {
   it("getClients throws for non-admin user", async () => {
     const caller = appRouter.createCaller(makeAuthCtx("user"));

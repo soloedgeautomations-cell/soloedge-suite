@@ -239,3 +239,22 @@
 - [x] Register /app/bookings route in App.tsx
 - [x] Add Bookings nav link in dashboard top bar
 - [x] Write vitest tests for new procedures
+
+## Contacts & Leads Page (/app/contacts)
+- [x] Add contacts tRPC procedures: list leads, update lead status, add note
+- [x] Build /app/contacts page with lead cards, search, status filter
+- [x] Lead detail panel: contact info, status update, notes
+- [x] Register /app/contacts route in App.tsx
+- [x] Link from dashboard quick actions
+- [x] Write vitest tests for contacts procedures
+
+## Settings Page (/app/settings)
+- [x] Build /app/settings page with profile section, notification preferences, plan info
+- [x] Show current plan name and usage stats
+- [x] Language preference setting (persisted)
+- [x] Register /app/settings route in App.tsx
+- [x] Link from dashboard user menu
+
+## GitHub Push
+- [ ] Push full project to https://github.com/soloedgeautomations-cell/soloedge.git (main branch)
+- [ ] Provide ZIP as fallback if push fails

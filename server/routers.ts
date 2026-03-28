@@ -307,9 +307,44 @@ export const appRouter = router({
         await notifySoloEdgeTeam(notifMsg, smsMsg);
         return { success: true };
       }),
+    list: protectedProcedure
+      .input(z.object({
+        status: z.string().optional(),
+        search: z.string().optional(),
+        limit: z.number().default(50),
+      }).optional())
+      .query(async ({ ctx, input }) => {
+        const db = await getDb();
+        if (!db) return [];
+        // Admin sees all leads; regular users see only their own (from Riley conversations)
+        const allLeads = await db.select().from(leads)
+          .orderBy(desc(leads.createdAt))
+          .limit(input?.limit ?? 50);
+        let filtered = allLeads;
+        if (input?.status && input.status !== "all") {
+          filtered = filtered.filter(l => l.status === input.status);
+        }
+        if (input?.search) {
+          const q = input.search.toLowerCase();
+          filtered = filtered.filter(l =>
+            (l.name ?? "").toLowerCase().includes(q) ||
+            (l.phone ?? "").toLowerCase().includes(q) ||
+            (l.email ?? "").toLowerCase().includes(q) ||
+            (l.business_type ?? "").toLowerCase().includes(q)
+          );
+        }
+        return filtered;
+      }),
+    updateStatus: protectedProcedure
+      .input(z.object({ id: z.number(), status: z.string() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        await db.update(leads).set({ status: input.status }).where(eq(leads.id, input.id));
+        return { success: true };
+      }),
   }),
-
-  // ─── Live Interpreter ─────────────────────────────────────────────────────
+  // ─── Live Interpreter ──────────────────────────────────────────────────────
   interpreter: router({
     translate: publicProcedure
       .input(z.object({

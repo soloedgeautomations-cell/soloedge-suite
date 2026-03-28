@@ -10,7 +10,7 @@ import ConstructionTools from "@/components/ConstructionTools";
 import {
   Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
   User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
-  AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity,
+  AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity, Settings as SettingsIcon,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
@@ -143,6 +143,12 @@ export default function AppDashboard() {
               <User size={12} className="text-gray-400" />
               <span className="text-xs text-gray-600">{user?.name ?? "User"}</span>
             </div>
+            <a href="/app/contacts" className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Contacts & Leads">
+              <Users size={14} />
+            </a>
+            <a href="/app/settings" className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Settings">
+              <SettingsIcon size={14} />
+            </a>
             <button onClick={() => logout()} className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all">
               <LogOut size={14} />
             </button>
@@ -301,6 +307,7 @@ export default function AppDashboard() {
                 { icon: <Globe size={16} />, label: "Interpreter", sub: "Live Desk", color: "cyan", action: () => setActiveView("interpreter") },
                 { icon: <Calendar size={16} />, label: "Calendar", sub: "Bookings", color: "green", action: () => window.location.href = "/app/bookings" },
                 { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
+                { icon: <Users size={16} />, label: "Contacts", sub: "Leads & CRM", color: "purple", action: () => window.location.href = "/app/contacts" },
               ].map(item => (
                 <button
                   key={item.label}
