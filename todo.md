@@ -264,3 +264,20 @@
 - [ ] (512) 702-9685 = team/office contact — use only for "Contact the team" / office contexts
 - [ ] Fix all components where 512 was incorrectly used as the demo/booking number
 - [ ] Fix Riley system prompt to reference correct numbers
+
+## Riley Voice Handler — Twilio Inbound Calls
+- [ ] Install twilio npm package
+- [ ] Build /api/voice Express endpoint (TwiML greeting, Gather speech input)
+- [ ] Build /api/voice/gather endpoint (Riley AI processes speech, responds with TwiML Say)
+- [ ] Build /api/voice/forward endpoint (transfer to 512 number if caller requests human)
+- [ ] Update Twilio webhook via API to point to new Manus /api/voice URL
+- [ ] Test full call flow end-to-end
+
+## Riley Voice Handler — Twilio Inbound Calls (user request)
+- [x] Create server/voice.ts with /api/voice (initial TwiML greeting + Gather)
+- [x] Create /api/voice/gather endpoint (process speech input, invoke Riley LLM, respond with TwiML Say)
+- [x] Create /api/voice/forward endpoint (forward to Murphy's personal number if caller requests human)
+- [x] Register voice routes in server/_core/index.ts before tRPC middleware
+- [x] Update Twilio webhook URL via Twilio API to point to new /api/voice endpoint
+- [x] Write vitest tests for voice route TwiML output
+- [x] Save checkpoint and publish
