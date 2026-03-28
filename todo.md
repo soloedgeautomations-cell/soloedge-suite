@@ -144,3 +144,20 @@
 - [x] Update shared/assets.ts logoSymbol to point to transparent version
 - [x] Verify logo renders cleanly on dark and light backgrounds across the site (all 15 CDN.logoSymbol references updated automatically)
 - [x] Checkpoint transparent logo update
+
+## Logo Size & Branding Visibility (user request)
+- [x] Navbar: increase S-mark from h-9 to h-14, wordmark from h-7 to h-10, bolder brand presence
+- [x] Hero demo card: Riley avatar S-mark size increased
+- [x] Footer: S-mark h-10→h-16, wordmark h-8→h-12
+- [x] Floating Riley button: FAB w-14→w-16, logo w-9→w-11
+- [x] FloatingRiley chat panel: message avatars w-6→w-9, header avatar w-8→w-11
+- [x] RileyChat: chat avatars w-8→w-11 with blue border ring
+- [x] AppDashboard header: S-mark h-12 + wordmark h-9 added, welcome logo w-10→w-14
+- [x] AdminPanel header: S-mark h-7→h-12, wordmark h-6→h-9
+- [x] Checkpoint branding update
+
+## Logo Concept Exploration (user request)
+- [x] Generate 5 alternative S-mark concepts (neural, wave, construction, hybrid, edge)
+- [x] Generate combined Neural+Wave S-mark (dark + light variants)
+- [ ] User to select preferred logo concept for site deployment
+- [ ] Swap chosen logo into CDN.logoSymbol across all 15 site locations

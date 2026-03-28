@@ -61,7 +61,7 @@ export default function FloatingRiley() {
       {/* Floating button */}
       <button
         onClick={() => { setOpen(o => !o); setPulse(false); }}
-        className={`fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full shadow-2xl shadow-blue-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${
+        className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full shadow-2xl shadow-blue-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${
           open ? "bg-gray-800 rotate-0" : "bg-gradient-to-br from-blue-600 to-blue-800"
         }`}
         aria-label="Chat with Riley"
@@ -69,7 +69,7 @@ export default function FloatingRiley() {
         {open ? (
           <X size={22} className="text-white" />
         ) : (
-          <img src={CDN.logoSymbol} alt="Riley" className="w-9 h-9 object-contain rounded-full" />
+          <img src={CDN.logoSymbol} alt="Riley" className="w-11 h-11 object-contain" />
         )}
         {/* Pulse ring when closed */}
         {!open && pulse && (
@@ -87,7 +87,7 @@ export default function FloatingRiley() {
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-700 to-blue-600 flex-shrink-0">
             <div className="relative">
-              <img src={CDN.logoSymbol} alt="Riley" className="w-8 h-8 rounded-full object-contain bg-white/20 p-0.5 border border-white/30" />
+              <img src={CDN.logoSymbol} alt="Riley" className="w-11 h-11 rounded-full object-contain bg-white/20 p-1 border border-white/30" />
               <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-blue-700 pulse-dot" />
             </div>
             <div>
@@ -106,7 +106,7 @@ export default function FloatingRiley() {
             {messages.map((m, i) => (
               <div key={i} className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
                 {m.role === "riley" && (
-                  <img src={CDN.logoSymbol} alt="Riley" className="w-6 h-6 rounded-full object-contain bg-blue-100 border border-blue-200 p-0.5 flex-shrink-0 mt-0.5" />
+                  <img src={CDN.logoSymbol} alt="Riley" className="w-9 h-9 rounded-full object-contain bg-blue-100 border border-blue-200 p-1 flex-shrink-0 mt-0.5" />
                 )}
                 <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
                   m.role === "user"
@@ -119,7 +119,7 @@ export default function FloatingRiley() {
             ))}
             {chat.isPending && (
               <div className="flex gap-2">
-                <img src={CDN.logoSymbol} alt="Riley" className="w-6 h-6 rounded-full object-contain bg-blue-100 border border-blue-200 p-0.5 flex-shrink-0 mt-0.5" />
+                <img src={CDN.logoSymbol} alt="Riley" className="w-9 h-9 rounded-full object-contain bg-blue-100 border border-blue-200 p-1 flex-shrink-0 mt-0.5" />
                 <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-2 shadow-sm">
                   <div className="flex gap-1 items-center h-4">
                     <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "0ms" }} />

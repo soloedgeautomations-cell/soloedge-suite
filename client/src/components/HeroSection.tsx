@@ -193,7 +193,7 @@ export default function HeroSection() {
             rileyActive ? "border-blue-400/50 shadow-blue-500/20" : "border-white/25"
           }`}>
             <div className="flex items-center gap-3 mb-4">
-              <div className={`relative w-9 h-9 rounded-full flex-shrink-0 transition-all duration-300 ${rileyActive ? "ring-2 ring-blue-400 ring-offset-1 ring-offset-transparent" : ""}`}>
+              <div className={`relative w-14 h-14 rounded-full flex-shrink-0 transition-all duration-300 ${rileyActive ? "ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent" : ""}`}>
                 <img
                   src={CDN.logoSymbol}
                   alt="Riley"
@@ -246,7 +246,7 @@ export default function HeroSection() {
                   <img
                     src={CDN.logoSymbol}
                     alt="Riley"
-                    className="w-6 h-6 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 flex-shrink-0 mt-0.5"
+                    className="w-9 h-9 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 flex-shrink-0 mt-0.5"
                   />
                   {isLoadingAI ? (
                     <div className="flex items-center gap-2 text-white/60 text-sm">

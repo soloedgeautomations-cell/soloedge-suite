@@ -102,7 +102,10 @@ export default function AppDashboard() {
       {/* Top bar */}
       <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
         <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
-          <img src={CDN.logo} alt="SoloEdge" className="h-7 w-auto" />
+          <div className="flex items-center gap-2">
+            <img src={CDN.logoSymbol} alt="S" className="h-12 w-12 object-contain drop-shadow-sm" />
+            <img src={CDN.logo} alt="SoloEdge" className="h-9 w-auto hidden sm:block" />
+          </div>
           <div className="flex items-center gap-2">
             {/* Lang toggle */}
             <button
@@ -129,7 +132,7 @@ export default function AppDashboard() {
       <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
         {/* Welcome */}
         <div className="flex items-center gap-3">
-          <img src={CDN.logoSymbol} alt="SoloEdge" className="w-10 h-10 object-contain" />
+          <img src={CDN.logoSymbol} alt="SoloEdge" className="w-14 h-14 object-contain drop-shadow-md" />
           <div>
             <h1 className="font-display text-2xl font-bold text-gray-900">
               {t.dashboard.welcome}, {user?.name?.split(" ")[0] ?? "there"} 👋
@@ -220,7 +223,7 @@ export default function AppDashboard() {
             </div>
           ) : (
             <div className="p-6 rounded-xl bg-white border border-gray-100 text-center shadow-sm">
-              <img src={CDN.logoSymbol} alt="" className="w-8 h-8 object-contain mx-auto mb-2 opacity-30" />
+              <img src={CDN.logoSymbol} alt="" className="w-12 h-12 object-contain mx-auto mb-2 opacity-40" />
               <p className="text-sm text-gray-400">No recent activity yet. Launch Riley to get started.</p>
             </div>
           )}

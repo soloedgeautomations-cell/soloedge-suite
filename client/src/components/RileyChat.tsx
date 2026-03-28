@@ -108,10 +108,10 @@ export default function RileyChat({ mode: initialMode }: { mode: Mode }) {
               <img
                 src={CDN.logoSymbol}
                 alt="Riley"
-                className="w-8 h-8 rounded-full flex-shrink-0 object-contain bg-white border border-gray-200 p-0.5 shadow-sm"
+                className="w-11 h-11 rounded-full flex-shrink-0 object-contain bg-white border-2 border-blue-200 p-0.5 shadow-md"
               />
             ) : (
-              <div className="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center bg-gray-200 text-gray-600">
+              <div className="w-11 h-11 rounded-full flex-shrink-0 flex items-center justify-center bg-gray-200 text-gray-600">
                 <User size={14} />
               </div>
             )}
@@ -130,7 +130,7 @@ export default function RileyChat({ mode: initialMode }: { mode: Mode }) {
             <img
               src={CDN.logoSymbol}
               alt="Riley"
-              className="w-8 h-8 rounded-full flex-shrink-0 object-contain bg-white border border-gray-200 p-0.5 shadow-sm animate-pulse"
+              className="w-11 h-11 rounded-full flex-shrink-0 object-contain bg-white border-2 border-blue-200 p-0.5 shadow-md animate-pulse"
             />
             <div className="px-4 py-3 rounded-2xl rounded-tl-sm bg-white border border-gray-200 shadow-sm">
               <div className="flex gap-1 items-center h-4">

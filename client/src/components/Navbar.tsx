@@ -32,11 +32,11 @@ export default function Navbar() {
         : "bg-white/60 backdrop-blur-md"
     }`}>
       <div className="container">
-        <div className="flex items-center justify-between h-16 md:h-18">
+        <div className="flex items-center justify-between h-18 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <img src={CDN.logoSymbol} alt="S" className="h-9 w-9 object-contain" />
-            <img src={CDN.logo} alt="SoloEdge Automations" className="h-7 w-auto hidden sm:block" />
+            <img src={CDN.logoSymbol} alt="S" className="h-14 w-14 object-contain drop-shadow-md" />
+            <img src={CDN.logo} alt="SoloEdge Automations" className="h-10 w-auto hidden sm:block" />
           </Link>
 
           {/* Desktop Nav */}
