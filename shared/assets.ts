@@ -20,6 +20,9 @@ export const CDN = {
   gymBodybuilder: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-bodybuilder_f9da0464.jpg",
   gymTrainer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-trainer_c23c70e4.jpg",
   gymAnytime: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-anytime_ca28009e.jpg",
+  gymWomanDumbbells: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-woman-dumbbells_71c6e2e5.jpg",
+  gymWomanBarbell: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-woman-barbell_2d91fde8.jpg",
+  gymGroupClass: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-group-class_9e70822c.jpg",
 
   // ── Massage & Spa ─────────────────────────────────────────────────────────
   massageTable: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/MessageTable_976c934b.jpg",
@@ -55,18 +58,17 @@ export const GALLERY = {
     CDN.constructionTeam,
   ],
   gym: [
-    CDN.gymBarbell,
-    CDN.gymDumbbells,
-    CDN.gymBodybuilder,
-    CDN.gymTrainer,
-    CDN.gymAnytime,
+    CDN.gymWomanDumbbells,  // woman with dumbbells — focused, powerful
+    CDN.gymWomanBarbell,    // woman squatting with barbell — strong
+    CDN.gymGroupClass,      // mixed group fitness class — diverse
+    CDN.gymTrainer,         // trainer (kept — shows coaching context)
+    CDN.gymBodybuilder,     // male bodybuilder (1 of 5 — balanced)
   ],
   massage: [
-    CDN.massageTable,
-    CDN.massageTherapist,
-    CDN.massageHotstone,
-    CDN.massageCouple,
-    CDN.spaTherapy,
+    CDN.massageTable,      // clean massage table setup
+    CDN.massageHotstone,   // hot stone treatment
+    CDN.massageCouple,     // couples massage
+    // massageTherapist (dark plants) and spaTherapy (candle still life) removed per user request
   ],
   corporate: [
     CDN.corporateOffice,

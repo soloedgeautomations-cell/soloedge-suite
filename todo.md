@@ -185,3 +185,9 @@
 - [x] Find and upload restaurant/POS area photo(s) to CDN
 - [x] Add barber and restaurant to assets.ts gallery
 - [x] Swap one gym photo and one massage photo out of SectionBackground pool in favor of barber + restaurant
+
+## Photo Balance Fixes (user request)
+- [x] Remove massageTherapist (dark plants shot) from gallery and pool
+- [x] Remove spaTherapy (candle still life) from gallery and pool
+- [x] Find and upload gender-balanced gym photos (women included)
+- [x] Replace male-heavy gym photos in assets.ts and SectionBackground pool
