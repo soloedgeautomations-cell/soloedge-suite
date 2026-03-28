@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -7,7 +7,11 @@ import RileyChat from "@/components/RileyChat";
 import InterpreterDesk from "@/components/InterpreterDesk";
 import CalendarView from "@/components/CalendarView";
 import ConstructionTools from "@/components/ConstructionTools";
-import { Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut, User } from "lucide-react";
+import {
+  Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
+  User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
+  AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity,
+} from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
 type ActiveView = null | "receptionist" | "ops_manager" | "interpreter" | "calendar" | "construction";
@@ -17,9 +21,27 @@ export default function AppDashboard() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [activeView, setActiveView] = useState<ActiveView>(null);
 
-  const { data: conversations } = trpc.riley.getConversations.useQuery(undefined, {
+  const { data: stats, isLoading: statsLoading } = trpc.dashboard.stats.useQuery(undefined, {
     enabled: isAuthenticated,
+    refetchInterval: 60_000,
   });
+
+  const { data: todayBookings, isLoading: bookingsLoading } = trpc.dashboard.todayBookings.useQuery(undefined, {
+    enabled: isAuthenticated,
+    refetchInterval: 30_000,
+  });
+
+  const { data: recentActivity, isLoading: activityLoading } = trpc.dashboard.recentActivity.useQuery(undefined, {
+    enabled: isAuthenticated,
+    refetchInterval: 30_000,
+  });
+
+  const greeting = useMemo(() => {
+    const hour = new Date().getHours();
+    if (hour < 12) return "Good morning";
+    if (hour < 17) return "Good afternoon";
+    return "Good evening";
+  }, []);
 
   if (loading) {
     return (
@@ -51,7 +73,7 @@ export default function AppDashboard() {
     );
   }
 
-  // If a view is active, show it full-screen
+  // ── Full-screen sub-views ─────────────────────────────────────────────────
   if (activeView === "receptionist" || activeView === "ops_manager") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
@@ -96,18 +118,17 @@ export default function AppDashboard() {
     );
   }
 
-  // ── Main one-screen dashboard ─────────────────────────────────────────────
+  // ── Main Dashboard Home ───────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Top bar */}
       <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
-        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img src={CDN.logoSymbol} alt="S" className="h-12 w-12 object-contain drop-shadow-sm" />
             <img src={CDN.logo} alt="SoloEdge" className="h-9 w-auto hidden sm:block" />
           </div>
           <div className="flex items-center gap-2">
-            {/* Lang toggle */}
             <button
               onClick={() => {
                 const langs = ["en", "es", "zh"] as const;
@@ -129,132 +150,284 @@ export default function AppDashboard() {
         </div>
       </div>
 
-      <div className="max-w-2xl mx-auto px-4 py-6 space-y-6">
-        {/* Welcome */}
-        <div className="flex items-center gap-3">
-          <img src={CDN.logoSymbol} alt="SoloEdge" className="w-14 h-14 object-contain drop-shadow-md" />
-          <div>
-            <h1 className="font-display text-2xl font-bold text-gray-900">
-              {t.dashboard.welcome}, {user?.name?.split(" ")[0] ?? "there"} 👋
-            </h1>
-            <p className="text-sm text-gray-500 mt-0.5">What do you need help with today?</p>
-          </div>
-        </div>
+      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
 
-        {/* Stats row */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          {[
-            { label: t.dashboard.callsHandled, value: "—", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
-            { label: t.dashboard.bookingsToday, value: "—", color: "text-green-600", bg: "bg-green-50 border-green-100" },
-            { label: t.dashboard.activeLang, value: lang.toUpperCase(), color: "text-cyan-600", bg: "bg-cyan-50 border-cyan-100" },
-            { label: t.dashboard.planTier, value: "Pro", color: "text-purple-600", bg: "bg-purple-50 border-purple-100" },
-          ].map(stat => (
-            <div key={stat.label} className={`rounded-xl p-3.5 text-center border ${stat.bg}`}>
-              <div className={`text-xl font-bold ${stat.color}`}>{stat.value}</div>
-              <div className="text-xs text-gray-500 mt-0.5">{stat.label}</div>
+        {/* ── Welcome + Riley Status ─────────────────────────────────────────── */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Welcome card */}
+          <div className="flex-1 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
+            <div className="flex items-center gap-3 mb-3">
+              <img src={CDN.logoSymbol} alt="SoloEdge" className="w-12 h-12 object-contain drop-shadow-md" />
+              <div>
+                <h1 className="font-display text-xl font-bold leading-tight">
+                  {greeting}, {user?.name?.split(" ")[0] ?? "there"} 👋
+                </h1>
+                <p className="text-blue-200 text-sm mt-0.5">Your command center is ready.</p>
+              </div>
             </div>
-          ))}
-        </div>
-
-        {/* Big action buttons */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <BigButton
-            icon={<Phone size={24} />}
-            label={t.dashboard.launchReceptionist}
-            sublabel="Answer calls, capture leads, book appointments"
-            gradient="from-blue-600 to-blue-500"
-            onClick={() => setActiveView("receptionist")}
-          />
-          <BigButton
-            icon={<Bot size={24} />}
-            label={t.dashboard.launchOpsManager}
-            sublabel="Crew coordination, daily summaries, task routing"
-            gradient="from-purple-600 to-purple-500"
-            onClick={() => setActiveView("ops_manager")}
-          />
-          <BigButton
-            icon={<Globe size={24} />}
-            label={t.dashboard.startInterpreter}
-            sublabel="Real-time EN ↔ ES ↔ ZH translation desk"
-            gradient="from-cyan-600 to-cyan-500"
-            onClick={() => setActiveView("interpreter")}
-          />
-          <BigButton
-            icon={<Calendar size={24} />}
-            label={t.dashboard.viewCalendar}
-            sublabel="Upcoming appointments and booking requests"
-            gradient="from-green-600 to-green-500"
-            onClick={() => setActiveView("calendar")}
-          />
-        </div>
-
-        {/* Construction tools button */}
-        <button
-          onClick={() => setActiveView("construction")}
-          className="w-full flex items-center gap-4 p-4 rounded-xl bg-white border border-orange-200 hover:border-orange-400 hover:bg-orange-50 transition-all group shadow-sm"
-        >
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-orange-500 to-amber-400 flex items-center justify-center shadow-md">
-            <HardHat size={18} className="text-white" />
+            <div className="flex items-center gap-2 mt-4">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
+                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+                Riley Online
+              </span>
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
+                <Zap size={10} />
+                {stats?.planName ?? "Field Starter"}
+              </span>
+            </div>
           </div>
-          <div className="flex-1 text-left">
-            <div className="text-sm font-semibold text-gray-900">Construction Tools</div>
-            <div className="text-xs text-gray-500">Check-in, sub coordinator, safety alerts, progress logs</div>
-          </div>
-          <ChevronRight size={16} className="text-gray-300 group-hover:text-orange-500 transition-colors" />
-        </button>
 
-        {/* Recent activity */}
-        <div>
-          <h2 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">{t.dashboard.recentActivity}</h2>
-          {conversations && conversations.length > 0 ? (
-            <div className="space-y-2">
-              {conversations.slice(0, 5).map(conv => (
-                <div key={conv.id} className="flex items-center gap-3 p-3 rounded-xl bg-white border border-gray-100 shadow-sm">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold ${conv.mode === "ops_manager" ? "bg-purple-500" : "bg-blue-500"}`}>
-                    {conv.mode === "ops_manager" ? "O" : "R"}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="text-sm text-gray-800 truncate">{conv.title ?? `${conv.mode} session`}</div>
-                    <div className="text-xs text-gray-400">{new Date(conv.updatedAt).toLocaleDateString()}</div>
-                  </div>
-                  <div className="text-xs text-gray-300 uppercase">{conv.language}</div>
+          {/* Riley quick launch */}
+          <div className="sm:w-56 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-between">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
+                <Bot size={16} className="text-blue-600" />
+              </div>
+              <div>
+                <div className="text-sm font-semibold text-gray-900">Riley AI</div>
+                <div className="flex items-center gap-1 text-xs text-green-600">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
+                  Online Now
                 </div>
+              </div>
+            </div>
+            <div className="space-y-2">
+              <button
+                onClick={() => setActiveView("receptionist")}
+                className="w-full text-left text-xs px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium transition-colors flex items-center justify-between"
+              >
+                <span>Receptionist Mode</span>
+                <ChevronRight size={12} />
+              </button>
+              <button
+                onClick={() => setActiveView("ops_manager")}
+                className="w-full text-left text-xs px-3 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium transition-colors flex items-center justify-between"
+              >
+                <span>Ops Manager Mode</span>
+                <ChevronRight size={12} />
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* ── Stats Bar ─────────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+          <StatCard
+            label="Bookings Today"
+            value={statsLoading ? "—" : String(stats?.bookingsToday ?? 0)}
+            icon={<Calendar size={16} />}
+            color="blue"
+            trend={stats?.bookingsToday ? `+${stats.bookingsToday} today` : "None yet today"}
+          />
+          <StatCard
+            label="Total Bookings"
+            value={statsLoading ? "—" : String(stats?.bookingsTotal ?? 0)}
+            icon={<TrendingUp size={16} />}
+            color="green"
+            trend="All time"
+          />
+          <StatCard
+            label="Conversations"
+            value={statsLoading ? "—" : String(stats?.conversationsTotal ?? 0)}
+            icon={<MessageSquare size={16} />}
+            color="purple"
+            trend="With Riley"
+          />
+          <StatCard
+            label="Leads Captured"
+            value={statsLoading ? "—" : String(stats?.leadsTotal ?? 0)}
+            icon={<Users size={16} />}
+            color="cyan"
+            trend="Via website"
+          />
+        </div>
+
+        {/* ── Today's Bookings + Quick Actions ──────────────────────────────── */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Today's Bookings */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
+              <div className="flex items-center gap-2">
+                <Calendar size={15} className="text-blue-500" />
+                <span className="text-sm font-semibold text-gray-900">Today's Bookings</span>
+              </div>
+              <button
+                onClick={() => setActiveView("calendar")}
+                className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors"
+              >
+                View all <ArrowUpRight size={11} />
+              </button>
+            </div>
+            <div className="p-3 space-y-2 min-h-[120px]">
+              {bookingsLoading ? (
+                <div className="flex items-center justify-center h-20">
+                  <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
+                </div>
+              ) : todayBookings && todayBookings.length > 0 ? (
+                todayBookings.map(b => (
+                  <div key={b.id} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${b.status === "confirmed" ? "bg-green-500" : b.status === "cancelled" ? "bg-red-400" : "bg-yellow-400"}`} />
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-medium text-gray-900 truncate">{b.customerName ?? "Unknown"}</div>
+                      <div className="text-xs text-gray-400 truncate">{b.serviceType ?? "Service"}{b.preferredTime ? ` · ${b.preferredTime}` : ""}</div>
+                    </div>
+                    <StatusBadge status={b.status ?? "pending"} />
+                  </div>
+                ))
+              ) : (
+                <div className="flex flex-col items-center justify-center h-20 text-center">
+                  <Calendar size={20} className="text-gray-200 mb-1.5" />
+                  <p className="text-xs text-gray-400">No bookings scheduled today</p>
+                  <button
+                    onClick={() => setActiveView("calendar")}
+                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
+                  >
+                    Add a booking →
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
+              <Zap size={15} className="text-amber-500" />
+              <span className="text-sm font-semibold text-gray-900">Quick Actions</span>
+            </div>
+            <div className="p-3 grid grid-cols-2 gap-2">
+              {[
+                { icon: <Phone size={16} />, label: "Launch Riley", sub: "Receptionist", color: "blue", action: () => setActiveView("receptionist") },
+                { icon: <Globe size={16} />, label: "Interpreter", sub: "Live Desk", color: "cyan", action: () => setActiveView("interpreter") },
+                { icon: <Calendar size={16} />, label: "Calendar", sub: "Bookings", color: "green", action: () => setActiveView("calendar") },
+                { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
+              ].map(item => (
+                <button
+                  key={item.label}
+                  onClick={item.action}
+                  className={`flex flex-col items-start gap-1.5 p-3 rounded-xl border transition-all hover:scale-[1.02] active:scale-[0.98]
+                    ${item.color === "blue" ? "bg-blue-50 border-blue-100 hover:bg-blue-100" :
+                      item.color === "cyan" ? "bg-cyan-50 border-cyan-100 hover:bg-cyan-100" :
+                      item.color === "green" ? "bg-green-50 border-green-100 hover:bg-green-100" :
+                      "bg-orange-50 border-orange-100 hover:bg-orange-100"}`}
+                >
+                  <div className={`
+                    ${item.color === "blue" ? "text-blue-600" :
+                      item.color === "cyan" ? "text-cyan-600" :
+                      item.color === "green" ? "text-green-600" :
+                      "text-orange-600"}`}
+                  >
+                    {item.icon}
+                  </div>
+                  <div>
+                    <div className="text-xs font-semibold text-gray-900">{item.label}</div>
+                    <div className="text-xs text-gray-400">{item.sub}</div>
+                  </div>
+                </button>
               ))}
             </div>
-          ) : (
-            <div className="p-6 rounded-xl bg-white border border-gray-100 text-center shadow-sm">
-              <img src={CDN.logoSymbol} alt="" className="w-12 h-12 object-contain mx-auto mb-2 opacity-40" />
-              <p className="text-sm text-gray-400">No recent activity yet. Launch Riley to get started.</p>
-            </div>
-          )}
+          </div>
         </div>
+
+        {/* ── Recent Activity Feed ───────────────────────────────────────────── */}
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
+            <Activity size={15} className="text-gray-400" />
+            <span className="text-sm font-semibold text-gray-900">Recent Activity</span>
+          </div>
+          <div className="divide-y divide-gray-50">
+            {activityLoading ? (
+              <div className="flex items-center justify-center h-24">
+                <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
+              </div>
+            ) : recentActivity && recentActivity.length > 0 ? (
+              recentActivity.map(item => (
+                <div key={item.id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
+                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0
+                    ${item.badge === "Ops" ? "bg-purple-500" :
+                      item.badge === "Safety" ? "bg-red-500" :
+                      item.badge === "Log" ? "bg-orange-500" :
+                      "bg-blue-500"}`}
+                  >
+                    {item.badge === "Ops" ? <Bot size={14} /> :
+                     item.badge === "Safety" ? <AlertTriangle size={14} /> :
+                     item.badge === "Log" ? <HardHat size={14} /> :
+                     <MessageSquare size={14} />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-gray-800 font-medium truncate capitalize">{item.title}</div>
+                    <div className="text-xs text-gray-400">{item.subtitle}</div>
+                  </div>
+                  <div className="text-xs text-gray-300 whitespace-nowrap">
+                    {formatRelativeTime(new Date(item.timestamp))}
+                  </div>
+                </div>
+              ))
+            ) : (
+              <div className="flex flex-col items-center justify-center py-10 text-center">
+                <img src={CDN.logoSymbol} alt="" className="w-10 h-10 object-contain mb-2 opacity-30" />
+                <p className="text-sm text-gray-400">No activity yet.</p>
+                <p className="text-xs text-gray-300 mt-0.5">Launch Riley to get started.</p>
+              </div>
+            )}
+          </div>
+        </div>
+
       </div>
     </div>
   );
 }
 
-function BigButton({ icon, label, sublabel, gradient, onClick }: {
-  icon: React.ReactNode;
+// ── Helper components ─────────────────────────────────────────────────────────
+
+function StatCard({ label, value, icon, color, trend }: {
   label: string;
-  sublabel: string;
-  gradient: string;
-  onClick: () => void;
+  value: string;
+  icon: React.ReactNode;
+  color: "blue" | "green" | "purple" | "cyan";
+  trend: string;
 }) {
+  const colorMap = {
+    blue: { bg: "bg-blue-50 border-blue-100", icon: "bg-blue-100 text-blue-600", value: "text-blue-700" },
+    green: { bg: "bg-green-50 border-green-100", icon: "bg-green-100 text-green-600", value: "text-green-700" },
+    purple: { bg: "bg-purple-50 border-purple-100", icon: "bg-purple-100 text-purple-600", value: "text-purple-700" },
+    cyan: { bg: "bg-cyan-50 border-cyan-100", icon: "bg-cyan-100 text-cyan-600", value: "text-cyan-700" },
+  };
+  const c = colorMap[color];
   return (
-    <button
-      onClick={onClick}
-      className={`group relative flex flex-col items-start gap-3 p-5 rounded-2xl bg-gradient-to-br ${gradient} hover:opacity-90 active:scale-[0.98] transition-all shadow-lg text-left`}
-    >
-      <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center text-white">
-        {icon}
+    <div className={`rounded-xl p-3.5 border ${c.bg}`}>
+      <div className="flex items-center justify-between mb-2">
+        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${c.icon}`}>
+          {icon}
+        </div>
+        <BarChart3 size={12} className="text-gray-200" />
       </div>
-      <div>
-        <div className="font-display text-base font-bold text-white leading-tight">{label}</div>
-        <div className="text-xs text-white/70 mt-0.5 leading-relaxed">{sublabel}</div>
-      </div>
-      <ChevronRight size={16} className="absolute top-4 right-4 text-white/40 group-hover:text-white/80 transition-colors" />
-    </button>
+      <div className={`text-2xl font-bold ${c.value}`}>{value}</div>
+      <div className="text-xs text-gray-500 mt-0.5 truncate">{label}</div>
+      <div className="text-xs text-gray-400 mt-0.5 truncate">{trend}</div>
+    </div>
   );
+}
+
+function StatusBadge({ status }: { status: string }) {
+  const map: Record<string, { label: string; cls: string }> = {
+    confirmed: { label: "Confirmed", cls: "bg-green-100 text-green-700" },
+    pending: { label: "Pending", cls: "bg-yellow-100 text-yellow-700" },
+    cancelled: { label: "Cancelled", cls: "bg-red-100 text-red-600" },
+    completed: { label: "Done", cls: "bg-gray-100 text-gray-500" },
+  };
+  const s = map[status] ?? { label: status, cls: "bg-gray-100 text-gray-500" };
+  return <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.cls}`}>{s.label}</span>;
+}
+
+function formatRelativeTime(date: Date): string {
+  const diff = Date.now() - date.getTime();
+  const mins = Math.floor(diff / 60_000);
+  if (mins < 1) return "just now";
+  if (mins < 60) return `${mins}m ago`;
+  const hrs = Math.floor(mins / 60);
+  if (hrs < 24) return `${hrs}h ago`;
+  return `${Math.floor(hrs / 24)}d ago`;
 }
 
 function DashboardTopBar({ user, onBack, title, logout }: { user: any; onBack: () => void; title: string; logout: () => void }) {

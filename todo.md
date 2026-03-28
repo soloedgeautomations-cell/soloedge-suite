@@ -210,3 +210,15 @@
 ## Field Pro Card Fix (user request)
 - [x] Make Field Pro "Most Popular" card blue-tinted glass (transparent) to match rest of page
 - [x] Keep it visually distinct with glowing blue border + scale + badge
+
+## Dashboard Home Build (Phase 1)
+- [x] Read current AppDashboard and DashboardLayout structure
+- [x] Add dashboard tRPC procedures (stats, todayBookings, recentActivity)
+- [x] Build Today's Stats Bar (4 stat cards: bookings today, total, conversations, leads)
+- [x] Build Riley Status Card with quick-launch Receptionist/Ops Manager buttons
+- [x] Build Today's Bookings widget with status badges
+- [x] Build Recent Activity Feed (conversations + construction logs, relative timestamps)
+- [x] Build Quick Actions grid (Riley, Interpreter, Calendar, Construction)
+- [x] Wire all widgets to real tRPC data with loading states and empty states
+- [x] Greeting changes by time of day (morning/afternoon/evening)
+- [x] All 33 tests still passing

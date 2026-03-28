@@ -5,8 +5,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
 import { getDb } from "./db";
-import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients } from "../drizzle/schema";
-import { eq, desc } from "drizzle-orm";
+import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients, subscriptions } from "../drizzle/schema";
+import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 
 // ─── Riley System Prompts ────────────────────────────────────────────────────
 
@@ -506,6 +506,69 @@ export const appRouter = router({
         await db.update(bookings).set({ status: input.status }).where(eq(bookings.id, input.id));
         return { success: true };
       }),
+  }),
+
+  // ─── Dashboard ──────────────────────────────────────────────────────────────
+  dashboard: router({
+    stats: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return { bookingsToday: 0, bookingsTotal: 0, conversationsTotal: 0, leadsTotal: 0, planName: "Free" };
+
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+
+      const [bookingsTodayRows, bookingsTotalRows, conversationsRows, leadsRows, subRows] = await Promise.all([
+        db.select({ count: sql<number>`count(*)` }).from(bookings)
+          .where(and(eq(bookings.userId, ctx.user.id), gte(bookings.createdAt, todayStart), lte(bookings.createdAt, todayEnd))),
+        db.select({ count: sql<number>`count(*)` }).from(bookings).where(eq(bookings.userId, ctx.user.id)),
+        db.select({ count: sql<number>`count(*)` }).from(conversations).where(eq(conversations.userId, ctx.user.id)),
+        // leads are global (website contact form) — admin sees all, users see 0
+        ctx.user.role === "admin"
+          ? db.select({ count: sql<number>`count(*)` }).from(leads)
+          : Promise.resolve([{ count: 0 }]),
+        db.select().from(subscriptions).where(and(eq(subscriptions.userId, ctx.user.id), eq(subscriptions.status, "active"))).limit(1),
+      ]);
+
+      return {
+        bookingsToday: Number(bookingsTodayRows[0]?.count ?? 0),
+        bookingsTotal: Number(bookingsTotalRows[0]?.count ?? 0),
+        conversationsTotal: Number(conversationsRows[0]?.count ?? 0),
+        leadsTotal: Number(leadsRows[0]?.count ?? 0),
+        planName: subRows[0]?.planName ?? "Field Starter",
+      };
+    }),
+
+    todayBookings: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return [];
+      const todayStart = new Date();
+      todayStart.setHours(0, 0, 0, 0);
+      const todayEnd = new Date();
+      todayEnd.setHours(23, 59, 59, 999);
+      return db.select().from(bookings)
+        .where(and(eq(bookings.userId, ctx.user.id), gte(bookings.createdAt, todayStart), lte(bookings.createdAt, todayEnd)))
+        .orderBy(bookings.preferredTime)
+        .limit(10);
+    }),
+
+    recentActivity: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return [];
+
+      const [convs, logs] = await Promise.all([
+        db.select().from(conversations).where(eq(conversations.userId, ctx.user.id)).orderBy(desc(conversations.updatedAt)).limit(5),
+        db.select().from(constructionLogs).where(eq(constructionLogs.userId, ctx.user.id)).orderBy(desc(constructionLogs.createdAt)).limit(5),
+      ]);
+
+      const activities = [
+        ...convs.map(c => ({ type: "conversation" as const, id: `conv-${c.id}`, title: c.title ?? `${c.mode} session`, subtitle: c.language?.toUpperCase() ?? "EN", timestamp: c.updatedAt, badge: c.mode === "ops_manager" ? "Ops" : "Riley" })),
+        ...logs.map(l => ({ type: "log" as const, id: `log-${l.id}`, title: l.logType.replace(/_/g, " "), subtitle: l.jobSite ?? "", timestamp: l.createdAt, badge: l.logType === "safety_alert" ? "Safety" : "Log" })),
+      ];
+
+      return activities.sort((a, b) => new Date(b.timestamp).getTime() - new Date(a.timestamp).getTime()).slice(0, 8);
+    }),
   }),
 
   // ─── Admin ────────────────────────────────────────────────────────────────
