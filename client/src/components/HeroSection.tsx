@@ -47,39 +47,43 @@ export default function HeroSection() {
   };
 
   const ind = INDUSTRIES[activeIndustry];
+  const isMassage = ind.key === "massage";
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-      {/* Background image — clearly visible on light theme */}
+      {/* Background image — full bleed, no zoom on massage */}
       <div className="absolute inset-0">
         <img
           src={ind.img}
           alt={ind.label}
-          className="w-full h-full object-cover transition-all duration-1000"
           key={ind.key}
+          className={`w-full h-full transition-all duration-1000 ${
+            isMassage
+              ? "object-contain object-center bg-gray-100"
+              : "object-cover object-center"
+          }`}
         />
-        {/* Light overlay: right side stays image-heavy, left gets readable */}
-        <div className="absolute inset-0 bg-gradient-to-r from-white/90 via-white/70 to-white/20" />
-        <div className="absolute inset-0 bg-gradient-to-b from-white/30 via-transparent to-white/50" />
+        {/* Single uniform dark overlay — no left/right gradient, consistent across full image */}
+        <div className="absolute inset-0 bg-black/45" />
       </div>
 
       <div className="relative container py-16 md:py-24">
         <div className="max-w-2xl">
           {/* Badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-6 shadow-sm">
-            <span className="w-1.5 h-1.5 rounded-full bg-blue-500 pulse-dot" />
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-white text-xs font-semibold mb-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
             {t.hero.badge}
           </div>
 
           {/* Headline */}
-          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-4 text-gray-900">
+          <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-4 text-white drop-shadow-lg">
             {t.hero.headline1}
             <br />
-            <span className="gradient-text">{t.hero.headline2}</span>
+            <span className="text-blue-300">{t.hero.headline2}</span>
           </h1>
 
           {/* Subtext */}
-          <p className="text-lg md:text-xl text-gray-600 max-w-xl mb-8 leading-relaxed">
+          <p className="text-lg md:text-xl text-white/80 max-w-xl mb-8 leading-relaxed drop-shadow">
             {t.hero.subtext}
           </p>
 
@@ -91,8 +95,8 @@ export default function HeroSection() {
                 onClick={() => setActiveIndustry(idx)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeIndustry === idx
-                    ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                    : "bg-white border border-gray-200 text-gray-600 hover:text-blue-700 hover:border-blue-300 hover:bg-blue-50"
+                    ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
+                    : "bg-white/15 backdrop-blur-sm border border-white/30 text-white hover:bg-white/25"
                 }`}
               >
                 {ind.label}
@@ -100,14 +104,18 @@ export default function HeroSection() {
             ))}
           </div>
 
-          {/* Riley Demo Card */}
-          <div className="bg-white/90 backdrop-blur-md rounded-2xl p-5 mb-6 max-w-xl border border-gray-200 shadow-xl shadow-gray-200/60">
+          {/* Riley Demo Card — transparent glass, no white box */}
+          <div className="backdrop-blur-md bg-white/12 rounded-2xl p-5 mb-6 max-w-xl border border-white/25 shadow-2xl">
             <div className="flex items-center gap-3 mb-4">
-              <img src={CDN.logoSymbol} alt="Riley" className="w-9 h-9 rounded-full object-contain bg-white border border-blue-100 p-0.5 shadow-md" />
+              <img
+                src={CDN.logoSymbol}
+                alt="Riley"
+                className="w-9 h-9 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 shadow-md"
+              />
               <div>
-                <div className="text-sm font-semibold text-gray-900">Riley · SoloEdge AI</div>
-                <div className="flex items-center gap-1.5 text-xs text-green-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 pulse-dot" />
+                <div className="text-sm font-semibold text-white">Riley · SoloEdge AI</div>
+                <div className="flex items-center gap-1.5 text-xs text-green-300">
+                  <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
                   Online Now
                 </div>
               </div>
@@ -116,14 +124,14 @@ export default function HeroSection() {
                 {Array.from({ length: 8 }).map((_, i) => (
                   <div
                     key={i}
-                    className="wave-bar w-1 rounded-full bg-blue-400"
+                    className="wave-bar w-1 rounded-full bg-blue-300"
                     style={{ height: "4px" }}
                   />
                 ))}
               </div>
             </div>
 
-            <p className="text-sm text-gray-500 mb-4">{t.hero.greeting}</p>
+            <p className="text-sm text-white/70 mb-4">{t.hero.greeting}</p>
 
             {/* Chips */}
             <div className="flex flex-wrap gap-2">
@@ -135,8 +143,8 @@ export default function HeroSection() {
                     onClick={() => handleChip(chip.key)}
                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
                       activeChip === chip.key
-                        ? "bg-blue-600 text-white shadow-md shadow-blue-200"
-                        : "bg-gray-50 border border-gray-200 text-gray-600 hover:bg-blue-50 hover:border-blue-300 hover:text-blue-700"
+                        ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
+                        : "bg-white/15 border border-white/25 text-white/85 hover:bg-white/25 hover:border-white/40"
                     }`}
                   >
                     <Icon size={12} />
@@ -148,10 +156,14 @@ export default function HeroSection() {
 
             {/* Response */}
             {activeChip && (
-              <div className="mt-4 pt-4 border-t border-gray-100">
+              <div className="mt-4 pt-4 border-t border-white/15">
                 <div className="flex items-start gap-2.5">
-                  <img src={CDN.logoSymbol} alt="Riley" className="w-6 h-6 rounded-full object-contain bg-white border border-blue-100 p-0.5 flex-shrink-0 mt-0.5" />
-                  <p className={`text-sm text-gray-700 leading-relaxed ${isTyping ? "cursor-blink" : ""}`}>
+                  <img
+                    src={CDN.logoSymbol}
+                    alt="Riley"
+                    className="w-6 h-6 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 flex-shrink-0 mt-0.5"
+                  />
+                  <p className={`text-sm text-white/90 leading-relaxed ${isTyping ? "cursor-blink" : ""}`}>
                     {displayedResponse}
                   </p>
                 </div>
@@ -163,13 +175,13 @@ export default function HeroSection() {
           <div className="flex flex-wrap gap-3">
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-200"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-900/40"
             >
               {t.hero.cta}
             </a>
             <a
               href="#services"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white border border-gray-200 hover:border-blue-300 hover:bg-blue-50 text-gray-700 hover:text-blue-700 font-semibold text-sm transition-all shadow-sm"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/30 hover:bg-white/25 text-white font-semibold text-sm transition-all"
             >
               {t.hero.ctaSecondary}
             </a>
@@ -178,8 +190,8 @@ export default function HeroSection() {
       </div>
 
       {/* Scroll indicator */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-gray-400 text-xs">
-        <div className="w-px h-8 bg-gradient-to-b from-transparent to-gray-300" />
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 text-white/50 text-xs">
+        <div className="w-px h-8 bg-gradient-to-b from-transparent to-white/40" />
         <span>scroll</span>
       </div>
     </section>

@@ -102,3 +102,10 @@
 - [x] Light theme: ServicesSection, IndustriesSection, PricingSection, ContactSection, Footer updated
 - [x] Light theme: Dashboard, Interpreter, Construction, Calendar, Admin updated
 - [x] App.tsx ThemeProvider set to light
+
+## Hero Visual Fixes (user request)
+- [x] Remove white left-side gradient/fade from hero — consistent overlay across full image
+- [x] Remove large white center box — Riley demo card floats transparently on background
+- [x] Fix massage table industry tab — no zoom/scale, full picture visible (object-contain)
+- [x] Bring background image forward more (uniform bg-black/45 overlay, no gradient fade)
+- [x] Checkpoint hero fixes
