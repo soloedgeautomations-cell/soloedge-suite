@@ -262,6 +262,37 @@ describe("bookings", () => {
       language: "en",
     })).rejects.toThrow();
   });
+
+  it("listByDateRange requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.bookings.listByDateRange({ startDate: "2026-01-01", endDate: "2026-01-31" })).rejects.toThrow();
+  });
+
+  it("listByDateRange returns empty array for authenticated user without DB", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.bookings.listByDateRange({ startDate: "2026-01-01", endDate: "2026-01-31" });
+    expect(Array.isArray(result)).toBe(true);
+  });
+
+  it("reschedule requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.bookings.reschedule({ id: 1, newDate: "2026-02-01" })).rejects.toThrow();
+  });
+
+  it("reschedule throws when DB is unavailable", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    await expect(caller.bookings.reschedule({ id: 1, newDate: "2026-02-01" })).rejects.toThrow();
+  });
+
+  it("delete requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.bookings.delete({ id: 1 })).rejects.toThrow();
+  });
+
+  it("delete throws when DB is unavailable", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    await expect(caller.bookings.delete({ id: 1 })).rejects.toThrow();
+  });
 });
 
 // ─── Admin Panel ──────────────────────────────────────────────────────────────

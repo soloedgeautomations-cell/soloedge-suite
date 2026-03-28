@@ -479,21 +479,26 @@ export const appRouter = router({
         customerEmail: z.string().optional(),
         preferredDate: z.string().optional(),
         preferredTime: z.string().optional(),
+        duration: z.number().default(60),
         notes: z.string().optional(),
         language: z.string().default("en"),
       }))
       .mutation(async ({ input, ctx }) => {
         const db = await getDb();
         if (!db) throw new Error("Database unavailable");
-        await db.insert(bookings).values({
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (db.insert(bookings) as any).values({
           userId: ctx.user.id,
           serviceType: input.serviceType,
           customerName: input.customerName,
           customerPhone: input.customerPhone ?? null,
           customerEmail: input.customerEmail ?? null,
+          preferredDate: input.preferredDate ?? null,
+          preferredTime: input.preferredTime ?? null,
+          duration: input.duration,
           notes: input.notes ?? null,
           language: input.language,
-          status: "confirmed",
+          status: "pending",
         });
         return { success: true };
       }),
@@ -503,7 +508,69 @@ export const appRouter = router({
       .mutation(async ({ input }) => {
         const db = await getDb();
         if (!db) throw new Error("Database unavailable");
-        await db.update(bookings).set({ status: input.status }).where(eq(bookings.id, input.id));
+        const now = new Date();
+        const extra: Record<string, unknown> = {};
+        if (input.status === "confirmed") extra.confirmedAt = now;
+        if (input.status === "cancelled") extra.cancelledAt = now;
+        await db.update(bookings).set({ status: input.status, ...extra }).where(eq(bookings.id, input.id));
+        return { success: true };
+      }),
+    listByDateRange: protectedProcedure
+      .input(z.object({
+        startDate: z.string(), // YYYY-MM-DD
+        endDate: z.string(),   // YYYY-MM-DD
+      }))
+      .query(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) return [];
+        return db.select().from(bookings)
+          .where(and(
+            eq(bookings.userId, ctx.user.id),
+            sql`${bookings.preferredDate} >= ${input.startDate}`,
+            sql`${bookings.preferredDate} <= ${input.endDate}`,
+          ))
+          .orderBy(sql`${bookings.preferredDate} ASC, ${bookings.preferredTime} ASC`);
+      }),
+    reschedule: protectedProcedure
+      .input(z.object({
+        id: z.number(),
+        newDate: z.string(),
+        newTime: z.string().optional(),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        // Get original booking
+        const [original] = await db.select().from(bookings)
+          .where(and(eq(bookings.id, input.id), eq(bookings.userId, ctx.user.id)));
+        if (!original) throw new Error("Booking not found");
+        // Create new booking as rescheduled version
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        await (db.insert(bookings) as any).values({
+          userId: ctx.user.id,
+          customerName: original.customerName,
+          customerPhone: original.customerPhone,
+          customerEmail: original.customerEmail,
+          serviceType: original.serviceType,
+          preferredDate: input.newDate,
+          preferredTime: input.newTime ?? original.preferredTime,
+          duration: original.duration,
+          notes: input.notes ?? original.notes,
+          status: "pending",
+          language: original.language,
+          rescheduledFrom: original.id,
+        });
+        // Mark original as cancelled
+        await db.update(bookings).set({ status: "cancelled", cancelledAt: new Date() }).where(eq(bookings.id, input.id));
+        return { success: true };
+      }),
+    delete: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        await db.delete(bookings).where(and(eq(bookings.id, input.id), eq(bookings.userId, ctx.user.id)));
         return { success: true };
       }),
   }),

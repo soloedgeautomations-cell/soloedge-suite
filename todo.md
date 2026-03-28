@@ -222,3 +222,20 @@
 - [x] Wire all widgets to real tRPC data with loading states and empty states
 - [x] Greeting changes by time of day (morning/afternoon/evening)
 - [x] All 33 tests still passing
+
+## Bookings & Calendar Page (Phase 3)
+- [x] Add duration, confirmedAt, cancelledAt, rescheduledFrom fields to bookings schema
+- [x] Add bookings.listByDateRange tRPC procedure (for calendar view filtering)
+- [x] Add bookings.reschedule tRPC procedure
+- [x] Add bookings.delete tRPC procedure
+- [x] Build full-page Bookings & Calendar at /app/bookings route
+- [x] Month view: grid calendar with booking dots per day
+- [x] Week view: time-slot grid with booking blocks
+- [x] Day view: detailed time-slot list for selected day
+- [x] Booking detail panel: slide-in with full info, confirm/cancel/reschedule actions
+- [x] New booking form: inline or modal with all fields
+- [x] Status filter tabs: All / Pending / Confirmed / Cancelled
+- [x] Wire to real tRPC data with loading/empty states
+- [x] Register /app/bookings route in App.tsx
+- [x] Add Bookings nav link in dashboard top bar
+- [x] Write vitest tests for new procedures

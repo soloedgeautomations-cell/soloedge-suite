@@ -8,12 +8,14 @@ import { LanguageProvider } from "./contexts/LanguageContext";
 import Home from "./pages/Home";
 import AppDashboard from "./pages/AppDashboard";
 import AdminPanel from "./pages/AdminPanel";
+import Bookings from "./pages/Bookings";
 
 function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
       <Route path="/app" component={AppDashboard} />
+      <Route path="/app/bookings" component={Bookings} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />

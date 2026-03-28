@@ -252,7 +252,7 @@ export default function AppDashboard() {
                 <span className="text-sm font-semibold text-gray-900">Today's Bookings</span>
               </div>
               <button
-                onClick={() => setActiveView("calendar")}
+                onClick={() => window.location.href = "/app/bookings"}
                 className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors"
               >
                 View all <ArrowUpRight size={11} />
@@ -279,7 +279,7 @@ export default function AppDashboard() {
                   <Calendar size={20} className="text-gray-200 mb-1.5" />
                   <p className="text-xs text-gray-400">No bookings scheduled today</p>
                   <button
-                    onClick={() => setActiveView("calendar")}
+                    onClick={() => window.location.href = "/app/bookings"}
                     className="mt-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
                   >
                     Add a booking →
@@ -299,7 +299,7 @@ export default function AppDashboard() {
               {[
                 { icon: <Phone size={16} />, label: "Launch Riley", sub: "Receptionist", color: "blue", action: () => setActiveView("receptionist") },
                 { icon: <Globe size={16} />, label: "Interpreter", sub: "Live Desk", color: "cyan", action: () => setActiveView("interpreter") },
-                { icon: <Calendar size={16} />, label: "Calendar", sub: "Bookings", color: "green", action: () => setActiveView("calendar") },
+                { icon: <Calendar size={16} />, label: "Calendar", sub: "Bookings", color: "green", action: () => window.location.href = "/app/bookings" },
                 { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
               ].map(item => (
                 <button

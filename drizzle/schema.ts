@@ -63,9 +63,13 @@ export const bookings = mysqlTable("bookings", {
   serviceType: varchar("serviceType", { length: 128 }),
   preferredDate: date("preferredDate"),
   preferredTime: time("preferredTime"),
+  duration: int("duration").default(60), // minutes
   notes: text("notes"),
   status: varchar("status", { length: 32 }).default("pending"),
   language: varchar("language", { length: 32 }).default("en"),
+  confirmedAt: timestamp("confirmedAt"),
+  cancelledAt: timestamp("cancelledAt"),
+  rescheduledFrom: int("rescheduledFrom"), // original booking id
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
