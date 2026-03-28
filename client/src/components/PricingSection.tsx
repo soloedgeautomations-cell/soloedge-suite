@@ -179,7 +179,7 @@ export default function PricingSection() {
                 key={plan.id}
                 className={`relative rounded-2xl p-7 transition-all ${
                   plan.popular
-                    ? "bg-blue-600 border border-blue-600 shadow-2xl shadow-blue-200 scale-[1.03]"
+                    ? "glass scale-[1.03] border-2 border-blue-500/70 shadow-2xl shadow-blue-400/30 ring-1 ring-blue-400/20"
                     : "glass hover:shadow-lg"
                 }`}
               >
@@ -190,23 +190,23 @@ export default function PricingSection() {
                 )}
 
                 <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 shadow-md ${
-                  plan.popular ? "bg-white/20" : `bg-gradient-to-br ${plan.color}`
+                  plan.popular ? `bg-gradient-to-br ${plan.color}` : `bg-gradient-to-br ${plan.color}`
                 }`}>
                   <Icon size={20} className="text-white" />
                 </div>
 
                 <div className="mb-1">
-                  <h3 className={`font-display text-xl font-bold ${plan.popular ? "text-white" : "text-gray-900"}`}>{plan.name}</h3>
-                  <p className={`text-sm ${plan.popular ? "text-blue-100" : "text-gray-500"}`}>{plan.subtitle}</p>
+                  <h3 className={`font-display text-xl font-bold ${plan.popular ? "text-blue-700" : "text-gray-900"}`}>{plan.name}</h3>
+                  <p className={`text-sm ${plan.popular ? "text-blue-500" : "text-gray-500"}`}>{plan.subtitle}</p>
                 </div>
 
                 {/* Pricing */}
-                <div className={`mt-5 mb-6 pb-6 border-b ${plan.popular ? "border-white/20" : "border-gray-100"}`}>
+                <div className={`mt-5 mb-6 pb-6 border-b ${plan.popular ? "border-blue-200" : "border-gray-100"}`}>
                   <div className="flex items-baseline gap-1 mb-1">
-                    <span className={`text-3xl font-bold ${plan.popular ? "text-white" : "text-gray-900"}`}>${plan.monthly}</span>
-                    <span className={`text-sm ${plan.popular ? "text-blue-100" : "text-gray-400"}`}>{t.pricing.perMonth}{plan.perLine ? t.pricing.perLine : ""}</span>
+                    <span className={`text-3xl font-bold ${plan.popular ? "text-gray-900" : "text-gray-900"}`}>${plan.monthly}</span>
+                    <span className={`text-sm ${plan.popular ? "text-gray-500" : "text-gray-400"}`}>{t.pricing.perMonth}{plan.perLine ? t.pricing.perLine : ""}</span>
                   </div>
-                  <div className={`text-sm ${plan.popular ? "text-blue-100" : "text-gray-400"}`}>
+                  <div className={`text-sm ${plan.popular ? "text-gray-500" : "text-gray-400"}`}>
                     + ${plan.setup} {t.pricing.setupFee}
                   </div>
                 </div>
@@ -214,8 +214,8 @@ export default function PricingSection() {
                 {/* Features */}
                 <ul className="space-y-2.5 mb-7">
                   {plan.features.map((f, i) => (
-                    <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.popular ? "text-blue-50" : "text-gray-600"}`}>
-                      <Check size={14} className={`flex-shrink-0 mt-0.5 ${plan.popular ? "text-white" : "text-green-500"}`} />
+                    <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.popular ? "text-gray-700" : "text-gray-600"}`}>
+                      <Check size={14} className={`flex-shrink-0 mt-0.5 ${plan.popular ? "text-blue-600" : "text-green-500"}`} />
                       {f}
                     </li>
                   ))}
@@ -225,7 +225,7 @@ export default function PricingSection() {
                   href="#contact"
                   className={`block w-full py-3 rounded-xl text-center text-sm font-semibold transition-all ${
                     plan.popular
-                      ? "bg-white text-blue-700 hover:bg-blue-50 shadow-md"
+                      ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200"
                       : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100"
                   }`}
                 >
@@ -235,7 +235,7 @@ export default function PricingSection() {
                   href="tel:+15127029685"
                   className={`block w-full py-2 mt-2 rounded-xl text-center text-xs font-medium transition-all ${
                     plan.popular
-                      ? "text-blue-100 hover:text-white"
+                      ? "text-blue-500 hover:text-blue-700"
                       : "text-gray-400 hover:text-blue-600"
                   }`}
                 >

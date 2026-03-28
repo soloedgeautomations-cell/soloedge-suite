@@ -206,3 +206,7 @@
 - [x] Pricing cards (Field Starter + Field Team): frosted glass, dark text
 - [x] Contact left info panel: frosted glass, black text
 - [x] Reduce section overlay opacity from 85% to 72% so background photos show through more
+
+## Field Pro Card Fix (user request)
+- [x] Make Field Pro "Most Popular" card blue-tinted glass (transparent) to match rest of page
+- [x] Keep it visually distinct with glowing blue border + scale + badge
