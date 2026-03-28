@@ -281,3 +281,8 @@
 - [x] Update Twilio webhook URL via Twilio API to point to new /api/voice endpoint
 - [x] Write vitest tests for voice route TwiML output
 - [x] Save checkpoint and publish
+
+## Riley Voice Prompt Fix (user request — urgent)
+- [x] Replace the stripped-down voice prompt in server/voice.ts with the full RILEY_RECEPTIONIST_PROMPT from routers.ts
+- [x] Add voice-specific addendum (keep responses short/spoken, no URLs) without removing any personality or talking points
+- [x] Save checkpoint and publish
