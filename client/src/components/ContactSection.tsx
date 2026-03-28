@@ -49,7 +49,7 @@ export default function ContactSection() {
 
               {/* Phone — primary, prominent */}
               <a
-                href="tel:+15127029685"
+                href="tel:+17372595692"
                 className="flex items-center gap-4 mb-4 group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200 group-hover:bg-blue-700 transition-colors">

@@ -145,10 +145,10 @@ export default function FloatingRiley() {
                 </button>
               ))}
               <a
-                href="tel:+15127029685"
+                href="tel:+17372595692"
                 className="px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
               >
-                📞 Call (512) 702-9685
+                📞 Call (737) 259-5692
               </a>
             </div>
           )}

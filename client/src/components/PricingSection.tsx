@@ -232,14 +232,14 @@ export default function PricingSection() {
                   {t.pricing.getStarted}
                 </a>
                 <a
-                  href="tel:+15127029685"
+                  href="tel:+17372595692"
                   className={`block w-full py-2 mt-2 rounded-xl text-center text-xs font-medium transition-all ${
                     plan.popular
                       ? "text-blue-500 hover:text-blue-700"
                       : "text-gray-400 hover:text-blue-600"
                   }`}
                 >
-                  or call (512) 702-9685
+                  or call (737) 259-5692
                 </a>
               </div>
             );
@@ -251,7 +251,7 @@ export default function PricingSection() {
           All plans include a 24–48 hour setup. No long-term contracts. Cancel anytime.
           {" "}
           Questions?{" "}
-          <a href="tel:+15127029685" className="text-blue-600 hover:underline font-medium">(512) 702-9685</a>
+          <a href="tel:+17372595692" className="text-blue-600 hover:underline font-medium">(737) 259-5692</a>
         </p>
       </div>
     </section>

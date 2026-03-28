@@ -92,11 +92,11 @@ export default function Navbar() {
 
             {/* Phone */}
             <a
-              href="tel:+15127029685"
+              href="tel:+17372595692"
               className="hidden lg:flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-700 transition-colors font-medium"
             >
               <span className="text-gray-400">📞</span>
-              (512) 702-9685
+              (737) 259-5692
             </a>
 
             {/* CTA */}

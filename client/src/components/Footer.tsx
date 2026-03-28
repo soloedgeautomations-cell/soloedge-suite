@@ -53,8 +53,13 @@ export default function Footer() {
             <h4 className="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">Contact</h4>
             <ul className="space-y-2">
               <li>
-                <a href="tel:+15127029685" className="text-sm text-gray-500 hover:text-blue-700 transition-colors font-medium">
-                  (512) 702-9685
+                <a href="tel:+17372595692" className="text-sm text-gray-500 hover:text-blue-700 transition-colors font-medium">
+                  (737) 259-5692 — Demo / Book
+                </a>
+              </li>
+              <li>
+                <a href="tel:+15127029685" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">
+                  (512) 702-9685 — Office
                 </a>
               </li>
               <li><a href="mailto:hello@soloedgeautomations.com" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">hello@soloedgeautomations.com</a></li>

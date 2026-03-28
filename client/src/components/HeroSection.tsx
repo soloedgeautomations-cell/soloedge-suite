@@ -272,11 +272,11 @@ export default function HeroSection() {
               {t.hero.cta}
             </a>
             <a
-              href="tel:+15127029685"
+              href="tel:+17372595692"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/30 hover:bg-white/25 text-white font-semibold text-sm transition-all active:scale-95"
             >
               <Phone size={15} />
-              (512) 702-9685
+              (737) 259-5692
             </a>
             <a
               href="#services"

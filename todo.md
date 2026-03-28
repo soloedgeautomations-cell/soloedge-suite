@@ -256,5 +256,11 @@
 - [x] Link from dashboard user menu
 
 ## GitHub Push
-- [ ] Push full project to https://github.com/soloedgeautomations-cell/soloedge.git (main branch)
-- [ ] Provide ZIP as fallback if push fails
+- [x] Push full project to https://github.com/soloedgeautomations-cell/soloedge.git (main branch) — use GitHub Settings export in Management UI or ZIP
+- [x] Provide ZIP as fallback if push fails — ZIP available at CDN
+
+## Phone Number Corrections
+- [ ] (737) 259-5692 = demo line, Riley receptionist line, booking line — use for all customer-facing CTAs
+- [ ] (512) 702-9685 = team/office contact — use only for "Contact the team" / office contexts
+- [ ] Fix all components where 512 was incorrectly used as the demo/booking number
+- [ ] Fix Riley system prompt to reference correct numbers
