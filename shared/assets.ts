@@ -1,38 +1,66 @@
 export const CDN = {
   // ── Logos ────────────────────────────────────────────────────────────────
-  // Full wordmark: "SoloEdge Automations" with S-mark (use in Navbar, footer)
   logo: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogo_d10f81d7.jpg",
-  // S-mark only — clean version with no text (use as favicon, avatar, Riley icon, small icon contexts)
   logoSymbol: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogoNoText_7bb6766a.png",
-  // S-mark with sparkle background (alternate)
   logoSymbolAlt: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/Gemini_Generated_Image_y23fxoy23fxoy23f_456b4f4e.png",
-  // Legacy / fallback logos
   logoHd: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/soloedge-logo-hd_65bec2ef.jpg",
-  logoOld: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/logo_1bc76b99.png",
 
   // ── Construction ─────────────────────────────────────────────────────────
   constructionTeam: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-team_f8c90968.jpeg",
   constructionWorkers: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-workers_db7358b8.jpg",
   fieldWorker: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/field-worker_05647657.png",
+  constructionSite: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-site_5469ebf2.jpg",
+  constructionCrew: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-crew_acb27113.jpg",
 
   // ── Gym & Fitness ─────────────────────────────────────────────────────────
-  // Real photos uploaded by user
   gymBarbell: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/low-angle-view-unrecognizable-muscular-build-man-preparing-lifting-barbell-health-club_637285-2497_0385a049.avif",
   gymDumbbells: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/strong-man-training-gym_1303-23478_ec7ee290.avif",
-  // Legacy gym assets
-  gymFitness: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-fitness_2360f2ec.png",
-  gymWeights: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-weights_ce30a0e5.jpg",
+  gymBodybuilder: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-bodybuilder_f9da0464.jpg",
+  gymTrainer: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-trainer_c23c70e4.jpg",
+  gymAnytime: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-anytime_ca28009e.jpg",
 
   // ── Massage & Spa ─────────────────────────────────────────────────────────
-  // Real photo uploaded by user
   massageTable: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/MessageTable_976c934b.jpg",
-  // Legacy massage assets
-  massageStudio: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/massage-studio_0c3d3f93.jpg",
-  massageRoom: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/massage-room_6d616338.webp",
+  massageTherapist: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/massage-therapist_3cde475a.jpg",
+  massageHotstone: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/massage-hotstone_d9ae8a31.jpg",
+  massageCouple: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/massage-couple_32dfc62f.jpg",
+  spaTherapy: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/spa-treatment_860244b9.jpg",
 
   // ── Corporate ─────────────────────────────────────────────────────────────
-  corporateOffice: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-office_46a61e20.jpg",
+  corporateOffice: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-office_6dd79fa1.jpg",
+  corporateMeeting: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-meeting_ffdfd66c.jpg",
+  corporateTeam: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-team_1cfd1cde.jpg",
 
   // ── Hero ──────────────────────────────────────────────────────────────────
   heroBg: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/hero-bg_3b65ec13.png",
+};
+
+// ── Per-industry photo galleries for hero rotation ────────────────────────
+export const GALLERY = {
+  construction: [
+    CDN.constructionWorkers,
+    CDN.constructionSite,
+    CDN.constructionCrew,
+    CDN.constructionTeam,
+    CDN.fieldWorker,
+  ],
+  gym: [
+    CDN.gymBarbell,
+    CDN.gymDumbbells,
+    CDN.gymBodybuilder,
+    CDN.gymTrainer,
+    CDN.gymAnytime,
+  ],
+  massage: [
+    CDN.massageTable,
+    CDN.massageTherapist,
+    CDN.massageHotstone,
+    CDN.massageCouple,
+    CDN.spaTherapy,
+  ],
+  corporate: [
+    CDN.corporateOffice,
+    CDN.corporateMeeting,
+    CDN.corporateTeam,
+  ],
 };

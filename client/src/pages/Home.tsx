@@ -5,10 +5,11 @@ import IndustriesSection from "@/components/IndustriesSection";
 import PricingSection from "@/components/PricingSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
+import FloatingRiley from "@/components/FloatingRiley";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-[oklch(0.09_0.012_240)]">
+    <div className="min-h-screen bg-white">
       <Navbar />
       <HeroSection />
       <ServicesSection />
@@ -16,6 +17,7 @@ export default function Home() {
       <PricingSection />
       <ContactSection />
       <Footer />
+      <FloatingRiley />
     </div>
   );
 }

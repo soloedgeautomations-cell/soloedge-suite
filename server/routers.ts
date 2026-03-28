@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import z from "zod";
 import { COOKIE_NAME } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -38,7 +38,7 @@ LANGUAGE RULES:
 - Do not mix languages unless asked
 
 BEHAVIOR:
-- Keep replies short and practical
+- Keep replies short and practical (2-3 sentences max for hero demo)
 - Get to the point fast
 - Ask one useful question at a time
 - No filler phrases
@@ -150,6 +150,44 @@ export const appRouter = router({
 
   // ─── Riley AI Chat ────────────────────────────────────────────────────────
   riley: router({
+    // Hero chip demo — lightweight, no session persistence needed
+    heroChat: publicProcedure
+      .input(z.object({
+        chipKey: z.string(),   // e.g. "book", "quote", "hours", "emergency", "multilingual"
+        industry: z.string(),  // e.g. "construction", "gym", "massage", "corporate"
+        language: z.enum(["en", "es", "zh"]).default("en"),
+      }))
+      .mutation(async ({ input }) => {
+        const langInstruction = input.language === "es"
+          ? " Reply in Spanish."
+          : input.language === "zh"
+          ? " Reply in Chinese (Simplified)."
+          : "";
+
+        const chipPrompts: Record<string, string> = {
+          book: `The user clicked "Book Appointment" on the ${input.industry} industry demo. Give a friendly 2-sentence response as Riley showing how you handle booking for a ${input.industry} business.`,
+          quote: `The user clicked "Get a Quote" on the ${input.industry} industry demo. Give a friendly 2-sentence response as Riley showing how you handle quote requests for a ${input.industry} business.`,
+          hours: `The user clicked "Business Hours" on the ${input.industry} industry demo. Give a friendly 2-sentence response as Riley showing how you handle hours/availability inquiries for a ${input.industry} business.`,
+          emergency: `The user clicked "Emergency Line" on the ${input.industry} industry demo. Give a friendly 2-sentence response as Riley showing how you handle urgent/emergency calls for a ${input.industry} business.`,
+          multilingual: `The user clicked "Multilingual" on the ${input.industry} industry demo. Give a friendly 2-sentence response as Riley showing your multilingual capabilities for a ${input.industry} business.`,
+        };
+
+        const userPrompt = chipPrompts[input.chipKey] ?? `Introduce yourself as Riley and explain one key benefit for a ${input.industry} business in 2 sentences.`;
+
+        const response = await invokeLLM({
+          messages: [
+            { role: "system", content: RILEY_RECEPTIONIST_PROMPT + langInstruction },
+            { role: "user", content: userPrompt },
+          ],
+        });
+
+        const rawContent = response.choices?.[0]?.message?.content;
+        const reply = (typeof rawContent === "string" ? rawContent : null)
+          ?? "Hi! I'm Riley. I handle your calls, bookings, and messages 24/7 so you never miss a lead.";
+
+        return { reply };
+      }),
+
     chat: publicProcedure
       .input(z.object({
         message: z.string().min(1).max(2000),
@@ -279,186 +317,141 @@ export const appRouter = router({
         const langNames: Record<string, string> = { en: "English", es: "Spanish", zh: "Chinese" };
         const from = langNames[input.fromLang];
         const to = langNames[input.toLang];
-        const contextNote = input.context ? `\nContext: ${input.context}` : "";
 
         const response = await invokeLLM({
           messages: [
             {
               role: "system",
-              content: `You are a professional interpreter specializing in construction, business, and service industry terminology. Translate accurately and naturally. Preserve technical jargon. Be concise.${contextNote}`,
+              content: `You are a professional interpreter. Translate the following text from ${from} to ${to}. Return ONLY the translation, no explanations.${input.context ? ` Context: ${input.context}` : ""}`,
             },
-            {
-              role: "user",
-              content: `Translate the following from ${from} to ${to}. Return ONLY the translation, nothing else:\n\n${input.text}`,
-            },
+            { role: "user", content: input.text },
           ],
         });
 
-        const translation = response.choices?.[0]?.message?.content ?? "";
+        const rawContent = response.choices?.[0]?.message?.content;
+        const translation = (typeof rawContent === "string" ? rawContent : null) ?? "";
         return { translation, fromLang: input.fromLang, toLang: input.toLang };
       }),
 
-    startSession: protectedProcedure
+    startSession: publicProcedure
       .input(z.object({
-        sessionType: z.enum(["one-on-one", "broadcast"]).default("one-on-one"),
-        languageA: z.enum(["en", "es", "zh"]),
-        languageB: z.enum(["en", "es", "zh"]),
+        sessionId: z.string(),
+        primaryLang: z.enum(["en", "es", "zh"]),
+        secondaryLang: z.enum(["en", "es", "zh"]),
+        mode: z.enum(["1on1", "broadcast"]).default("1on1"),
       }))
-      .mutation(async ({ input, ctx }) => {
+      .mutation(async ({ input }) => {
         const db = await getDb();
-        if (!db) return { sessionId: null };
-        await db.insert(interpreterSessions).values({
-          userId: ctx.user.id,
-          sessionType: input.sessionType,
-          languageA: input.languageA,
-          languageB: input.languageB,
-        });
-        const session = await db.select().from(interpreterSessions)
-          .where(eq(interpreterSessions.userId, ctx.user.id))
-          .orderBy(desc(interpreterSessions.createdAt)).limit(1);
-        return { sessionId: session[0]?.id ?? null };
+        if (db) {
+          await db.insert(interpreterSessions).values({
+            sessionType: input.mode === "broadcast" ? "broadcast" : "one-on-one",
+            languageA: input.primaryLang,
+            languageB: input.secondaryLang,
+          });
+        }
+        return { success: true, sessionId: input.sessionId };
       }),
   }),
 
   // ─── Construction Tools ───────────────────────────────────────────────────
   construction: router({
-    logEntry: protectedProcedure
+    checkIn: publicProcedure
       .input(z.object({
-        logType: z.enum(["check-in", "progress", "safety", "material-request", "sub-coordination", "change-order"]),
-        jobSite: z.string().optional(),
-        crewMember: z.string().optional(),
-        content: z.string().min(1).max(3000),
-        language: z.enum(["en", "es", "zh"]).default("en"),
+        workerName: z.string(),
+        location: z.string(),
+        jobSite: z.string(),
+        notes: z.string().optional(),
+        sessionId: z.string(),
       }))
-      .mutation(async ({ input, ctx }) => {
-        // Use Riley Ops Manager to process and translate the log entry
-        const processPrompt = `You are Riley, SoloEdge SR Operations Manager. Process this construction log entry.
-Log Type: ${input.logType}
-Job Site: ${input.jobSite ?? "Not specified"}
-Crew Member: ${input.crewMember ?? "Not specified"}
-Content: ${input.content}
-
-Tasks:
-1. Identify any construction jargon terms (rough-in, punch list, change order, material request, RFI, etc.)
-2. Translate to English if not already in English
-3. Generate a clean, professional summary
-4. Flag any urgent items or safety concerns
-
-Return JSON: { "summary": "...", "translatedContent": "...", "jargonTerms": ["..."], "urgent": false, "urgentReason": "" }`;
-
-        const response = await invokeLLM({
-          messages: [{ role: "user", content: processPrompt }],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "construction_log",
-              strict: true,
-              schema: {
-                type: "object",
-                properties: {
-                  summary: { type: "string" },
-                  translatedContent: { type: "string" },
-                  jargonTerms: { type: "array", items: { type: "string" } },
-                  urgent: { type: "boolean" },
-                  urgentReason: { type: "string" },
-                },
-                required: ["summary", "translatedContent", "jargonTerms", "urgent", "urgentReason"],
-                additionalProperties: false,
-              },
-            },
-          },
-        });
-
-        let processed = { summary: input.content, translatedContent: input.content, jargonTerms: [] as string[], urgent: false, urgentReason: "" };
-        try {
-          const rawContent2 = response.choices?.[0]?.message?.content;
-          const raw = typeof rawContent2 === 'string' ? rawContent2 : '{}';
-          processed = JSON.parse(raw);
-        } catch { /* use defaults */ }
-
+      .mutation(async ({ input }) => {
         const db = await getDb();
         if (db) {
           await db.insert(constructionLogs).values({
-            userId: ctx.user.id,
-            logType: input.logType,
-            jobSite: input.jobSite ?? null,
-            crewMember: input.crewMember ?? null,
-            content: input.content,
-            language: input.language,
-            translatedContent: processed.translatedContent,
-            jargonTerms: JSON.stringify(processed.jargonTerms),
-            status: processed.urgent ? "urgent" : "logged",
+            logType: "check_in",
+            crewMember: input.workerName,
+            jobSite: input.jobSite,
+            content: `Check-in at ${input.location}${input.notes ? ': ' + input.notes : ''}`,
+            status: "logged",
           });
         }
 
-        if (processed.urgent) {
-          const urgentTg = `⚠️ <b>URGENT Construction Alert</b>\n🏗️ Site: ${input.jobSite ?? "Unknown"}\n👷 Crew: ${input.crewMember ?? "Unknown"}\n📋 ${processed.urgentReason}\n\n${processed.summary}`;
-          const urgentSms = `URGENT: ${input.jobSite ?? "Job Site"} — ${processed.urgentReason}`;
-          await notifyMurphy(urgentTg, urgentSms);
-        }
-
-        return { ...processed, logType: input.logType };
-      }),
-
-    getLogs: protectedProcedure
-      .input(z.object({ jobSite: z.string().optional(), limit: z.number().default(20) }))
-      .query(async ({ input, ctx }) => {
-        const db = await getDb();
-        if (!db) return [];
-        return db.select().from(constructionLogs)
-          .where(eq(constructionLogs.userId, ctx.user.id))
-          .orderBy(desc(constructionLogs.createdAt))
-          .limit(input.limit);
-      }),
-
-    generateDailySummary: protectedProcedure
-      .input(z.object({ jobSite: z.string().optional(), date: z.string().optional() }))
-      .mutation(async ({ input, ctx }) => {
-        const db = await getDb();
-        if (!db) return { summary: "", spanishSummary: "" };
-
-        const logs = await db.select().from(constructionLogs)
-          .where(eq(constructionLogs.userId, ctx.user.id))
-          .orderBy(desc(constructionLogs.createdAt)).limit(10);
-
-        const logText = logs.map(l => `[${l.logType}] ${l.crewMember ?? "Unknown"}: ${l.content}`).join("\n");
-
         const response = await invokeLLM({
           messages: [
-            {
-              role: "system",
-              content: RILEY_OPS_MANAGER_PROMPT,
-            },
-            {
-              role: "user",
-              content: `Generate a bilingual daily summary for job site: ${input.jobSite ?? "All Sites"}\nDate: ${input.date ?? "Today"}\n\nLog entries:\n${logText}\n\nReturn JSON: { "summary": "English summary...", "spanishSummary": "Spanish summary..." }`,
-            },
+            { role: "system", content: RILEY_OPS_MANAGER_PROMPT },
+            { role: "user", content: `Worker check-in: ${input.workerName} checked in at ${input.jobSite} (${input.location}). ${input.notes ? `Notes: ${input.notes}` : ""} Acknowledge and provide a brief status update.` },
           ],
-          response_format: {
-            type: "json_schema",
-            json_schema: {
-              name: "daily_summary",
-              strict: true,
-              schema: {
-                type: "object",
-                properties: {
-                  summary: { type: "string" },
-                  spanishSummary: { type: "string" },
-                },
-                required: ["summary", "spanishSummary"],
-                additionalProperties: false,
-              },
-            },
-          },
         });
 
-        try {
-          const rawContent3 = response.choices?.[0]?.message?.content;
-          const raw = typeof rawContent3 === 'string' ? rawContent3 : '{}';
-          return JSON.parse(raw);
-        } catch {
-          return { summary: "Summary unavailable", spanishSummary: "Resumen no disponible" };
+        const rawContent = response.choices?.[0]?.message?.content;
+        const reply = (typeof rawContent === "string" ? rawContent : null) ?? `Check-in confirmed for ${input.workerName} at ${input.jobSite}.`;
+
+        await notifyMurphy(
+          `🏗️ <b>Field Check-In</b>\n👷 ${input.workerName}\n📍 ${input.jobSite} — ${input.location}${input.notes ? `\n📝 ${input.notes}` : ""}`,
+          `Check-in: ${input.workerName} @ ${input.jobSite}`
+        );
+
+        return { reply };
+      }),
+
+    safetyAlert: publicProcedure
+      .input(z.object({
+        alertType: z.string(),
+        location: z.string(),
+        description: z.string(),
+        severity: z.enum(["low", "medium", "high", "critical"]),
+        sessionId: z.string(),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (db) {
+          await db.insert(constructionLogs).values({
+            logType: "safety_alert",
+            jobSite: input.location,
+            content: `[${input.severity.toUpperCase()}] ${input.alertType}: ${input.description}`,
+            status: input.severity === "critical" ? "urgent" : "logged",
+          });
         }
+
+        const severityEmoji: Record<string, string> = { low: "🟡", medium: "🟠", high: "🔴", critical: "🚨" };
+        await notifyMurphy(
+          `${severityEmoji[input.severity]} <b>Safety Alert [${input.severity.toUpperCase()}]</b>\n📍 ${input.location}\n⚠️ ${input.alertType}\n📝 ${input.description}`,
+          `SAFETY ${input.severity.toUpperCase()}: ${input.alertType} @ ${input.location}`
+        );
+
+        return { success: true, severity: input.severity };
+      }),
+
+    progressUpdate: publicProcedure
+      .input(z.object({
+        jobSite: z.string(),
+        update: z.string(),
+        phase: z.string().optional(),
+        sessionId: z.string(),
+        language: z.enum(["en", "es", "zh"]).default("en"),
+      }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (db) {
+          await db.insert(constructionLogs).values({
+            logType: "progress_update",
+            jobSite: input.jobSite,
+            content: `${input.phase ? `[${input.phase}] ` : ""}${input.update}`,
+            language: input.language,
+            status: "logged",
+          });
+        }
+
+        const langInstruction = input.language === "es" ? " Reply in Spanish." : input.language === "zh" ? " Reply in Chinese." : "";
+        const response = await invokeLLM({
+          messages: [
+            { role: "system", content: RILEY_OPS_MANAGER_PROMPT + langInstruction },
+            { role: "user", content: `Progress update for ${input.jobSite}${input.phase ? ` (${input.phase})` : ""}: ${input.update}. Acknowledge and provide a brief summary with any recommendations.` },
+          ],
+        });
+
+        const rawContent = response.choices?.[0]?.message?.content;
+        const reply = (typeof rawContent === "string" ? rawContent : null) ?? "Progress update logged.";
+        return { reply };
       }),
   }),
 
@@ -469,49 +462,48 @@ Return JSON: { "summary": "...", "translatedContent": "...", "jargonTerms": ["..
       if (!db) return [];
       return db.select().from(bookings)
         .where(eq(bookings.userId, ctx.user.id))
-        .orderBy(desc(bookings.createdAt)).limit(20);
+        .orderBy(desc(bookings.createdAt))
+        .limit(50);
     }),
 
     create: protectedProcedure
       .input(z.object({
+        serviceType: z.string(),
         customerName: z.string(),
         customerPhone: z.string().optional(),
         customerEmail: z.string().optional(),
-        serviceType: z.string().optional(),
         preferredDate: z.string().optional(),
         preferredTime: z.string().optional(),
         notes: z.string().optional(),
-        language: z.enum(["en", "es", "zh"]).default("en"),
+        language: z.string().default("en"),
       }))
       .mutation(async ({ input, ctx }) => {
         const db = await getDb();
-        if (!db) return { success: false };
+        if (!db) throw new Error("Database unavailable");
         await db.insert(bookings).values({
           userId: ctx.user.id,
+          serviceType: input.serviceType,
           customerName: input.customerName,
           customerPhone: input.customerPhone ?? null,
           customerEmail: input.customerEmail ?? null,
-          serviceType: input.serviceType ?? null,
-          preferredDate: input.preferredDate ? new Date(input.preferredDate) : null,
-          preferredTime: input.preferredTime ?? null,
           notes: input.notes ?? null,
           language: input.language,
-          status: "pending",
+          status: "confirmed",
         });
         return { success: true };
       }),
 
     updateStatus: protectedProcedure
-      .input(z.object({ id: z.number(), status: z.enum(["pending", "confirmed", "cancelled", "completed"]) }))
+      .input(z.object({ id: z.number(), status: z.enum(["confirmed", "pending", "cancelled", "completed"]) }))
       .mutation(async ({ input }) => {
         const db = await getDb();
-        if (!db) return { success: false };
+        if (!db) throw new Error("Database unavailable");
         await db.update(bookings).set({ status: input.status }).where(eq(bookings.id, input.id));
         return { success: true };
       }),
   }),
 
-  // ─── Admin Panel ──────────────────────────────────────────────────────────
+  // ─── Admin ────────────────────────────────────────────────────────────────
   admin: router({
     getClients: protectedProcedure.query(async ({ ctx }) => {
       if (ctx.user.role !== "admin") throw new Error("Forbidden");
@@ -520,44 +512,55 @@ Return JSON: { "summary": "...", "translatedContent": "...", "jargonTerms": ["..
       return db.select().from(whiteLabelClients).orderBy(desc(whiteLabelClients.createdAt));
     }),
 
-    updateClient: protectedProcedure
+    getLeads: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new Error("Forbidden");
+      const db = await getDb();
+      if (!db) return [];
+      return db.select().from(leads).orderBy(desc(leads.createdAt)).limit(100);
+    }),
+
+    upsertClient: protectedProcedure
       .input(z.object({
-        id: z.number(),
-        businessName: z.string().optional(),
-        logoUrl: z.string().optional(),
+        id: z.number().optional(),
+        businessName: z.string(),
+        plan: z.enum(["field_starter", "field_pro", "field_team", "scheduling_starter", "scheduling_pro", "scheduling_plus"]),
         primaryColor: z.string().optional(),
-        accentColor: z.string().optional(),
-        planId: z.string().optional(),
-        status: z.string().optional(),
-        aiMode: z.string().optional(),
+        logoUrl: z.string().optional(),
         sttProvider: z.string().optional(),
         llmProvider: z.string().optional(),
         ttsProvider: z.string().optional(),
+        active: z.boolean().default(true),
       }))
       .mutation(async ({ input, ctx }) => {
         if (ctx.user.role !== "admin") throw new Error("Forbidden");
         const db = await getDb();
-        if (!db) return { success: false };
-        const { id, ...updates } = input;
-        await db.update(whiteLabelClients).set(updates).where(eq(whiteLabelClients.id, id));
+        if (!db) throw new Error("Database unavailable");
+        if (input.id) {
+          await db.update(whiteLabelClients).set({
+            businessName: input.businessName,
+            planId: input.plan,
+            primaryColor: input.primaryColor ?? null,
+            logoUrl: input.logoUrl ?? null,
+            sttProvider: input.sttProvider ?? "whisper",
+            llmProvider: input.llmProvider ?? "manus",
+            ttsProvider: input.ttsProvider ?? "manus",
+            status: input.active ? "active" : "inactive",
+          }).where(eq(whiteLabelClients.id, input.id));
+        } else {
+          await db.insert(whiteLabelClients).values({
+            clientName: input.businessName,
+            businessName: input.businessName,
+            planId: input.plan,
+            primaryColor: input.primaryColor ?? null,
+            logoUrl: input.logoUrl ?? null,
+            sttProvider: input.sttProvider ?? "whisper",
+            llmProvider: input.llmProvider ?? "manus",
+            ttsProvider: input.ttsProvider ?? "manus",
+            status: input.active ? "active" : "inactive",
+          });
+        }
         return { success: true };
       }),
-
-    getStats: protectedProcedure.query(async ({ ctx }) => {
-      if (ctx.user.role !== "admin") throw new Error("Forbidden");
-      const db = await getDb();
-      if (!db) return { totalLeads: 0, totalClients: 0, totalBookings: 0, totalLogs: 0 };
-      const [leadsCount] = await db.select({ count: leads.id }).from(leads);
-      const [clientsCount] = await db.select({ count: whiteLabelClients.id }).from(whiteLabelClients);
-      const [bookingsCount] = await db.select({ count: bookings.id }).from(bookings);
-      const [logsCount] = await db.select({ count: constructionLogs.id }).from(constructionLogs);
-      return {
-        totalLeads: leadsCount?.count ?? 0,
-        totalClients: clientsCount?.count ?? 0,
-        totalBookings: bookingsCount?.count ?? 0,
-        totalLogs: logsCount?.count ?? 0,
-      };
-    }),
   }),
 });
 

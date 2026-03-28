@@ -201,39 +201,36 @@ describe("construction", () => {
     })).rejects.toThrow();
   });
 
-  it("logEntry works for authenticated user", async () => {
-    // Mock LLM to return valid JSON for construction log
+  it("checkIn works for authenticated user", async () => {
     const { invokeLLM } = await import("./_core/llm");
     vi.mocked(invokeLLM).mockResolvedValueOnce({
-      choices: [{
-        message: {
-          content: JSON.stringify({
-            summary: "Crew checked in at 7am. All present.",
-            translatedContent: "Crew checked in at 7am.",
-            jargonTerms: [],
-            urgent: false,
-            urgentReason: "",
-          }),
-        },
-      }],
+      choices: [{ message: { content: "Crew checked in at 7am. All present." } }],
     } as any);
 
     const caller = appRouter.createCaller(makeAuthCtx());
-    const result = await caller.construction.logEntry({
-      logType: "check-in",
+    const result = await caller.construction.checkIn({
+      workerName: "Carlos",
+      location: "Second floor",
       jobSite: "Main St Project",
-      crewMember: "Carlos",
-      content: "Crew arrived at 7am, starting rough-in on second floor",
-      language: "en",
+      sessionId: "test-session",
     });
-    expect(result.summary).toBeTruthy();
-    expect(result.logType).toBe("check-in");
+    expect(result.reply).toBeTruthy();
   });
 
-  it("getLogs returns empty array without DB", async () => {
+  it("progressUpdate works for authenticated user", async () => {
+    const { invokeLLM } = await import("./_core/llm");
+    vi.mocked(invokeLLM).mockResolvedValueOnce({
+      choices: [{ message: { content: "Progress noted: rough-in complete on second floor." } }],
+    } as any);
+
     const caller = appRouter.createCaller(makeAuthCtx());
-    const result = await caller.construction.getLogs({});
-    expect(Array.isArray(result)).toBe(true);
+    const result = await caller.construction.progressUpdate({
+      jobSite: "Main St Project",
+      update: "Rough-in complete on second floor",
+      sessionId: "test-session",
+      language: "en",
+    });
+    expect(result.reply).toBeTruthy();
   });
 });
 
@@ -255,16 +252,15 @@ describe("bookings", () => {
     await expect(caller.bookings.create({ customerName: "Jane", language: "en" })).rejects.toThrow();
   });
 
-  it("create works for authenticated user", async () => {
+  it("create throws when DB is unavailable", async () => {
+    // bookings.create requires DB — it throws 'Database unavailable' gracefully
     const caller = appRouter.createCaller(makeAuthCtx());
-    const result = await caller.bookings.create({
+    await expect(caller.bookings.create({
       customerName: "Jane Doe",
       customerPhone: "555-9999",
       serviceType: "Massage",
       language: "en",
-    });
-    // DB is mocked to null, so it returns { success: false } gracefully
-    expect(result).toHaveProperty("success");
+    })).rejects.toThrow();
   });
 });
 
@@ -275,15 +271,14 @@ describe("admin", () => {
     await expect(caller.admin.getClients()).rejects.toThrow();
   });
 
-  it("getStats throws for non-admin user", async () => {
+  it("getLeads throws for non-admin user", async () => {
     const caller = appRouter.createCaller(makeAuthCtx("user"));
-    await expect(caller.admin.getStats()).rejects.toThrow();
+    await expect(caller.admin.getLeads()).rejects.toThrow();
   });
 
-  it("getStats returns zeros for admin without DB", async () => {
+  it("getLeads returns array for admin without DB", async () => {
     const caller = appRouter.createCaller(makeAuthCtx("admin"));
-    const result = await caller.admin.getStats();
-    expect(result).toHaveProperty("totalLeads");
-    expect(result).toHaveProperty("totalClients");
+    const result = await caller.admin.getLeads();
+    expect(Array.isArray(result)).toBe(true);
   });
 });

@@ -109,3 +109,16 @@
 - [x] Fix massage table industry tab — no zoom/scale, full picture visible (object-contain)
 - [x] Bring background image forward more (uniform bg-black/45 overlay, no gradient fade)
 - [x] Checkpoint hero fixes
+
+## AI Interactivity + Photo Expansion (user request)
+- [x] Search and download more industry photos (3+ gym, 3+ massage, 3+ construction, 2+ corporate)
+- [x] Upload all new photos to CDN and add to shared/assets.ts
+- [x] Wire hero chip buttons to real Riley AI backend (actual LLM responses, not just static text)
+- [x] Add floating Riley assistant button (follows user down the page, opens chat panel)
+- [x] Expand hero background rotation to 5 photos per industry (20 total), cycling every 3.5s
+- [x] Add live waveform animation when Riley is "speaking" / responding
+- [ ] Add AI micro-interactions: particle effects, smooth slide-in animations on scroll (future)
+- [ ] Services section: Riley explains each service on hover/click (future)
+- [ ] Pricing section: Riley explains each tier on hover/click (future)
+- [ ] Contact section: Riley greets user when form is focused (future)
+- [x] Checkpoint AI interactivity update

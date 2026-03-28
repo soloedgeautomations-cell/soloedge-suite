@@ -14,12 +14,12 @@ export default function AdminPanel() {
     retry: false,
   });
 
-  const { data: stats } = trpc.admin.getStats.useQuery(undefined, {
+  const { data: leads } = trpc.admin.getLeads.useQuery(undefined, {
     enabled: isAuthenticated && user?.role === "admin",
     retry: false,
   });
 
-  const updateClient = trpc.admin.updateClient.useMutation({ onSuccess: () => refetchClients() });
+  const upsertClient = trpc.admin.upsertClient.useMutation({ onSuccess: () => refetchClients() });
 
   if (loading) {
     return (
@@ -67,10 +67,10 @@ export default function AdminPanel() {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           {[
-            { label: "Total Leads", value: stats?.totalLeads ?? "—", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
-            { label: "Active Clients", value: stats?.totalClients ?? "—", color: "text-green-600", bg: "bg-green-50 border-green-100" },
-            { label: "Total Bookings", value: stats?.totalBookings ?? "—", color: "text-cyan-600", bg: "bg-cyan-50 border-cyan-100" },
-            { label: "Field Logs", value: stats?.totalLogs ?? "—", color: "text-orange-600", bg: "bg-orange-50 border-orange-100" },
+            { label: "Total Leads", value: leads?.length ?? "—", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
+            { label: "Active Clients", value: clients?.filter(c => c.status === "active").length ?? "—", color: "text-green-600", bg: "bg-green-50 border-green-100" },
+            { label: "Total Clients", value: clients?.length ?? "—", color: "text-cyan-600", bg: "bg-cyan-50 border-cyan-100" },
+            { label: "New Leads", value: leads?.filter(l => l.status === "new").length ?? "—", color: "text-orange-600", bg: "bg-orange-50 border-orange-100" },
           ].map(s => (
             <div key={s.label} className={`rounded-xl p-4 text-center border ${s.bg}`}>
               <div className={`text-2xl font-bold ${s.color}`}>{String(s.value)}</div>
@@ -142,7 +142,7 @@ export default function AdminPanel() {
                       </span>
                       <select
                         value={client.planId ?? ""}
-                        onChange={e => updateClient.mutate({ id: client.id, planId: e.target.value })}
+                        onChange={e => upsertClient.mutate({ id: client.id, businessName: client.businessName ?? client.clientName, plan: e.target.value as Parameters<typeof upsertClient.mutate>[0]['plan'], active: client.status === 'active' })}
                         className="px-2 py-1 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-xs focus:outline-none focus:border-blue-400"
                       >
                         <option value="">No plan</option>
@@ -167,7 +167,7 @@ export default function AdminPanel() {
                         <label className="block text-xs text-gray-400 mb-1">{cfg.label}</label>
                         <select
                           value={cfg.value ?? ""}
-                          onChange={e => updateClient.mutate({ id: client.id, [cfg.field]: e.target.value })}
+                          onChange={e => upsertClient.mutate({ id: client.id, businessName: client.businessName ?? client.clientName, plan: (client.planId ?? 'field_starter') as Parameters<typeof upsertClient.mutate>[0]['plan'], [cfg.field]: e.target.value, active: client.status === 'active' })}
                           className="w-full px-2 py-1 rounded-lg bg-gray-50 border border-gray-200 text-gray-700 text-xs focus:outline-none focus:border-blue-400"
                         >
                           {cfg.options.map(opt => (

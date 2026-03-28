@@ -1,75 +1,159 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useLang } from "@/contexts/LanguageContext";
-import { CDN } from "../../../shared/assets";
-import { Phone, Calendar, Globe, Mail, Users } from "lucide-react";
+import { CDN, GALLERY } from "../../../shared/assets";
+import { Phone, Calendar, Globe, Mail, Users, Loader2 } from "lucide-react";
+import { trpc } from "@/lib/trpc";
 
 const CHIP_ICONS = [Phone, Globe, Calendar, Mail, Users];
 
 const INDUSTRIES = [
-  { key: "construction", label: "Construction", img: CDN.constructionWorkers },
-  { key: "gym", label: "Gym & Fitness", img: CDN.gymBarbell },
-  { key: "massage", label: "Massage & Spa", img: CDN.massageTable },
-  { key: "corporate", label: "Corporate", img: CDN.corporateOffice },
+  { key: "construction" as const, label: "Construction" },
+  { key: "gym" as const, label: "Gym & Fitness" },
+  { key: "massage" as const, label: "Massage & Spa" },
+  { key: "corporate" as const, label: "Corporate" },
 ];
 
+// Waveform bars that animate when Riley is active
+function Waveform({ active }: { active: boolean }) {
+  return (
+    <div className="flex items-end gap-0.5 h-5">
+      {Array.from({ length: 8 }).map((_, i) => (
+        <div
+          key={i}
+          className={`w-1 rounded-full transition-all duration-300 ${active ? "bg-blue-300" : "bg-white/30"}`}
+          style={{
+            height: active ? `${8 + Math.sin(i * 0.8) * 6}px` : "4px",
+            animation: active ? `wave ${0.6 + i * 0.1}s ease-in-out infinite alternate` : "none",
+          }}
+        />
+      ))}
+    </div>
+  );
+}
+
 export default function HeroSection() {
-  const { t } = useLang();
+  const { t, lang } = useLang();
   const [activeChip, setActiveChip] = useState<string | null>(null);
   const [displayedResponse, setDisplayedResponse] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [isLoadingAI, setIsLoadingAI] = useState(false);
   const [activeIndustry, setActiveIndustry] = useState(0);
+  const [galleryIdx, setGalleryIdx] = useState(0);
+  const [userPaused, setUserPaused] = useState(false);
+  const typingRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  // Rotate industries every 4s
+  const heroChat = trpc.riley.heroChat.useMutation({
+    onSuccess: (data) => {
+      setIsLoadingAI(false);
+      const fullText = data.reply;
+      setDisplayedResponse("");
+      setIsTyping(true);
+      let i = 0;
+      if (typingRef.current) clearInterval(typingRef.current);
+      typingRef.current = setInterval(() => {
+        if (i < fullText.length) {
+          setDisplayedResponse(fullText.slice(0, i + 1));
+          i++;
+        } else {
+          setIsTyping(false);
+          if (typingRef.current) clearInterval(typingRef.current);
+        }
+      }, 16);
+    },
+    onError: () => {
+      setIsLoadingAI(false);
+      // Fallback to static response
+      const fallback = t.hero.responses[activeChip ?? "calls"] ?? "";
+      setDisplayedResponse(fallback);
+    },
+  });
+
+  // Rotate gallery photos every 3.5s per industry
   useEffect(() => {
+    if (userPaused) return;
+    const gallery = GALLERY[INDUSTRIES[activeIndustry].key];
+    const timer = setInterval(() => {
+      setGalleryIdx(i => (i + 1) % gallery.length);
+    }, 3500);
+    return () => clearInterval(timer);
+  }, [activeIndustry, userPaused]);
+
+  // Rotate industries every 18s (let photos cycle first)
+  useEffect(() => {
+    if (userPaused) return;
     const timer = setInterval(() => {
       setActiveIndustry(i => (i + 1) % INDUSTRIES.length);
-    }, 4000);
+      setGalleryIdx(0);
+    }, 18000);
     return () => clearInterval(timer);
-  }, []);
+  }, [userPaused]);
+
+  const handleIndustryClick = (idx: number) => {
+    setActiveIndustry(idx);
+    setGalleryIdx(0);
+    setUserPaused(true);
+    // Resume auto-rotation after 30s
+    setTimeout(() => setUserPaused(false), 30000);
+  };
 
   const handleChip = (key: string) => {
-    if (activeChip === key) { setActiveChip(null); setDisplayedResponse(""); return; }
+    if (activeChip === key) {
+      setActiveChip(null);
+      setDisplayedResponse("");
+      if (typingRef.current) clearInterval(typingRef.current);
+      return;
+    }
     setActiveChip(key);
-    const fullText = t.hero.responses[key] ?? "";
     setDisplayedResponse("");
-    setIsTyping(true);
-    let i = 0;
-    const interval = setInterval(() => {
-      if (i < fullText.length) {
-        setDisplayedResponse(fullText.slice(0, i + 1));
-        i++;
-      } else {
-        setIsTyping(false);
-        clearInterval(interval);
-      }
-    }, 18);
-    return () => clearInterval(interval);
+    setIsLoadingAI(true);
+    setIsTyping(false);
+    if (typingRef.current) clearInterval(typingRef.current);
+
+    heroChat.mutate({
+      chipKey: key,
+      industry: INDUSTRIES[activeIndustry].label,
+      language: lang as "en" | "es" | "zh",
+    });
   };
 
   const ind = INDUSTRIES[activeIndustry];
+  const gallery = GALLERY[ind.key];
+  const currentImg = gallery[galleryIdx % gallery.length];
   const isMassage = ind.key === "massage";
+  const rileyActive = isLoadingAI || isTyping || !!displayedResponse;
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-      {/* Background image — full bleed, no zoom on massage */}
+      {/* Background — cycling gallery per industry */}
       <div className="absolute inset-0">
-        <img
-          src={ind.img}
-          alt={ind.label}
-          key={ind.key}
-          className={`w-full h-full transition-all duration-1000 ${
-            isMassage
-              ? "object-contain object-center bg-gray-100"
-              : "object-cover object-center"
-          }`}
-        />
-        {/* Single uniform dark overlay — no left/right gradient, consistent across full image */}
-        <div className="absolute inset-0 bg-black/45" />
+        {gallery.map((img, idx) => (
+          <img
+            key={img}
+            src={img}
+            alt={ind.label}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
+              idx === galleryIdx % gallery.length ? "opacity-100" : "opacity-0"
+            } ${isMassage ? "object-contain object-center bg-gray-100" : "object-cover object-center"}`}
+          />
+        ))}
+        {/* Uniform dark overlay */}
+        <div className="absolute inset-0 bg-black/48" />
+      </div>
+
+      {/* Photo indicator dots */}
+      <div className="absolute bottom-20 right-6 flex flex-col gap-1.5 z-10">
+        {gallery.map((_, idx) => (
+          <button
+            key={idx}
+            onClick={() => { setGalleryIdx(idx); setUserPaused(true); setTimeout(() => setUserPaused(false), 30000); }}
+            className={`w-1.5 rounded-full transition-all ${idx === galleryIdx % gallery.length ? "h-5 bg-white" : "h-1.5 bg-white/40 hover:bg-white/70"}`}
+          />
+        ))}
       </div>
 
       <div className="relative container py-16 md:py-24">
         <div className="max-w-2xl">
-          {/* Badge */}
+          {/* Live badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-white text-xs font-semibold mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
             {t.hero.badge}
@@ -89,62 +173,63 @@ export default function HeroSection() {
 
           {/* Industry tabs */}
           <div className="flex flex-wrap gap-2 mb-8">
-            {INDUSTRIES.map((ind, idx) => (
+            {INDUSTRIES.map((industry, idx) => (
               <button
-                key={ind.key}
-                onClick={() => setActiveIndustry(idx)}
+                key={industry.key}
+                onClick={() => handleIndustryClick(idx)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
                   activeIndustry === idx
                     ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
                     : "bg-white/15 backdrop-blur-sm border border-white/30 text-white hover:bg-white/25"
                 }`}
               >
-                {ind.label}
+                {industry.label}
               </button>
             ))}
           </div>
 
-          {/* Riley Demo Card — transparent glass, no white box */}
-          <div className="backdrop-blur-md bg-white/12 rounded-2xl p-5 mb-6 max-w-xl border border-white/25 shadow-2xl">
+          {/* Riley Demo Card — glass, no white box */}
+          <div className={`backdrop-blur-md bg-white/12 rounded-2xl p-5 mb-6 max-w-xl border transition-all duration-500 shadow-2xl ${
+            rileyActive ? "border-blue-400/50 shadow-blue-500/20" : "border-white/25"
+          }`}>
             <div className="flex items-center gap-3 mb-4">
-              <img
-                src={CDN.logoSymbol}
-                alt="Riley"
-                className="w-9 h-9 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 shadow-md"
-              />
+              <div className={`relative w-9 h-9 rounded-full flex-shrink-0 transition-all duration-300 ${rileyActive ? "ring-2 ring-blue-400 ring-offset-1 ring-offset-transparent" : ""}`}>
+                <img
+                  src={CDN.logoSymbol}
+                  alt="Riley"
+                  className="w-full h-full rounded-full object-contain bg-white/20 border border-white/30 p-0.5 shadow-md"
+                />
+                {rileyActive && (
+                  <span className="absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full bg-green-400 border-2 border-white/20 pulse-dot" />
+                )}
+              </div>
               <div>
                 <div className="text-sm font-semibold text-white">Riley · SoloEdge AI</div>
                 <div className="flex items-center gap-1.5 text-xs text-green-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
-                  Online Now
+                  {isLoadingAI ? "Thinking..." : isTyping ? "Speaking..." : "Online Now"}
                 </div>
               </div>
-              {/* Waveform */}
-              <div className="ml-auto flex items-end gap-0.5 h-5">
-                {Array.from({ length: 8 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="wave-bar w-1 rounded-full bg-blue-300"
-                    style={{ height: "4px" }}
-                  />
-                ))}
+              <div className="ml-auto">
+                <Waveform active={rileyActive} />
               </div>
             </div>
 
             <p className="text-sm text-white/70 mb-4">{t.hero.greeting}</p>
 
-            {/* Chips */}
+            {/* Chips — tap to ask Riley */}
             <div className="flex flex-wrap gap-2">
               {t.hero.chips.map((chip, idx) => {
                 const Icon = CHIP_ICONS[idx];
+                const isActive = activeChip === chip.key;
                 return (
                   <button
                     key={chip.key}
                     onClick={() => handleChip(chip.key)}
-                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all ${
-                      activeChip === chip.key
+                    className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium transition-all active:scale-95 ${
+                      isActive
                         ? "bg-blue-600 text-white shadow-md shadow-blue-900/40"
-                        : "bg-white/15 border border-white/25 text-white/85 hover:bg-white/25 hover:border-white/40"
+                        : "bg-white/15 border border-white/25 text-white/85 hover:bg-white/25 hover:border-white/40 hover:scale-105"
                     }`}
                   >
                     <Icon size={12} />
@@ -154,8 +239,8 @@ export default function HeroSection() {
               })}
             </div>
 
-            {/* Response */}
-            {activeChip && (
+            {/* Riley's AI response */}
+            {(isLoadingAI || displayedResponse) && (
               <div className="mt-4 pt-4 border-t border-white/15">
                 <div className="flex items-start gap-2.5">
                   <img
@@ -163,9 +248,16 @@ export default function HeroSection() {
                     alt="Riley"
                     className="w-6 h-6 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 flex-shrink-0 mt-0.5"
                   />
-                  <p className={`text-sm text-white/90 leading-relaxed ${isTyping ? "cursor-blink" : ""}`}>
-                    {displayedResponse}
-                  </p>
+                  {isLoadingAI ? (
+                    <div className="flex items-center gap-2 text-white/60 text-sm">
+                      <Loader2 size={14} className="animate-spin" />
+                      <span>Riley is thinking...</span>
+                    </div>
+                  ) : (
+                    <p className={`text-sm text-white/90 leading-relaxed ${isTyping ? "after:content-['|'] after:animate-pulse after:ml-0.5" : ""}`}>
+                      {displayedResponse}
+                    </p>
+                  )}
                 </div>
               </div>
             )}
@@ -175,13 +267,13 @@ export default function HeroSection() {
           <div className="flex flex-wrap gap-3">
             <a
               href="#contact"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-900/40"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-900/40 active:scale-95"
             >
               {t.hero.cta}
             </a>
             <a
               href="#services"
-              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/30 hover:bg-white/25 text-white font-semibold text-sm transition-all"
+              className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/30 hover:bg-white/25 text-white font-semibold text-sm transition-all active:scale-95"
             >
               {t.hero.ctaSecondary}
             </a>
