@@ -179,3 +179,9 @@
 - [x] Apply frosted glass / backdrop-blur style to industry cards in IndustriesSection
 - [x] Apply frosted glass / backdrop-blur style to pricing plan cards in PricingSection
 - [x] Apply frosted glass / backdrop-blur style to contact form card in ContactSection
+
+## Photo Pool Expansion (user request)
+- [x] Find and upload barber shop photo(s) to CDN
+- [x] Find and upload restaurant/POS area photo(s) to CDN
+- [x] Add barber and restaurant to assets.ts gallery
+- [x] Swap one gym photo and one massage photo out of SectionBackground pool in favor of barber + restaurant

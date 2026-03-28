@@ -1,16 +1,21 @@
 import { useState, useEffect } from "react";
 import { GALLERY } from "../../../shared/assets";
 
-// One photo per industry — equal representation, no industry dominates
+// Balanced pool — 2 photos per industry in round-robin order
+// gym[3] (gymTrainer) and massage[3] (massageCouple) removed to make room for barber + restaurant
 const BALANCED_PHOTOS = [
   GALLERY.construction[0], // construction workers
   GALLERY.gym[0],          // gym barbell
   GALLERY.massage[0],      // massage table
   GALLERY.corporate[0],    // corporate office
+  GALLERY.barber[0],       // barber cutting
+  GALLERY.restaurant[0],   // restaurant POS
   GALLERY.construction[1], // construction site
   GALLERY.gym[1],          // gym dumbbells
   GALLERY.massage[1],      // massage therapist
   GALLERY.corporate[1],    // corporate meeting
+  GALLERY.barber[1],       // barber shop
+  GALLERY.restaurant[1],   // restaurant service
   GALLERY.construction[2], // construction crew
   GALLERY.gym[2],          // gym bodybuilder
   GALLERY.massage[2],      // massage hotstone

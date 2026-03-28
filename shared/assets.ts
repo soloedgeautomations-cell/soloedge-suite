@@ -28,6 +28,14 @@ export const CDN = {
   massageCouple: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/massage-couple_32dfc62f.jpg",
   spaTherapy: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/spa-treatment_860244b9.jpg",
 
+  // ── Barber & Salon ──────────────────────────────────────────────────────────
+  barberCutting: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/barber-cutting_1ba7476c.jpg",
+  barberShop: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/barber-shop_c37055a5.jpg",
+
+  // ── Restaurant ────────────────────────────────────────────────────────────────
+  restaurantPos: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/restaurant-pos_25d734a6.webp",
+  restaurantService: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/restaurant-service_87ec3e1c.jpg",
+
   // ── Corporate ─────────────────────────────────────────────────────────────
   corporateOffice: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-office_6dd79fa1.jpg",
   corporateMeeting: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-meeting_ffdfd66c.jpg",
@@ -64,5 +72,13 @@ export const GALLERY = {
     CDN.corporateOffice,
     CDN.corporateMeeting,
     CDN.corporateTeam,
+  ],
+  barber: [
+    CDN.barberCutting,
+    CDN.barberShop,
+  ],
+  restaurant: [
+    CDN.restaurantPos,
+    CDN.restaurantService,
   ],
 };
