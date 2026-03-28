@@ -1,5 +1,6 @@
 import { CDN } from "../../../shared/assets";
 import { HardHat, Dumbbell, Sparkles, Briefcase, ArrowRight } from "lucide-react";
+import SectionBackground from "@/components/SectionBackground";
 
 const INDUSTRIES = [
   {
@@ -78,7 +79,8 @@ const INDUSTRIES = [
 
 export default function IndustriesSection() {
   return (
-    <section id="industries" className="section-pad bg-gray-50">
+    <section id="industries" className="section-pad bg-gray-50 relative overflow-hidden">
+      <SectionBackground overlayClass="bg-gray-50/93" offset={5} />
       <div className="container">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4">

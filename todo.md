@@ -159,5 +159,12 @@
 ## Logo Concept Exploration (user request)
 - [x] Generate 5 alternative S-mark concepts (neural, wave, construction, hybrid, edge)
 - [x] Generate combined Neural+Wave S-mark (dark + light variants)
-- [ ] User to select preferred logo concept for site deployment
-- [ ] Swap chosen logo into CDN.logoSymbol across all 15 site locations
+- [x] User decided to keep original S-mark logo — no swap needed
+
+## Photo & Background Fixes (user request)
+- [x] Replace blurry/out-of-focus construction photo with a sharp one
+- [x] Fix massage hero photo — object-cover (consistent with all other industries, no distortion)
+- [x] Add subtle rotating industry photo background to Services section (not overpowering)
+- [x] Add subtle rotating industry photo background to Industries section
+- [x] Add subtle rotating industry photo background to Pricing section
+- [x] Add subtle rotating industry photo background to Contact section

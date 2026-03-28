@@ -119,7 +119,7 @@ export default function HeroSection() {
   const ind = INDUSTRIES[activeIndustry];
   const gallery = GALLERY[ind.key];
   const currentImg = gallery[galleryIdx % gallery.length];
-  const isMassage = ind.key === "massage";
+
   const rileyActive = isLoadingAI || isTyping || !!displayedResponse;
 
   return (
@@ -133,7 +133,7 @@ export default function HeroSection() {
             alt={ind.label}
             className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ${
               idx === galleryIdx % gallery.length ? "opacity-100" : "opacity-0"
-            } ${isMassage ? "object-contain object-center bg-gray-100" : "object-cover object-center"}`}
+} object-cover object-center`}
           />
         ))}
         {/* Uniform dark overlay */}

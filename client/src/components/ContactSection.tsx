@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
 import { Phone, Mail, MessageSquare, CheckCircle } from "lucide-react";
+import SectionBackground from "@/components/SectionBackground";
 
 const BUSINESS_TYPES = [
   "General Contractor / Construction",
@@ -28,7 +29,8 @@ export default function ContactSection() {
   };
 
   return (
-    <section id="contact" className="section-pad bg-gray-50">
+    <section id="contact" className="section-pad bg-gray-50 relative overflow-hidden">
+      <SectionBackground overlayClass="bg-gray-50/93" offset={15} />
       <div className="container">
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">

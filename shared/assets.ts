@@ -11,7 +11,8 @@ export const CDN = {
   constructionWorkers: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-workers_db7358b8.jpg",
   fieldWorker: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/field-worker_05647657.png",
   constructionSite: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-site_5469ebf2.jpg",
-  constructionCrew: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-crew_acb27113.jpg",
+  constructionCrew: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-sharp-crew_0a5d3c42.jpg", // replaced blurry photo
+  constructionSafety: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-sharp-safety_8ba30b9c.jpg",
 
   // ── Gym & Fitness ─────────────────────────────────────────────────────────
   gymBarbell: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/low-angle-view-unrecognizable-muscular-build-man-preparing-lifting-barbell-health-club_637285-2497_0385a049.avif",
@@ -42,8 +43,8 @@ export const GALLERY = {
     CDN.constructionWorkers,
     CDN.constructionSite,
     CDN.constructionCrew,
+    CDN.constructionSafety,
     CDN.constructionTeam,
-    CDN.fieldWorker,
   ],
   gym: [
     CDN.gymBarbell,

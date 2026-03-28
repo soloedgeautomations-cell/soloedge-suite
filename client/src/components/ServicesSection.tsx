@@ -1,5 +1,6 @@
 import { useLang } from "@/contexts/LanguageContext";
 import { Phone, Calendar, Zap, Mail, Globe, Mic } from "lucide-react";
+import SectionBackground from "@/components/SectionBackground";
 
 const ICONS = [Phone, Calendar, Zap, Mail, Globe, Mic];
 const COLORS = [
@@ -23,7 +24,8 @@ export default function ServicesSection() {
   const { t } = useLang();
 
   return (
-    <section id="services" className="section-pad bg-white">
+    <section id="services" className="section-pad bg-white relative overflow-hidden">
+      <SectionBackground overlayClass="bg-white/93" offset={0} />
       <div className="container">
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4">

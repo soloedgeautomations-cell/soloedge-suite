@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useLang } from "@/contexts/LanguageContext";
 import { Check, Zap, Shield, Crown } from "lucide-react";
+import SectionBackground from "@/components/SectionBackground";
 
 const COMM_PLANS = [
   {
@@ -131,7 +132,8 @@ export default function PricingSection() {
   const plans = activeSuite === "comm" ? COMM_PLANS : SCHED_PLANS;
 
   return (
-    <section id="pricing" className="section-pad bg-white">
+    <section id="pricing" className="section-pad bg-white relative overflow-hidden">
+      <SectionBackground overlayClass="bg-white/93" offset={10} />
       <div className="container">
         <div className="text-center mb-12">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-semibold mb-4">
