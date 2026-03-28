@@ -172,9 +172,9 @@ export default function ContactSection() {
                   </button>
 
                   <p className="text-center text-xs text-gray-400 pt-1">
-                    Prefer to talk? Call us at{" "}
-                    <a href="tel:+15127029685" className="text-blue-600 font-medium hover:underline">
-                      (512) 702-9685
+                    Prefer to call? Reach us at{" "}
+                    <a href="tel:+17372595692" className="text-blue-600 font-medium hover:underline">
+                      (737) 259-5692
                     </a>
                   </p>
                 </form>
