@@ -137,3 +137,10 @@
 - [x] Navbar CTA: "Book a Session" links to contact section with phone number
 - [x] Riley system prompt: replace "Murphy" with "SoloEdge Team", add phone number for handoff
 - [x] Checkpoint copy update
+
+## Transparent Logo (user request)
+- [x] Remove white background from SoloEdgeLogoNoText.png using Pillow (flood-fill alpha removal)
+- [x] Upload transparent PNG to CDN
+- [x] Update shared/assets.ts logoSymbol to point to transparent version
+- [x] Verify logo renders cleanly on dark and light backgrounds across the site (all 15 CDN.logoSymbol references updated automatically)
+- [x] Checkpoint transparent logo update

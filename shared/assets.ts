@@ -1,7 +1,8 @@
 export const CDN = {
   // ── Logos ────────────────────────────────────────────────────────────────
   logo: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogo_d10f81d7.jpg",
-  logoSymbol: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogoNoText_7bb6766a.png",
+  logoSymbol: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogoTransparent_51dd6036.png", // transparent PNG, no white bg
+  logoSymbolOpaque: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogoNoText_7bb6766a.png", // original with white bg (kept for reference)
   logoSymbolAlt: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/Gemini_Generated_Image_y23fxoy23fxoy23f_456b4f4e.png",
   logoHd: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/soloedge-logo-hd_65bec2ef.jpg",
 
