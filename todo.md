@@ -173,3 +173,9 @@
 - [x] Fix contact form z-index — container set to relative z-10, background at z-0
 - [x] Increase background photo visibility — overlay reduced to 85% across all sections
 - [x] Rebalance photo pool — 3 photos per industry in round-robin order (12 total, no industry dominates)
+
+## Glass Card Style (user request)
+- [x] Apply frosted glass / backdrop-blur style to service cards in ServicesSection
+- [x] Apply frosted glass / backdrop-blur style to industry cards in IndustriesSection
+- [x] Apply frosted glass / backdrop-blur style to pricing plan cards in PricingSection
+- [x] Apply frosted glass / backdrop-blur style to contact form card in ContactSection

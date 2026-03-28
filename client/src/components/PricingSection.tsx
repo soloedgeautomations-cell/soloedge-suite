@@ -177,10 +177,10 @@ export default function PricingSection() {
             return (
               <div
                 key={plan.id}
-                className={`relative rounded-2xl p-7 border transition-all ${
+                className={`relative rounded-2xl p-7 transition-all ${
                   plan.popular
-                    ? "bg-blue-600 border-blue-600 shadow-2xl shadow-blue-200 scale-[1.03]"
-                    : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
+                    ? "bg-blue-600 border border-blue-600 shadow-2xl shadow-blue-200 scale-[1.03]"
+                    : "glass hover:shadow-lg"
                 }`}
               >
                 {plan.popular && (

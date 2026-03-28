@@ -45,7 +45,7 @@ export default function ServicesSection() {
             return (
               <div
                 key={idx}
-                className="group relative p-6 rounded-2xl bg-white border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
+                className="group relative p-6 rounded-2xl glass hover:-translate-y-1 transition-all duration-300"
               >
                 <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${COLORS[idx]} flex items-center justify-center mb-4 shadow-md`}>
                   <Icon size={20} className="text-white" />

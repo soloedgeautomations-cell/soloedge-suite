@@ -92,7 +92,7 @@ export default function ContactSection() {
             </div>
 
             {/* Right — Form */}
-            <div className="bg-white rounded-2xl p-7 border border-gray-200 shadow-lg shadow-gray-100">
+            <div className="glass rounded-2xl p-7">
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
                   <div className="w-16 h-16 rounded-full bg-green-50 border border-green-200 flex items-center justify-center mb-4">

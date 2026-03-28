@@ -100,7 +100,7 @@ export default function IndustriesSection() {
             return (
               <div
                 key={ind.key}
-                className={`group relative rounded-2xl overflow-hidden bg-white border ${ind.border} ${ind.shadow} hover:shadow-xl transition-all duration-300`}
+                className={`group relative rounded-2xl overflow-hidden glass ${ind.shadow} hover:shadow-xl transition-all duration-300`}
               >
                 {/* Top image strip */}
                 <div className="relative h-44 overflow-hidden">
