@@ -10,21 +10,29 @@ const COLORS = [
   "from-orange-600 to-orange-400",
   "from-pink-600 to-pink-400",
 ];
+const LIGHT_BG = [
+  "bg-blue-50 border-blue-100",
+  "bg-cyan-50 border-cyan-100",
+  "bg-green-50 border-green-100",
+  "bg-purple-50 border-purple-100",
+  "bg-orange-50 border-orange-100",
+  "bg-pink-50 border-pink-100",
+];
 
 export default function ServicesSection() {
   const { t } = useLang();
 
   return (
-    <section id="services" className="section-pad">
+    <section id="services" className="section-pad bg-white">
       <div className="container">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-600/10 border border-blue-500/20 text-blue-400 text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4">
             WHAT WE DO
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             {t.services.title}
           </h2>
-          <p className="text-lg text-white/50 max-w-xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-xl mx-auto">
             {t.services.subtitle}
           </p>
         </div>
@@ -35,16 +43,16 @@ export default function ServicesSection() {
             return (
               <div
                 key={idx}
-                className="group relative p-6 rounded-2xl bg-[oklch(0.13_0.015_240)] border border-white/5 hover:border-white/15 transition-all hover:-translate-y-1 hover:shadow-xl hover:shadow-black/30"
+                className="group relative p-6 rounded-2xl bg-white border border-gray-100 hover:border-gray-200 hover:shadow-lg hover:-translate-y-1 transition-all duration-300"
               >
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${COLORS[idx]} flex items-center justify-center mb-4 shadow-lg`}>
+                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${COLORS[idx]} flex items-center justify-center mb-4 shadow-md`}>
                   <Icon size={20} className="text-white" />
                 </div>
-                <h3 className="font-semibold text-white text-base mb-2">{item.title}</h3>
-                <p className="text-sm text-white/55 leading-relaxed">{item.desc}</p>
+                <h3 className="font-semibold text-gray-900 text-base mb-2">{item.title}</h3>
+                <p className="text-sm text-gray-500 leading-relaxed">{item.desc}</p>
 
-                {/* Hover glow */}
-                <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-blue-600/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
+                {/* Subtle color tint on hover */}
+                <div className={`absolute inset-0 rounded-2xl ${LIGHT_BG[idx]} opacity-0 group-hover:opacity-40 transition-opacity pointer-events-none`} />
               </div>
             );
           })}

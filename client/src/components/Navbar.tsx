@@ -27,13 +27,16 @@ export default function Navbar() {
 
   return (
     <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? "bg-[oklch(0.09_0.012_240/0.95)] backdrop-blur-xl border-b border-white/5 shadow-lg" : "bg-transparent"
+      scrolled
+        ? "bg-white/95 backdrop-blur-xl border-b border-gray-200 shadow-sm"
+        : "bg-white/60 backdrop-blur-md"
     }`}>
       <div className="container">
         <div className="flex items-center justify-between h-16 md:h-18">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-2.5 group">
-            <img src={CDN.logo} alt="SoloEdge" className="h-8 w-auto" />
+          <Link href="/" className="flex items-center gap-2 group">
+            <img src={CDN.logoSymbol} alt="S" className="h-9 w-9 object-contain" />
+            <img src={CDN.logo} alt="SoloEdge Automations" className="h-7 w-auto hidden sm:block" />
           </Link>
 
           {/* Desktop Nav */}
@@ -42,14 +45,14 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-white/70 hover:text-white transition-colors font-medium"
+                className="text-sm text-gray-600 hover:text-blue-700 transition-colors font-medium"
               >
                 {link.label}
               </a>
             ))}
             <Link
               href="/app"
-              className="text-sm text-white/70 hover:text-white transition-colors font-medium"
+              className="text-sm text-gray-600 hover:text-blue-700 transition-colors font-medium"
             >
               {t.nav.dashboard}
             </Link>
@@ -61,20 +64,22 @@ export default function Navbar() {
             <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm text-white/80 hover:bg-white/10 transition-all"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-50 border border-gray-200 text-sm text-gray-700 hover:bg-gray-100 hover:border-gray-300 transition-all"
               >
                 <span>{currentLang.flag}</span>
                 <span className="font-medium">{currentLang.native}</span>
-                <ChevronDown size={14} className={`transition-transform ${langOpen ? "rotate-180" : ""}`} />
+                <ChevronDown size={14} className={`transition-transform text-gray-400 ${langOpen ? "rotate-180" : ""}`} />
               </button>
               {langOpen && (
-                <div className="absolute right-0 top-full mt-2 w-36 bg-[oklch(0.13_0.015_240)] border border-white/10 rounded-xl shadow-xl overflow-hidden">
+                <div className="absolute right-0 top-full mt-2 w-36 bg-white border border-gray-200 rounded-xl shadow-lg overflow-hidden">
                   {LANGUAGES.map(l => (
                     <button
                       key={l.code}
                       onClick={() => { setLang(l.code); setLangOpen(false); }}
                       className={`w-full flex items-center gap-2.5 px-3 py-2.5 text-sm transition-colors ${
-                        lang === l.code ? "bg-blue-600/20 text-blue-400" : "text-white/70 hover:bg-white/5 hover:text-white"
+                        lang === l.code
+                          ? "bg-blue-50 text-blue-700 font-medium"
+                          : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
                       }`}
                     >
                       <span>{l.flag}</span>
@@ -88,7 +93,7 @@ export default function Navbar() {
             {/* CTA */}
             <a
               href="#contact"
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-all shadow-lg shadow-blue-900/30"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-md shadow-blue-200"
             >
               {t.nav.bookSession}
             </a>
@@ -96,19 +101,18 @@ export default function Navbar() {
 
           {/* Mobile hamburger */}
           <div className="flex md:hidden items-center gap-2">
-            {/* Mobile lang */}
             <button
               onClick={() => {
                 const idx = LANGUAGES.findIndex(l => l.code === lang);
                 setLang(LANGUAGES[(idx + 1) % LANGUAGES.length].code);
               }}
-              className="px-2 py-1.5 rounded-lg bg-white/5 border border-white/10 text-sm"
+              className="px-2 py-1.5 rounded-lg bg-gray-100 border border-gray-200 text-sm"
             >
               {currentLang.flag}
             </button>
             <button
               onClick={() => setMobileOpen(!mobileOpen)}
-              className="p-2 text-white/80 hover:text-white"
+              className="p-2 text-gray-700 hover:text-gray-900"
             >
               {mobileOpen ? <X size={22} /> : <Menu size={22} />}
             </button>
@@ -118,14 +122,14 @@ export default function Navbar() {
 
       {/* Mobile Menu */}
       {mobileOpen && (
-        <div className="md:hidden bg-[oklch(0.11_0.013_240/0.98)] backdrop-blur-xl border-t border-white/5">
+        <div className="md:hidden bg-white border-t border-gray-200 shadow-lg">
           <div className="container py-4 flex flex-col gap-1">
             {navLinks.map(link => (
               <a
                 key={link.href}
                 href={link.href}
                 onClick={() => setMobileOpen(false)}
-                className="py-3 px-4 rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition-all font-medium"
+                className="py-3 px-4 rounded-lg text-gray-700 hover:text-blue-700 hover:bg-blue-50 transition-all font-medium"
               >
                 {link.label}
               </a>
@@ -133,14 +137,14 @@ export default function Navbar() {
             <Link
               href="/app"
               onClick={() => setMobileOpen(false)}
-              className="py-3 px-4 rounded-lg text-white/80 hover:text-white hover:bg-white/5 transition-all font-medium"
+              className="py-3 px-4 rounded-lg text-gray-700 hover:text-blue-700 hover:bg-blue-50 transition-all font-medium"
             >
               {t.nav.dashboard}
             </Link>
             <a
               href="#contact"
               onClick={() => setMobileOpen(false)}
-              className="mt-2 py-3 px-4 rounded-lg bg-blue-600 text-white font-semibold text-center"
+              className="mt-2 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-center transition-all"
             >
               {t.nav.bookSession}
             </a>

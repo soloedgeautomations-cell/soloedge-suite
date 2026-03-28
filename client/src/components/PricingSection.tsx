@@ -131,27 +131,27 @@ export default function PricingSection() {
   const plans = activeSuite === "comm" ? COMM_PLANS : SCHED_PLANS;
 
   return (
-    <section id="pricing" className="section-pad">
+    <section id="pricing" className="section-pad bg-white">
       <div className="container">
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-600/10 border border-green-500/20 text-green-400 text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-semibold mb-4">
             PRICING
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             {t.pricing.title}
           </h2>
-          <p className="text-lg text-white/50 max-w-xl mx-auto mb-8">
+          <p className="text-lg text-gray-500 max-w-xl mx-auto mb-8">
             {t.pricing.subtitle}
           </p>
 
           {/* Suite Toggle */}
-          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-[oklch(0.13_0.015_240)] border border-white/10">
+          <div className="inline-flex items-center gap-1 p-1 rounded-xl bg-gray-100 border border-gray-200">
             <button
               onClick={() => setActiveSuite("comm")}
               className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                 activeSuite === "comm"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-900/30"
-                  : "text-white/60 hover:text-white"
+                  ? "bg-white text-blue-700 shadow-md shadow-gray-200 border border-gray-200"
+                  : "text-gray-500 hover:text-gray-800"
               }`}
             >
               {t.pricing.commSuite}
@@ -160,8 +160,8 @@ export default function PricingSection() {
               onClick={() => setActiveSuite("sched")}
               className={`px-5 py-2.5 rounded-lg text-sm font-semibold transition-all ${
                 activeSuite === "sched"
-                  ? "bg-blue-600 text-white shadow-lg shadow-blue-900/30"
-                  : "text-white/60 hover:text-white"
+                  ? "bg-white text-blue-700 shadow-md shadow-gray-200 border border-gray-200"
+                  : "text-gray-500 hover:text-gray-800"
               }`}
             >
               {t.pricing.schedSuite}
@@ -177,32 +177,34 @@ export default function PricingSection() {
                 key={plan.id}
                 className={`relative rounded-2xl p-7 border transition-all ${
                   plan.popular
-                    ? "bg-gradient-to-b from-blue-600/15 to-[oklch(0.13_0.015_240)] border-blue-500/40 shadow-xl shadow-blue-900/20 scale-[1.02]"
-                    : "bg-[oklch(0.13_0.015_240)] border-white/8 hover:border-white/15"
+                    ? "bg-blue-600 border-blue-600 shadow-2xl shadow-blue-200 scale-[1.03]"
+                    : "bg-white border-gray-200 hover:border-gray-300 hover:shadow-lg"
                 }`}
               >
                 {plan.popular && (
-                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-blue-600 text-white text-xs font-bold shadow-lg">
+                  <div className="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full bg-white text-blue-700 text-xs font-bold shadow-md border border-blue-100">
                     {t.pricing.mostPopular}
                   </div>
                 )}
 
-                <div className={`w-11 h-11 rounded-xl bg-gradient-to-br ${plan.color} flex items-center justify-center mb-4 shadow-lg`}>
+                <div className={`w-11 h-11 rounded-xl flex items-center justify-center mb-4 shadow-md ${
+                  plan.popular ? "bg-white/20" : `bg-gradient-to-br ${plan.color}`
+                }`}>
                   <Icon size={20} className="text-white" />
                 </div>
 
                 <div className="mb-1">
-                  <h3 className="font-display text-xl font-bold text-white">{plan.name}</h3>
-                  <p className="text-sm text-white/50">{plan.subtitle}</p>
+                  <h3 className={`font-display text-xl font-bold ${plan.popular ? "text-white" : "text-gray-900"}`}>{plan.name}</h3>
+                  <p className={`text-sm ${plan.popular ? "text-blue-100" : "text-gray-500"}`}>{plan.subtitle}</p>
                 </div>
 
                 {/* Pricing */}
-                <div className="mt-5 mb-6 pb-6 border-b border-white/8">
+                <div className={`mt-5 mb-6 pb-6 border-b ${plan.popular ? "border-white/20" : "border-gray-100"}`}>
                   <div className="flex items-baseline gap-1 mb-1">
-                    <span className="text-3xl font-bold text-white">${plan.monthly}</span>
-                    <span className="text-white/50 text-sm">{t.pricing.perMonth}{plan.perLine ? t.pricing.perLine : ""}</span>
+                    <span className={`text-3xl font-bold ${plan.popular ? "text-white" : "text-gray-900"}`}>${plan.monthly}</span>
+                    <span className={`text-sm ${plan.popular ? "text-blue-100" : "text-gray-400"}`}>{t.pricing.perMonth}{plan.perLine ? t.pricing.perLine : ""}</span>
                   </div>
-                  <div className="text-sm text-white/40">
+                  <div className={`text-sm ${plan.popular ? "text-blue-100" : "text-gray-400"}`}>
                     + ${plan.setup} {t.pricing.setupFee}
                   </div>
                 </div>
@@ -210,8 +212,8 @@ export default function PricingSection() {
                 {/* Features */}
                 <ul className="space-y-2.5 mb-7">
                   {plan.features.map((f, i) => (
-                    <li key={i} className="flex items-start gap-2.5 text-sm text-white/70">
-                      <Check size={14} className="text-green-400 flex-shrink-0 mt-0.5" />
+                    <li key={i} className={`flex items-start gap-2.5 text-sm ${plan.popular ? "text-blue-50" : "text-gray-600"}`}>
+                      <Check size={14} className={`flex-shrink-0 mt-0.5 ${plan.popular ? "text-white" : "text-green-500"}`} />
                       {f}
                     </li>
                   ))}
@@ -221,8 +223,8 @@ export default function PricingSection() {
                   href="#contact"
                   className={`block w-full py-3 rounded-xl text-center text-sm font-semibold transition-all ${
                     plan.popular
-                      ? "bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/30"
-                      : "bg-white/5 border border-white/10 hover:bg-white/10 text-white"
+                      ? "bg-white text-blue-700 hover:bg-blue-50 shadow-md"
+                      : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100"
                   }`}
                 >
                   {t.pricing.getStarted}
@@ -233,7 +235,7 @@ export default function PricingSection() {
         </div>
 
         {/* Bottom note */}
-        <p className="text-center text-sm text-white/35 mt-10">
+        <p className="text-center text-sm text-gray-400 mt-10">
           All plans include a 24–48 hour setup. No long-term contracts. Cancel anytime.
         </p>
       </div>

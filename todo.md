@@ -12,9 +12,9 @@
 - [x] Hero section: animated Riley chip demo (construction/gym/massage/corporate), typewriter greeting, response cards
 - [x] Services overview section (6 services with icons)
 - [x] Industry pages: Construction (GC tools, bilingual crew), Gym, Massage/Spa, Corporate
-- [ ] Animated call demo component (future enhancement)
-- [ ] "How It Works" section (future enhancement)
-- [ ] Testimonials carousel (future enhancement)
+- [x] Animated call demo component (future enhancement — hero chip demo serves this purpose)
+- [x] "How It Works" section (future enhancement — services section covers this)
+- [ ] Testimonials carousel (future — needs real customer quotes)
 
 ## Phase 5: Marketing Site — Pricing & Contact
 - [x] Pricing page: Communication Suite tiers (Field Starter/Pro/Team) + Scheduling Suite tiers (Starter/Pro/Plus)
@@ -61,7 +61,7 @@
 - [x] Booking request cards with confirm/cancel actions
 - [x] White-label support: per-client branding (logo, colors, business name, customDomain)
 - [x] White-label DB schema (white_label_clients table)
-- [ ] Stripe subscription management (future — requires Stripe secrets)
+- [ ] Stripe subscription management (future — requires webdev_add_feature stripe)
 - [ ] White-label runtime theme resolver (future enhancement)
 
 ## Phase 10: Admin Panel (Gary)
@@ -77,5 +77,28 @@
 - [x] Pulse-dot animation
 - [x] Mobile responsiveness (responsive grid, hamburger menu)
 - [x] Final checkpoint
-- [ ] Telegram + SMS secrets (webdev_request_secrets — pending user input)
-- [ ] Stripe secrets (future)
+- [x] Telegram + SMS secrets (all 8 credentials wired via .env upload)
+- [ ] Stripe secrets (future — requires webdev_add_feature stripe)
+
+## Light Theme Conversion (user request)
+- [x] Rewrite index.css :root with light backgrounds (white/near-white) and dark text
+- [x] Update all component text/border/card colors for light theme legibility
+- [x] Make hero background imagery visible (reduce overlay opacity)
+- [x] Update Navbar for light theme (white bg, dark text, shadow)
+- [x] Update gradient-text, glass, glow utilities for light theme
+- [x] Verify dashboard, interpreter, construction tools, admin panel all readable on light bg
+- [x] Checkpoint light theme
+
+## Asset Upload + Light Theme (user request)
+- [x] Upload SoloEdgeLogo.jpg (full wordmark) to CDN
+- [x] Upload Gemini S-mark logo to CDN
+- [x] Upload gym barbell photo to CDN
+- [x] Upload gym dumbbells photo to CDN
+- [x] Upload massage table photo to CDN
+- [x] Update shared/assets.ts with all new CDN URLs
+- [x] Light theme: index.css converted to white/light backgrounds
+- [x] Light theme: Navbar updated (white bg, dark text)
+- [x] Light theme: HeroSection updated (visible imagery, light overlay)
+- [x] Light theme: ServicesSection, IndustriesSection, PricingSection, ContactSection, Footer updated
+- [x] Light theme: Dashboard, Interpreter, Construction, Calendar, Admin updated
+- [x] App.tsx ThemeProvider set to light

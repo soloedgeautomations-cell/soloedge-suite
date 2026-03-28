@@ -8,9 +8,10 @@ const INDUSTRIES = [
     title: "Construction & GC",
     subtitle: "Field crews, bilingual coordination, sub management",
     img: CDN.constructionTeam,
-    color: "from-orange-500 to-amber-400",
-    border: "hover:border-orange-500/30",
-    glow: "hover:shadow-orange-900/20",
+    iconBg: "from-orange-500 to-amber-400",
+    accent: "text-orange-600",
+    border: "border-orange-100 hover:border-orange-300",
+    shadow: "hover:shadow-orange-100",
     bullets: [
       "Bilingual crew communication (EN/ES)",
       "Sub coordinator & task routing",
@@ -24,10 +25,11 @@ const INDUSTRIES = [
     icon: Dumbbell,
     title: "Gyms & Fitness",
     subtitle: "Memberships, class bookings, trial sign-ups",
-    img: CDN.gymFitness,
-    color: "from-green-500 to-emerald-400",
-    border: "hover:border-green-500/30",
-    glow: "hover:shadow-green-900/20",
+    img: CDN.gymBarbell,
+    iconBg: "from-green-500 to-emerald-400",
+    accent: "text-green-600",
+    border: "border-green-100 hover:border-green-300",
+    shadow: "hover:shadow-green-100",
     bullets: [
       "24/7 membership inquiry handling",
       "Class & personal training bookings",
@@ -41,10 +43,11 @@ const INDUSTRIES = [
     icon: Sparkles,
     title: "Massage & Spa",
     subtitle: "Appointments, upsells, client retention",
-    img: CDN.massageStudio,
-    color: "from-purple-500 to-violet-400",
-    border: "hover:border-purple-500/30",
-    glow: "hover:shadow-purple-900/20",
+    img: CDN.massageTable,
+    iconBg: "from-purple-500 to-violet-400",
+    accent: "text-purple-600",
+    border: "border-purple-100 hover:border-purple-300",
+    shadow: "hover:shadow-purple-100",
     bullets: [
       "Appointment booking & reminders",
       "Service upsell conversations",
@@ -59,9 +62,10 @@ const INDUSTRIES = [
     title: "Corporate & Office",
     subtitle: "Reception, scheduling, admin automation",
     img: CDN.corporateOffice,
-    color: "from-blue-500 to-sky-400",
-    border: "hover:border-blue-500/30",
-    glow: "hover:shadow-blue-900/20",
+    iconBg: "from-blue-500 to-sky-400",
+    accent: "text-blue-600",
+    border: "border-blue-100 hover:border-blue-300",
+    shadow: "hover:shadow-blue-100",
     bullets: [
       "Professional call answering",
       "Meeting & conference scheduling",
@@ -74,16 +78,16 @@ const INDUSTRIES = [
 
 export default function IndustriesSection() {
   return (
-    <section id="industries" className="section-pad bg-[oklch(0.11_0.013_240/0.5)]">
+    <section id="industries" className="section-pad bg-gray-50">
       <div className="container">
         <div className="text-center mb-14">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-600/10 border border-cyan-500/20 text-cyan-400 text-xs font-semibold mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4">
             INDUSTRIES WE SERVE
           </div>
-          <h2 className="font-display text-4xl md:text-5xl font-bold text-white mb-4">
+          <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Built for Your Industry
           </h2>
-          <p className="text-lg text-white/50 max-w-xl mx-auto">
+          <p className="text-lg text-gray-500 max-w-xl mx-auto">
             SoloEdge is trained on the specific language, workflows, and needs of each industry.
           </p>
         </div>
@@ -94,26 +98,30 @@ export default function IndustriesSection() {
             return (
               <div
                 key={ind.key}
-                className={`group relative rounded-2xl overflow-hidden border border-white/5 ${ind.border} ${ind.glow} hover:shadow-2xl transition-all duration-300`}
+                className={`group relative rounded-2xl overflow-hidden bg-white border ${ind.border} ${ind.shadow} hover:shadow-xl transition-all duration-300`}
               >
-                {/* Background image */}
-                <div className="absolute inset-0">
-                  <img src={ind.img} alt={ind.title} className="w-full h-full object-cover opacity-15 group-hover:opacity-25 transition-opacity duration-300" />
-                  <div className="absolute inset-0 bg-gradient-to-br from-[oklch(0.11_0.013_240/0.95)] to-[oklch(0.11_0.013_240/0.80)]" />
-                </div>
-
-                <div className="relative p-7">
-                  <div className={`w-12 h-12 rounded-xl bg-gradient-to-br ${ind.color} flex items-center justify-center mb-4 shadow-lg`}>
+                {/* Top image strip */}
+                <div className="relative h-44 overflow-hidden">
+                  <img
+                    src={ind.img}
+                    alt={ind.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/80" />
+                  {/* Icon badge overlapping image bottom */}
+                  <div className={`absolute bottom-4 left-6 w-12 h-12 rounded-xl bg-gradient-to-br ${ind.iconBg} flex items-center justify-center shadow-lg`}>
                     <Icon size={22} className="text-white" />
                   </div>
+                </div>
 
-                  <h3 className="font-display text-xl font-bold text-white mb-1">{ind.title}</h3>
-                  <p className="text-sm text-white/50 mb-5">{ind.subtitle}</p>
+                <div className="p-6 pt-4">
+                  <h3 className="font-display text-xl font-bold text-gray-900 mb-1">{ind.title}</h3>
+                  <p className="text-sm text-gray-500 mb-5">{ind.subtitle}</p>
 
                   <ul className="space-y-2 mb-6">
                     {ind.bullets.map((b, i) => (
-                      <li key={i} className="flex items-center gap-2.5 text-sm text-white/70">
-                        <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${ind.color} flex-shrink-0`} />
+                      <li key={i} className="flex items-center gap-2.5 text-sm text-gray-600">
+                        <div className={`w-1.5 h-1.5 rounded-full bg-gradient-to-br ${ind.iconBg} flex-shrink-0`} />
                         {b}
                       </li>
                     ))}
@@ -121,10 +129,10 @@ export default function IndustriesSection() {
 
                   <a
                     href="#contact"
-                    className={`inline-flex items-center gap-2 text-sm font-semibold bg-gradient-to-r ${ind.color} bg-clip-text text-transparent hover:opacity-80 transition-opacity`}
+                    className={`inline-flex items-center gap-1.5 text-sm font-semibold ${ind.accent} hover:opacity-70 transition-opacity`}
                   >
                     Get started for {ind.title.split(" ")[0]}
-                    <ArrowRight size={14} className="text-white/60" />
+                    <ArrowRight size={14} />
                   </a>
                 </div>
               </div>

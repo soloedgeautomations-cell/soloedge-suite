@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { useLang, LANGUAGES, Language } from "@/contexts/LanguageContext";
 import { trpc } from "@/lib/trpc";
-import { Mic, MicOff, ArrowLeftRight, Radio, Users, Volume2 } from "lucide-react";
+import { ArrowLeftRight, Radio, Users, Volume2, Mic, MicOff } from "lucide-react";
 
 type SessionMode = "one-on-one" | "broadcast";
 
@@ -49,23 +49,23 @@ export default function InterpreterDesk() {
   return (
     <div className="max-w-3xl mx-auto p-4 space-y-4">
       {/* Header */}
-      <div className="glass rounded-2xl p-5">
+      <div className="bg-white rounded-2xl p-5 border border-gray-200 shadow-sm">
         <div className="flex items-start justify-between mb-4">
           <div>
-            <h2 className="font-display text-xl font-bold text-white">{t.interpreter.title}</h2>
-            <p className="text-sm text-white/45 mt-0.5">{t.interpreter.subtitle}</p>
+            <h2 className="font-display text-xl font-bold text-gray-900">{t.interpreter.title}</h2>
+            <p className="text-sm text-gray-500 mt-0.5">{t.interpreter.subtitle}</p>
           </div>
           {/* Mode toggle */}
-          <div className="flex items-center gap-1 p-0.5 rounded-lg bg-white/5 border border-white/10">
+          <div className="flex items-center gap-1 p-0.5 rounded-lg bg-gray-100 border border-gray-200">
             <button
               onClick={() => setSessionMode("one-on-one")}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${sessionMode === "one-on-one" ? "bg-cyan-600 text-white" : "text-white/50 hover:text-white"}`}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${sessionMode === "one-on-one" ? "bg-cyan-600 text-white shadow-sm" : "text-gray-500 hover:text-gray-800"}`}
             >
               <Users size={12} /> {t.interpreter.oneOnOne}
             </button>
             <button
               onClick={() => setSessionMode("broadcast")}
-              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${sessionMode === "broadcast" ? "bg-orange-600 text-white" : "text-white/50 hover:text-white"}`}
+              className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md text-xs font-semibold transition-all ${sessionMode === "broadcast" ? "bg-orange-500 text-white shadow-sm" : "text-gray-500 hover:text-gray-800"}`}
             >
               <Radio size={12} /> {t.interpreter.broadcast}
             </button>
@@ -75,38 +75,34 @@ export default function InterpreterDesk() {
         {/* Language selector row */}
         <div className="flex items-center gap-3">
           <div className="flex-1">
-            <label className="block text-xs text-white/40 mb-1">{t.interpreter.langA}</label>
+            <label className="block text-xs text-gray-500 mb-1">{t.interpreter.langA}</label>
             <select
               value={langA}
               onChange={e => setLangA(e.target.value as Language)}
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-500/40 appearance-none"
+              className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 appearance-none"
             >
               {LANGUAGES.map(l => (
-                <option key={l.code} value={l.code} className="bg-[oklch(0.13_0.015_240)]">
-                  {l.flag} {l.native}
-                </option>
+                <option key={l.code} value={l.code}>{l.flag} {l.native}</option>
               ))}
             </select>
           </div>
 
           <button
             onClick={swapLanguages}
-            className="mt-5 p-2.5 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 text-white/60 hover:text-white transition-all"
+            className="mt-5 p-2.5 rounded-xl bg-gray-100 border border-gray-200 hover:bg-cyan-50 hover:border-cyan-300 text-gray-500 hover:text-cyan-700 transition-all"
           >
             <ArrowLeftRight size={16} />
           </button>
 
           <div className="flex-1">
-            <label className="block text-xs text-white/40 mb-1">{t.interpreter.langB}</label>
+            <label className="block text-xs text-gray-500 mb-1">{t.interpreter.langB}</label>
             <select
               value={langB}
               onChange={e => setLangB(e.target.value as Language)}
-              className="w-full px-3 py-2 rounded-xl bg-white/5 border border-white/10 text-white text-sm focus:outline-none focus:border-cyan-500/40 appearance-none"
+              className="w-full px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 appearance-none"
             >
               {LANGUAGES.map(l => (
-                <option key={l.code} value={l.code} className="bg-[oklch(0.13_0.015_240)]">
-                  {l.flag} {l.native}
-                </option>
+                <option key={l.code} value={l.code}>{l.flag} {l.native}</option>
               ))}
             </select>
           </div>
@@ -116,32 +112,32 @@ export default function InterpreterDesk() {
       {/* Translation log */}
       <div
         ref={logRef}
-        className="glass rounded-2xl p-4 h-64 overflow-y-auto space-y-3"
+        className="bg-white rounded-2xl p-4 h-64 overflow-y-auto space-y-3 border border-gray-200 shadow-sm"
       >
         {translations.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center">
-            <div className="w-12 h-12 rounded-full bg-cyan-600/15 border border-cyan-500/20 flex items-center justify-center mb-3">
-              <Volume2 size={20} className="text-cyan-400" />
+            <div className="w-12 h-12 rounded-full bg-cyan-50 border border-cyan-200 flex items-center justify-center mb-3">
+              <Volume2 size={20} className="text-cyan-600" />
             </div>
-            <p className="text-sm text-white/35">Type or speak to start translating</p>
-            <p className="text-xs text-white/20 mt-1">Supports noisy environments — type clearly for best results</p>
+            <p className="text-sm text-gray-400">Type or speak to start translating</p>
+            <p className="text-xs text-gray-300 mt-1">Supports noisy environments — type clearly for best results</p>
           </div>
         ) : (
           translations.map((entry, idx) => (
             <div key={idx} className="space-y-1.5">
               {/* Original */}
               <div className="flex items-start gap-2">
-                <span className="text-xs font-medium text-white/40 mt-0.5 flex-shrink-0 w-6">{langFlag(entry.fromLang)}</span>
-                <div className="flex-1 px-3 py-2 rounded-xl bg-white/5 border border-white/8">
-                  <p className="text-sm text-white/80">{entry.from}</p>
+                <span className="text-xs font-medium text-gray-400 mt-0.5 flex-shrink-0 w-6">{langFlag(entry.fromLang)}</span>
+                <div className="flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200">
+                  <p className="text-sm text-gray-700">{entry.from}</p>
                 </div>
-                <span className="text-xs text-white/25 mt-1.5 flex-shrink-0">{entry.time}</span>
+                <span className="text-xs text-gray-300 mt-1.5 flex-shrink-0">{entry.time}</span>
               </div>
               {/* Translation */}
               <div className="flex items-start gap-2">
-                <span className="text-xs font-medium text-cyan-400/70 mt-0.5 flex-shrink-0 w-6">{langFlag(entry.toLang)}</span>
-                <div className="flex-1 px-3 py-2 rounded-xl bg-cyan-600/10 border border-cyan-500/20">
-                  <p className="text-sm text-cyan-100">{entry.to}</p>
+                <span className="text-xs font-medium text-cyan-600 mt-0.5 flex-shrink-0 w-6">{langFlag(entry.toLang)}</span>
+                <div className="flex-1 px-3 py-2 rounded-xl bg-cyan-50 border border-cyan-200">
+                  <p className="text-sm text-cyan-800">{entry.to}</p>
                 </div>
               </div>
             </div>
@@ -151,28 +147,28 @@ export default function InterpreterDesk() {
           <div className="flex items-center gap-2 px-3 py-2">
             <div className="flex gap-1">
               {[0, 1, 2].map(i => (
-                <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400/50 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
+                <div key={i} className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce" style={{ animationDelay: `${i * 0.15}s` }} />
               ))}
             </div>
-            <span className="text-xs text-white/35">{t.interpreter.translating}</span>
+            <span className="text-xs text-gray-400">{t.interpreter.translating}</span>
           </div>
         )}
       </div>
 
       {/* Input area */}
-      <div className="glass rounded-2xl p-4 space-y-3">
+      <div className="bg-white rounded-2xl p-4 border border-gray-200 shadow-sm space-y-3">
         {/* Side selector */}
         <div className="flex items-center gap-2">
-          <span className="text-xs text-white/40">Speaking as:</span>
+          <span className="text-xs text-gray-500">Speaking as:</span>
           <button
             onClick={() => setActiveSide("A")}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${activeSide === "A" ? "bg-blue-600 text-white" : "bg-white/5 text-white/50 hover:text-white"}`}
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${activeSide === "A" ? "bg-blue-600 text-white shadow-sm" : "bg-gray-100 border border-gray-200 text-gray-600 hover:text-gray-900"}`}
           >
             {langFlag(langA)} {langLabel(langA)}
           </button>
           <button
             onClick={() => setActiveSide("B")}
-            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${activeSide === "B" ? "bg-cyan-600 text-white" : "bg-white/5 text-white/50 hover:text-white"}`}
+            className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all ${activeSide === "B" ? "bg-cyan-600 text-white shadow-sm" : "bg-gray-100 border border-gray-200 text-gray-600 hover:text-gray-900"}`}
           >
             {langFlag(langB)} {langLabel(langB)}
           </button>
@@ -185,31 +181,28 @@ export default function InterpreterDesk() {
             onChange={e => setInputText(e.target.value)}
             onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleTranslate(); } }}
             placeholder={`Type in ${langLabel(activeSide === "A" ? langA : langB)}...`}
-            className="flex-1 px-3.5 py-2.5 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/25 text-sm focus:outline-none focus:border-cyan-500/40 resize-none transition-all"
+            className="flex-1 px-3.5 py-2.5 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-100 resize-none transition-all"
           />
           <div className="flex flex-col gap-2">
             <button
               onClick={handleTranslate}
               disabled={!inputText.trim() || translate.isPending}
-              className="flex-1 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-500 disabled:opacity-40 text-white text-xs font-semibold transition-all shadow-lg shadow-cyan-900/30"
+              className="flex-1 px-4 rounded-xl bg-cyan-600 hover:bg-cyan-700 disabled:opacity-40 text-white text-xs font-semibold transition-all shadow-md shadow-cyan-200"
             >
               Translate
             </button>
             <button
               onClick={() => setIsListening(!isListening)}
-              className={`flex-1 px-3 rounded-xl border text-xs font-semibold transition-all ${isListening ? "bg-red-600/20 border-red-500/30 text-red-400" : "bg-white/5 border-white/10 text-white/50 hover:text-white"}`}
+              className={`flex-1 px-3 rounded-xl border text-xs font-semibold transition-all flex items-center justify-center gap-1 ${isListening ? "bg-red-50 border-red-300 text-red-600" : "bg-gray-50 border-gray-200 text-gray-500 hover:text-gray-800"}`}
             >
-              {isListening ? <MicOff size={14} className="mx-auto" /> : <Mic size={14} className="mx-auto" />}
+              {isListening ? <MicOff size={12} /> : <Mic size={12} />}
+              {isListening ? "Stop" : "Mic"}
             </button>
           </div>
         </div>
-
-        {sessionMode === "broadcast" && (
-          <div className="flex items-center gap-2 p-2.5 rounded-xl bg-orange-600/10 border border-orange-500/20">
-            <Radio size={14} className="text-orange-400 flex-shrink-0" />
-            <p className="text-xs text-orange-300/80">Broadcast mode: translation will be sent to all connected devices on this session</p>
-          </div>
-        )}
+        <p className="text-xs text-gray-400 text-center">
+          {sessionMode === "broadcast" ? "Broadcast mode — all participants see translations" : "1-on-1 mode — private session"}
+        </p>
       </div>
     </div>
   );
