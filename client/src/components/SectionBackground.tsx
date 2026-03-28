@@ -1,26 +1,27 @@
 import { useState, useEffect } from "react";
 import { GALLERY } from "../../../shared/assets";
 
-// Balanced pool — round-robin across all 6 industries
-// Gym: now 3 women-inclusive photos + 2 male (balanced)
-// Massage: massageTherapist (dark plants) and spaTherapy (candle) removed per user request
+// Section background pool — round-robin across all 6 industries
+// Removed: gymBodybuilder, massageHotstone, corporateMeeting
+// Added: Caucasian + Hispanic female gym photos
+// Barber + restaurant: section background only (NOT hero rotation)
 const BALANCED_PHOTOS = [
   GALLERY.construction[0], // construction workers
-  GALLERY.gym[0],          // woman with dumbbells
+  GALLERY.gym[0],          // Black woman with dumbbells
   GALLERY.massage[0],      // massage table
   GALLERY.corporate[0],    // corporate office
   GALLERY.barber[0],       // barber cutting
   GALLERY.restaurant[0],   // restaurant POS
   GALLERY.construction[1], // construction site
   GALLERY.gym[1],          // woman with barbell
-  GALLERY.massage[1],      // massage hotstone
-  GALLERY.corporate[1],    // corporate meeting
+  GALLERY.massage[1],      // couples massage
+  GALLERY.corporate[1],    // corporate team
   GALLERY.barber[1],       // barber shop
   GALLERY.restaurant[1],   // restaurant service
   GALLERY.construction[2], // construction crew
   GALLERY.gym[2],          // mixed group class
-  GALLERY.massage[2],      // couples massage
-  GALLERY.corporate[2],    // corporate team
+  GALLERY.gym[4],          // Caucasian woman
+  GALLERY.gym[5],          // Hispanic woman
 ];
 
 interface SectionBackgroundProps {

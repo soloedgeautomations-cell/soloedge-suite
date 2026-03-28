@@ -23,6 +23,8 @@ export const CDN = {
   gymWomanDumbbells: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-woman-dumbbells_71c6e2e5.jpg",
   gymWomanBarbell: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-woman-barbell_2d91fde8.jpg",
   gymGroupClass: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-group-class_9e70822c.jpg",
+  gymCaucasianWoman: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-caucasian-woman_1987b086.jpg",
+  gymHispanicWoman: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/gym-hispanic-woman_9ab701ce.jpg",
 
   // ── Massage & Spa ─────────────────────────────────────────────────────────
   massageTable: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/MessageTable_976c934b.jpg",
@@ -58,22 +60,23 @@ export const GALLERY = {
     CDN.constructionTeam,
   ],
   gym: [
-    CDN.gymWomanDumbbells,  // woman with dumbbells — focused, powerful
-    CDN.gymWomanBarbell,    // woman squatting with barbell — strong
-    CDN.gymGroupClass,      // mixed group fitness class — diverse
-    CDN.gymTrainer,         // trainer (kept — shows coaching context)
-    CDN.gymBodybuilder,     // male bodybuilder (1 of 5 — balanced)
+    CDN.gymWomanDumbbells,   // Black woman with dumbbells
+    CDN.gymWomanBarbell,     // woman squatting with barbell
+    CDN.gymGroupClass,       // mixed group fitness class
+    CDN.gymTrainer,          // trainer
+    CDN.gymCaucasianWoman,   // Caucasian woman with dumbbells
+    CDN.gymHispanicWoman,    // Hispanic woman with dumbbells in gym
+    // gymBodybuilder removed per user request
   ],
   massage: [
     CDN.massageTable,      // clean massage table setup
-    CDN.massageHotstone,   // hot stone treatment
     CDN.massageCouple,     // couples massage
-    // massageTherapist (dark plants) and spaTherapy (candle still life) removed per user request
+    // massageHotstone, massageTherapist, spaTherapy all removed per user request
   ],
   corporate: [
     CDN.corporateOffice,
-    CDN.corporateMeeting,
     CDN.corporateTeam,
+    // corporateMeeting (all-Black men at table) removed per user request
   ],
   barber: [
     CDN.barberCutting,

@@ -191,3 +191,12 @@
 - [x] Remove spaTherapy (candle still life) from gallery and pool
 - [x] Find and upload gender-balanced gym photos (women included)
 - [x] Replace male-heavy gym photos in assets.ts and SectionBackground pool
+
+## Photo Diversity Fix (user request)
+- [x] Remove gymBodybuilder from gallery and all rotation pools
+- [x] Remove massageHotstone from gallery and all rotation pools
+- [x] Remove corporateMeeting from gallery and all rotation pools
+- [x] Find and upload Hispanic female gym photo
+- [x] Find and upload Caucasian female gym photo
+- [x] Add 2 new gym photos to assets.ts and rotation pools
+- [x] Confirm barber/restaurant photos are NOT in hero rotation (section background only)
