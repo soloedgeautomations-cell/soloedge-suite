@@ -330,3 +330,7 @@
 - [x] Nav bar phone number → (737) 259-5692 (demo line)
 - [x] Contact section → (512) 702-9685 (team line)
 - [x] Save checkpoint and publish
+
+## Riley Voice Personality Tuning v1.3 (2026-03-28)
+- [x] Update Realtime session: faster speed, warmer/cooler tone, tighter greeting, relaxed confident energy
+- [x] Save checkpoint and publish

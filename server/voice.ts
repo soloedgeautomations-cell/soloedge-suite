@@ -96,7 +96,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
             type: "response.create",
             response: {
               instructions:
-                'Speak naturally in the same calm receptionist voice. Say exactly: "Take your time. Would you like English, Spanish, or Chinese?" Then stop and wait for the caller to answer.',
+                'Quick and warm. Say exactly: "Still there? English, Spanish, or Chinese?" Then stop and wait.',
             },
           },
           "language follow-up"
@@ -145,7 +145,8 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           },
           voice: "shimmer",
           modalities: ["text", "audio"],
-          temperature: 0.8,
+          temperature: 0.9,
+          speed: 1.15,
         },
       },
       "session.update"
@@ -160,7 +161,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         type: "response.create",
         response: {
           instructions:
-            'Speak naturally in a calm, warm, professional receptionist voice. Say exactly: "Thanks for calling SoloEdge AI Automations. Would you like English, Spanish, or Chinese?" Then stop and wait for the caller to answer. Do not continue speaking. Do not explain the demo yet. Do not sound like a recording.',
+            'Speak at a natural, upbeat pace — warm, confident, and relaxed. Like a cool friend who runs a tight operation. Say exactly: "Hey, SoloEdge — this is Riley. English, Spanish, or Chinese?" Short. Fast. Friendly. Then stop and wait. Do not add anything else. Do not slow down. Do not sound like a recording or a phone tree.',
         },
       },
       "initial greeting"
