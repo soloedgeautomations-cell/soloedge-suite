@@ -311,3 +311,7 @@
 - [x] Update riley.ts: Field Starter $149→$199, Field Pro $249→$299, Field Team $349→$399
 - [x] Update website pricing component: same setup fee changes
 - [x] Save checkpoint and publish
+
+## Pricing Update — Field Team Anchor Tier (2026-03-28)
+- [x] Update Field Team: setup $399→$599, monthly $149→$349 in PricingSection.tsx and riley.ts
+- [x] Save checkpoint and publish
