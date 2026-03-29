@@ -353,3 +353,15 @@
 - [x] Assess Google Calendar integration — what's needed, what's already in place
 - [ ] Build Google Calendar appointment booking (by Monday)
 - [ ] Save checkpoint and publish
+
+## Telegram Report — Real Data Fix (2026-03-29)
+- [x] Diagnose why transcript is empty or LLM is hallucinating fake caller data
+- [x] Fix transcript capture to accumulate real caller speech lines
+- [x] Fix LLM prompt to strictly use only what's in the transcript, never invent data
+- [x] Add raw transcript to Telegram report so Murphy can see exactly what was said
+- [ ] Save checkpoint and publish
+
+## Live Translation Restore (2026-03-29)
+- [x] Read old server.js to find how live meeting translation worked
+- [x] Restore translation mode trigger and behavior in voice.ts and riley.ts
+- [ ] Save checkpoint and publish

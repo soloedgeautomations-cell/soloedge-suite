@@ -59,6 +59,7 @@ interface LeadSummary {
   languageDetected: string;
   englishSummary: string;
   spanishSummary: string;
+  rawTranscript: string;
 }
 
 function safeText(value: unknown, fallback = "Unknown"): string {
@@ -76,7 +77,7 @@ async function buildLeadSummary(
     .map((line, i) => `${i + 1}. ${line}`)
     .join("\n");
 
-  const systemPrompt = `You are extracting a concise call summary from a phone call to SoloEdge AI Automations.
+  const systemPrompt = `You are extracting a call summary from a real phone call transcript to SoloEdge AI Automations.
 
 Return only one valid JSON object with this exact schema:
 {
@@ -90,16 +91,20 @@ Return only one valid JSON object with this exact schema:
   "spanish_summary": string
 }
 
-Rules:
-- Always return valid JSON only. No markdown.
-- If a field is unknown, use "Unknown".
+CRITICAL RULES — FOLLOW EXACTLY:
+- NEVER invent, fabricate, or guess any information not explicitly stated in the transcript.
+- NEVER use example names like "John Smith", "Ashley", or placeholder numbers like "555-1234".
+- If the caller did not say their name, use "Unknown" for name-related fields.
+- If the caller did not give a phone number in the conversation, use the Twilio caller number provided, or "Unknown".
+- If the caller did not state a location, use "Unknown" — never guess a city.
+- Only extract what was ACTUALLY SAID in the transcript. Nothing else.
+- If the transcript is empty or very short, say so honestly in the description.
 - "language_detected" must be "English", "Spanish", "Chinese", or "Unknown".
-- The call may be a live product demo, a business inquiry, or a real work request.
-- Do not force every call into a contractor job intake if it was clearly a demo.
 - "job_type" may be: demo request, communication system inquiry, scheduling inquiry, email support inquiry, roofing, plumbing, HVAC, electrical, remodeling, general construction, quote request, or other.
-- "suggested_action" should be practical: schedule demo, return call, follow up on pricing, or gather more details.
-- "english_summary" must be concise and professional.
-- "spanish_summary" must be the Spanish equivalent of the summary.`;
+- "suggested_action" should be practical based only on what was actually discussed.
+- "english_summary" must summarize only what actually happened in the call.
+- "spanish_summary" must be the Spanish equivalent of the english_summary.
+- Always return valid JSON only. No markdown.`;
 
   const userContent = `Caller phone from Twilio: ${safeText(callerNumber)}
 Detected language: ${safeText(language)}
@@ -149,6 +154,7 @@ ${transcriptText || "No transcript captured."}`;
       languageDetected: safeText(parsed.language_detected, safeText(language)),
       englishSummary: safeText(parsed.english_summary),
       spanishSummary: safeText(parsed.spanish_summary),
+      rawTranscript: transcriptText || "No transcript captured.",
     };
   } catch (err) {
     console.log("[voice] Lead summary generation failed", err);
@@ -165,11 +171,16 @@ ${transcriptText || "No transcript captured."}`;
       languageDetected: safeText(language),
       englishSummary: fallback,
       spanishSummary: "La persona llamó al demo de recepcionista con IA de SoloEdge. Se necesita seguimiento.",
+      rawTranscript: transcriptLines.join("\n") || "No transcript captured.",
     };
   }
 }
 
 function formatTelegramReport(lead: LeadSummary, callerNumber: string): string {
+  const rawSection = lead.rawTranscript && lead.rawTranscript !== "No transcript captured."
+    ? `\n\n<b>📝 Raw Transcript:</b>\n${lead.rawTranscript.slice(0, 2000)}`
+    : "\n\n<i>No transcript captured — caller may have hung up quickly.</i>";
+
   return [
     "📞 <b>NEW CALL SUMMARY</b>",
     "Source: SoloEdge AI Receptionist",
@@ -190,6 +201,7 @@ function formatTelegramReport(lead: LeadSummary, callerNumber: string): string {
     "",
     "<b>Spanish Summary:</b>",
     lead.spanishSummary,
+    rawSection,
   ].join("\n");
 }
 
@@ -393,12 +405,12 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         }
       }
 
-      // Accumulate caller transcript lines
+      // Accumulate caller transcript lines (what the caller said)
       if (
         msg.type === "conversation.item.input_audio_transcription.completed" &&
         msg.transcript
       ) {
-        transcriptLines.push(msg.transcript);
+        transcriptLines.push(`Caller: ${msg.transcript}`);
         log("Transcript line captured", { line: msg.transcript });
 
         const t = msg.transcript.toLowerCase();
@@ -425,7 +437,21 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         sendTwilioAudio(msg.delta);
       }
 
-      if (msg.type === "response.done") {
+      // Capture Riley's responses too so LLM has full conversation context
+      if (msg.type === "response.done" && msg.response?.output) {
+        responseInProgress = false;
+        for (const item of msg.response.output) {
+          if (item.type === "message" && item.role === "assistant") {
+            for (const part of (item.content || [])) {
+              if (part.type === "text" && part.text) {
+                transcriptLines.push(`Riley: ${part.text}`);
+              } else if (part.type === "audio" && part.transcript) {
+                transcriptLines.push(`Riley: ${part.transcript}`);
+              }
+            }
+          }
+        }
+      } else if (msg.type === "response.done") {
         responseInProgress = false;
       }
 
