@@ -315,3 +315,10 @@
 ## Pricing Update — Field Team Anchor Tier (2026-03-28)
 - [x] Update Field Team: setup $399→$599, monthly $149→$349 in PricingSection.tsx and riley.ts
 - [x] Save checkpoint and publish
+
+## Photo Diversity — Balance Racial Representation (2026-03-28)
+- [x] Audit current photo pool in shared/assets.ts — identify over-represented photos
+- [x] Find and download diverse replacement photos (Hispanic, white, Asian, mixed crews)
+- [x] Upload new photos to CDN and update shared/assets.ts
+- [x] Swap into hero and section background rotation pools
+- [x] Save checkpoint and publish

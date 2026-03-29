@@ -13,6 +13,8 @@ export const CDN = {
   constructionSite: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-site_5469ebf2.jpg",
   constructionCrew: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-sharp-crew_0a5d3c42.jpg", // replaced blurry photo
   constructionSafety: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-sharp-safety_8ba30b9c.jpg",
+  constructionDiverseCrew: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-diverse-crew_da961494.jpg", // mixed race crew with blueprints
+  constructionMixedCrew: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-mixed-crew_cfbe8b78.jpg", // diverse crew on site
 
   // ── Gym & Fitness ─────────────────────────────────────────────────────────
   gymBarbell: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/low-angle-view-unrecognizable-muscular-build-man-preparing-lifting-barbell-health-club_637285-2497_0385a049.avif",
@@ -45,6 +47,9 @@ export const CDN = {
   corporateOffice: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-office_6dd79fa1.jpg",
   corporateMeeting: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-meeting_ffdfd66c.jpg",
   corporateTeam: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-team_1cfd1cde.jpg",
+  corporateWhiteOwner: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-white-owner_e814b8a0.jpg", // white male solo business owner
+  corporateDiverseTeam: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-diverse-team_a8851179.jpg", // fully diverse mixed team
+  corporateAsianWoman: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/corporate-asian-woman_524a6d28.jpg", // Asian woman professional
 
   // ── Hero ──────────────────────────────────────────────────────────────────
   heroBg: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/hero-bg_3b65ec13.png",
@@ -55,9 +60,9 @@ export const GALLERY = {
   construction: [
     CDN.constructionWorkers,
     CDN.constructionSite,
-    CDN.constructionCrew,
+    CDN.constructionDiverseCrew,  // mixed race crew with blueprints (new)
     CDN.constructionSafety,
-    CDN.constructionTeam,
+    CDN.constructionMixedCrew,    // diverse crew on site (new)
   ],
   gym: [
     CDN.gymWomanDumbbells,   // Black woman with dumbbells
@@ -74,9 +79,12 @@ export const GALLERY = {
     // massageHotstone, massageTherapist, spaTherapy all removed per user request
   ],
   corporate: [
+    CDN.corporateWhiteOwner,    // white male solo business owner (new)
+    CDN.corporateDiverseTeam,   // fully diverse mixed team (new)
+    CDN.corporateAsianWoman,    // Asian woman professional (new)
     CDN.corporateOffice,
-    CDN.corporateTeam,
     // corporateMeeting (all-Black men at table) removed per user request
+    // corporateTeam replaced by new diverse photos
   ],
   barber: [
     CDN.barberCutting,
