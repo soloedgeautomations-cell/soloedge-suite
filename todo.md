@@ -300,3 +300,9 @@
 - [x] Register WebSocket upgrade handler in server/_core/index.ts
 - [x] Update Twilio webhook to /api/incoming-call
 - [x] Run tests and save checkpoint
+
+## Riley Voice Tuning + Agent Tracking (2026-03-28)
+- [x] Update RILEY_VOICE_PROMPT: faster speaking pace, warmer/relaxed/cool tone, tighter greeting intro
+- [x] Create AGENTS.md — agent identity tracking file with version history
+- [x] Create riley-v1-baseline.txt — plain text backup of Riley's full prompt
+- [x] Save checkpoint and publish
