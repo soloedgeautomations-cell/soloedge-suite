@@ -2,7 +2,7 @@
 const sid = process.env.TWILIO_ACCOUNT_SID;
 const token = process.env.TWILIO_AUTH_TOKEN;
 const phoneSid = "PN911a1085d2ff9ff26c9c1a5e8305426d";
-const newWebhook = "https://soloedgesui-fivshgf3.manus.space/api/voice";
+const newWebhook = "https://soloedgesui-fivshgf3.manus.space/api/incoming-call";
 
 if (!sid || !token) {
   console.error("Missing TWILIO_ACCOUNT_SID or TWILIO_AUTH_TOKEN in .env");

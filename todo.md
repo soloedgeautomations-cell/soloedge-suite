@@ -293,3 +293,10 @@
 - [x] Update server/routers.ts to import RILEY_RECEPTIONIST_PROMPT from shared file
 - [x] Run tests and verify 53/53 pass
 - [x] Save checkpoint and publish
+
+## OpenAI Realtime Voice Rebuild (URGENT — replaces broken TTS handler)
+- [x] Install ws and @types/ws packages
+- [x] Rewrite voice.ts with OpenAI Realtime WebSocket handler (matching original server.js architecture)
+- [x] Register WebSocket upgrade handler in server/_core/index.ts
+- [x] Update Twilio webhook to /api/incoming-call
+- [x] Run tests and save checkpoint
