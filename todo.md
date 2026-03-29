@@ -286,3 +286,10 @@
 - [x] Replace the stripped-down voice prompt in server/voice.ts with the full RILEY_RECEPTIONIST_PROMPT from routers.ts
 - [x] Add voice-specific addendum (keep responses short/spoken, no URLs) without removing any personality or talking points
 - [x] Save checkpoint and publish
+
+## Riley Shared Prompt — Single Source of Truth (user request)
+- [x] Create server/prompts/riley.ts with full original Riley personality from old server.js
+- [x] Update server/voice.ts to import RILEY_VOICE_PROMPT from shared file
+- [x] Update server/routers.ts to import RILEY_RECEPTIONIST_PROMPT from shared file
+- [x] Run tests and verify 53/53 pass
+- [x] Save checkpoint and publish
