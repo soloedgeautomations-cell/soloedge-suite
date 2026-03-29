@@ -334,3 +334,10 @@
 ## Riley Voice Personality Tuning v1.3 (2026-03-28)
 - [x] Update Realtime session: faster speed, warmer/cooler tone, tighter greeting, relaxed confident energy
 - [x] Save checkpoint and publish
+
+## Post-Call Telegram Summary (2026-03-28)
+- [x] Check old server.js for Telegram summary logic
+- [x] Accumulate full call transcript in voice.ts during session
+- [x] On call end, invoke LLM to summarize transcript into lead report
+- [x] Send report to Telegram via TELEGRAM_BOT_TOKEN + TELEGRAM_ALERT_CHAT_ID
+- [x] Save checkpoint and publish
