@@ -341,3 +341,15 @@
 - [x] On call end, invoke LLM to summarize transcript into lead report
 - [x] Send report to Telegram via TELEGRAM_BOT_TOKEN + TELEGRAM_ALERT_CHAT_ID
 - [x] Save checkpoint and publish
+
+## Telegram Connection Fix (2026-03-28)
+- [ ] Test TELEGRAM_BOT_TOKEN and TELEGRAM_ALERT_CHAT_ID credentials live
+- [ ] Diagnose and fix connection failure
+- [ ] Verify test message reaches Telegram
+- [ ] Save checkpoint and publish
+
+## Riley Greeting Fix + Google Calendar (2026-03-28)
+- [x] Fix Riley's voice greeting: warm, Texan, cool, mentions SoloEdge, informative but short
+- [x] Assess Google Calendar integration — what's needed, what's already in place
+- [ ] Build Google Calendar appointment booking (by Monday)
+- [ ] Save checkpoint and publish
