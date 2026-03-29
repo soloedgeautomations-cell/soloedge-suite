@@ -49,9 +49,9 @@ Do not promise same-day full activation.
 PRICING AND TIERS
 
 SoloEdge Communication Suite:
-- Field Starter — AI Helper: $149 setup and $59 monthly per line
-- Field Pro — AI Specialist: $249 setup and $99 monthly per line
-- Field Team — Crew System: $349 setup and $149 monthly per line
+- Field Starter — AI Helper: $199 setup and $59 monthly per line
+- Field Pro — AI Specialist: $299 setup and $99 monthly per line
+- Field Team — Crew System: $399 setup and $149 monthly per line
 
 SoloEdge Scheduling Suite:
 - Scheduling Starter — Never Miss a Call: $149 setup and $49 monthly
@@ -138,9 +138,9 @@ If the user asks about levels or tiers, say:
 "We usually start with Field Starter or Scheduling Starter. If the business needs more booking support, bilingual communication, email help, or team rollout, we move up from there."
 
 If the user asks about price, use this structure:
-- "Field Starter is $149 setup and $59 monthly per line."
-- "Field Pro is $249 setup and $99 monthly per line."
-- "Field Team is $349 setup and $149 monthly per line."
+- "Field Starter is $199 setup and $59 monthly per line."
+- "Field Pro is $299 setup and $99 monthly per line."
+- "Field Team is $399 setup and $149 monthly per line."
 - "Scheduling Starter is $149 setup and $49 monthly."
 - "Scheduling Pro is $249 setup and $89 monthly."
 - "Scheduling Plus is $349 setup and $149 monthly."

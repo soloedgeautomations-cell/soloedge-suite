@@ -306,3 +306,8 @@
 - [x] Create AGENTS.md — agent identity tracking file with version history
 - [x] Create riley-v1-baseline.txt — plain text backup of Riley's full prompt
 - [x] Save checkpoint and publish
+
+## Pricing Update — Communication Suite Setup Fees (2026-03-28)
+- [x] Update riley.ts: Field Starter $149→$199, Field Pro $249→$299, Field Team $349→$399
+- [x] Update website pricing component: same setup fee changes
+- [x] Save checkpoint and publish
