@@ -49,7 +49,7 @@ export default function ContactSection() {
 
               {/* Phone — primary, prominent */}
               <a
-                href="tel:+17372595692"
+                href="tel:+15127029685"
                 className="flex items-center gap-4 mb-4 group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200 group-hover:bg-blue-700 transition-colors">
@@ -173,8 +173,8 @@ export default function ContactSection() {
 
                   <p className="text-center text-xs text-gray-400 pt-1">
                     Prefer to call? Reach us at{" "}
-                    <a href="tel:+17372595692" className="text-blue-600 font-medium hover:underline">
-                      (737) 259-5692
+                    <a href="tel:+15127029685" className="text-blue-600 font-medium hover:underline">
+                      (512) 702-9685
                     </a>
                   </p>
                 </form>

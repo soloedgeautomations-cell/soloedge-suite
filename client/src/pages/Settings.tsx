@@ -337,10 +337,10 @@ export default function Settings() {
                     <div className="font-bold text-lg mb-1">Upgrade to Field Pro</div>
                     <p className="text-blue-200 text-sm mb-4">Unlock Riley Ops Manager, Live Interpreter, and Construction Tools.</p>
                     <a
-                      href="tel:+17372595692"
+                      href="tel:+15127029685"
                       className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50 transition-all shadow-md"
                     >
-                      <Phone size={14} /> Call (737) 259-5692 to Upgrade
+                      <Phone size={14} /> Call (512) 702-9685 to Upgrade
                     </a>
                   </div>
                 ) : null}

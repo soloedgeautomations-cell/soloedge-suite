@@ -322,3 +322,11 @@
 - [x] Upload new photos to CDN and update shared/assets.ts
 - [x] Swap into hero and section background rotation pools
 - [x] Save checkpoint and publish
+
+## Phone Number & CTA Audit (2026-03-28)
+- [x] Grep all phone number references across entire codebase
+- [x] Fix all instances: demo line = (737) 259-5692, team/office = (512) 702-9685
+- [x] All pricing "Get Started" / "Call Us" CTAs → link to demo funnel (not generic call)
+- [x] Nav bar phone number → (737) 259-5692 (demo line)
+- [x] Contact section → (512) 702-9685 (team line)
+- [x] Save checkpoint and publish

@@ -57,6 +57,11 @@ export default function Footer() {
                   (737) 259-5692 — Demo / Book
                 </a>
               </li>
+              <li>
+                <a href="tel:+15127029685" className="text-sm text-gray-500 hover:text-blue-700 transition-colors font-medium">
+                  (512) 702-9685 — Team
+                </a>
+              </li>
               <li><a href="mailto:hello@soloedgeautomations.com" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">hello@soloedgeautomations.com</a></li>
               <li><a href="#pricing" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">Pricing</a></li>
               <li><a href="#industries" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">Industries</a></li>

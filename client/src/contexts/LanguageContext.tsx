@@ -106,8 +106,8 @@ const translations: Record<Language, Translations> = {
       name: "Your Name", phone: "Phone Number", email: "Email Address",
       businessType: "Business Type", message: "Tell us a bit about your business",
       submit: "Send Message", success: "Got it — the SoloEdge team will follow up within 24 hours.",
-      demoLabel: "Or call us directly",
-      demoNumber: "(737) 259-5692",
+      demoLabel: "Or call our team directly",
+      demoNumber: "(512) 702-9685",
     },
     footer: {
       tagline: "One person. Every edge covered.",
@@ -197,8 +197,8 @@ const translations: Record<Language, Translations> = {
       name: "Tu Nombre", phone: "Número de Teléfono", email: "Correo Electrónico",
       businessType: "Tipo de Negocio", message: "Cuéntanos un poco sobre tu negocio",
       submit: "Enviar Mensaje", success: "Recibido — el equipo de SoloEdge te contactará en 24 horas.",
-      demoLabel: "O llámanos directamente",
-      demoNumber: "(737) 259-5692",
+      demoLabel: "O llama a nuestro equipo",
+      demoNumber: "(512) 702-9685",
     },
     footer: {
       tagline: "Una persona. Cada ventaja cubierta.",
@@ -288,8 +288,8 @@ const translations: Record<Language, Translations> = {
       name: "您的姓名", phone: "电话号码", email: "电子邮件",
       businessType: "业务类型", message: "简单介绍一下您的业务",
       submit: "发送消息", success: "已收到——SoloEdge 团队将在 24 小时内联系您。",
-      demoLabel: "或直接致电",
-       demoNumber: "(737) 259-5692",
+      demoLabel: "或直接联系我们团队",
+      demoNumber: "(512) 702-9685",
     },
     footer: {
       tagline: "一人。每一个优势都覆盖到。",
