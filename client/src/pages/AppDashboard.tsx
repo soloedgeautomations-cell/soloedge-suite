@@ -11,6 +11,7 @@ import {
   Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
   User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
   AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity, Settings as SettingsIcon,
+  CreditCard,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
@@ -308,6 +309,7 @@ export default function AppDashboard() {
                 { icon: <Calendar size={16} />, label: "Calendar", sub: "Bookings", color: "green", action: () => window.location.href = "/app/bookings" },
                 { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
                 { icon: <Users size={16} />, label: "Contacts", sub: "Leads & CRM", color: "purple", action: () => window.location.href = "/app/contacts" },
+                { icon: <CreditCard size={16} />, label: "Billing", sub: "Plan & Invoices", color: "green", action: () => window.location.href = "/app/billing" },
               ].map(item => (
                 <button
                   key={item.label}

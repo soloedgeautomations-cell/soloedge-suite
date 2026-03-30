@@ -411,3 +411,41 @@
 - [ ] Add Connect Google Calendar section to Settings page
 - [ ] Write vitest tests for Google Calendar procedures
 - [ ] Save checkpoint and publish
+
+## Stripe Pricing & Customer Dashboard (user request)
+- [ ] Add stripeCustomerId and stripeSubscriptionId columns to users table, apply migration
+- [ ] Create server/stripe/products.ts with all 6 tier definitions (setup fee + monthly price IDs)
+- [ ] Create Stripe products and prices via API script for all 6 tiers in test mode
+- [ ] Build /get-started pricing page with all 6 tiers (setup fee + monthly displayed)
+- [ ] Add Stripe Checkout session tRPC procedure (setup fee + subscription in one session)
+- [ ] Post-checkout success page: activate account, show welcome message
+- [ ] Implement POST /api/stripe/webhook handler (checkout.session.completed, subscription events)
+- [ ] Store stripeCustomerId and stripeSubscriptionId on user record from webhook
+- [ ] Show subscription status badge in customer dashboard
+- [ ] Show current plan name and next billing date in dashboard
+- [ ] Add /billing page with payment history from Stripe API
+- [ ] Write vitest tests for Stripe checkout procedure and webhook handler
+- [ ] Test full flow with WetPaws test customer using card 4242 4242 4242 4242
+- [ ] Save checkpoint
+
+## Stripe Pricing & Customer Dashboard (user request)
+- [x] Store STRIPE_SECRET_KEY and VITE_STRIPE_PUBLISHABLE_KEY as secrets
+- [x] Run webdev_add_feature stripe
+- [x] Create Stripe products and prices for all 6 tiers via script (12 prices total)
+- [x] Create server/stripe/products.ts with all tier definitions and Price IDs
+- [x] Add stripeCustomerId, stripeSubscriptionId, stripePlanId, stripeSubscriptionStatus to users table
+- [x] Apply migration for Stripe columns
+- [x] Create server/stripe/router.ts: getTiers, createCheckout, getSubscription, getPaymentHistory
+- [x] Wire stripeRouter into appRouter
+- [x] Create /get-started pricing page with suite toggle (Communication / Scheduling)
+- [x] Each tier card shows setup fee + monthly price, features list, popular badge, Stripe Checkout CTA
+- [x] Create /app/checkout-success page with activation polling and next-steps
+- [x] Create /app/billing page with subscription status and payment history
+- [x] Add Billing to DashboardLayout sidebar nav
+- [x] Add Billing quick action to AppDashboard
+- [x] Create server/stripe/webhook.ts: checkout.session.completed, subscription.updated/deleted, payment_failed
+- [x] Register POST /api/stripe/webhook with raw body parser before express.json()
+- [x] Webhook stores stripeCustomerId, subscriptionId, planId, status on user after checkout
+- [x] Webhook sends Telegram notification on new customer
+- [x] Add 9 Stripe tRPC tests to soloedge.test.ts
+- [x] All 70 tests passing

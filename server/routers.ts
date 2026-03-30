@@ -9,6 +9,7 @@ import { RILEY_RECEPTIONIST_PROMPT, RILEY_OPS_MANAGER_PROMPT } from "./prompts/r
 import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients, subscriptions } from "../drizzle/schema";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, isConnected } from "./googleCalendar";
+import { stripeRouter } from "./stripe/router";
 
 // ─── Riley System Prompts (imported from shared source of truth) ─────────────
 // Edit server/prompts/riley.ts to update Riley's personality, pricing, or behavior.
@@ -758,6 +759,9 @@ export const appRouter = router({
         return { success: true };
       }),
   }),
+
+  // ─── Stripe ──────────────────────────────────────────────────────────────
+  stripe: stripeRouter,
 
   // ─── Google Calendar ──────────────────────────────────────────────────────
   googleCalendar: router({

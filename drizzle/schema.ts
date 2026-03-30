@@ -19,6 +19,10 @@ export const users = mysqlTable("users", {
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
   lastSignedIn: timestamp("lastSignedIn").defaultNow().notNull(),
+  stripeCustomerId: varchar("stripeCustomerId", { length: 255 }),
+  stripeSubscriptionId: varchar("stripeSubscriptionId", { length: 255 }),
+  stripePlanId: varchar("stripePlanId", { length: 64 }),
+  stripeSubscriptionStatus: varchar("stripeSubscriptionStatus", { length: 32 }),
 });
 
 export const leads = mysqlTable("leads", {

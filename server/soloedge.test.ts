@@ -376,3 +376,85 @@ describe("googleCalendar", () => {
     expect(result).toHaveProperty("success", true);
   });
 });
+
+// ─── Stripe ───────────────────────────────────────────────────────────────────
+
+describe("stripe", () => {
+  it("getTiers returns all 6 tiers for public callers", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const tiers = await caller.stripe.getTiers();
+    expect(Array.isArray(tiers)).toBe(true);
+    expect(tiers).toHaveLength(6);
+    const ids = tiers.map((t) => t.id);
+    expect(ids).toContain("field-starter");
+    expect(ids).toContain("field-pro");
+    expect(ids).toContain("field-team");
+    expect(ids).toContain("sched-starter");
+    expect(ids).toContain("sched-pro");
+    expect(ids).toContain("sched-plus");
+  });
+
+  it("getTiers includes required fields on each tier", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const tiers = await caller.stripe.getTiers();
+    for (const tier of tiers) {
+      expect(tier).toHaveProperty("id");
+      expect(tier).toHaveProperty("name");
+      expect(tier).toHaveProperty("setupAmount");
+      expect(tier).toHaveProperty("monthlyAmount");
+      expect(tier).toHaveProperty("features");
+      expect(Array.isArray(tier.features)).toBe(true);
+      expect(tier.features.length).toBeGreaterThan(0);
+      expect(tier.setupAmount).toBeGreaterThan(0);
+      expect(tier.monthlyAmount).toBeGreaterThan(0);
+    }
+  });
+
+  it("getTiers has correct suites", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    const tiers = await caller.stripe.getTiers();
+    const commTiers = tiers.filter((t) => t.suite === "communication");
+    const schedTiers = tiers.filter((t) => t.suite === "scheduling");
+    expect(commTiers).toHaveLength(3);
+    expect(schedTiers).toHaveLength(3);
+  });
+
+  it("createCheckout requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(
+      caller.stripe.createCheckout({ tierId: "field-starter", origin: "https://example.com" })
+    ).rejects.toThrow();
+  });
+
+  it("createCheckout rejects unknown tier", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    await expect(
+      caller.stripe.createCheckout({ tierId: "unknown-tier", origin: "https://example.com" })
+    ).rejects.toThrow();
+  });
+
+  it("getSubscription requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.stripe.getSubscription()).rejects.toThrow();
+  });
+
+  it("getSubscription returns null status when DB unavailable", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.stripe.getSubscription();
+    expect(result).toHaveProperty("status");
+    expect(result).toHaveProperty("planId");
+    expect(result).toHaveProperty("planName");
+    expect(result).toHaveProperty("subscriptionId");
+  });
+
+  it("getPaymentHistory requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.stripe.getPaymentHistory()).rejects.toThrow();
+  });
+
+  it("getPaymentHistory returns empty array when DB unavailable", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.stripe.getPaymentHistory();
+    expect(Array.isArray(result)).toBe(true);
+  });
+});
