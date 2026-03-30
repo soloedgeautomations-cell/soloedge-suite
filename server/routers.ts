@@ -6,7 +6,7 @@ import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
 import { getDb } from "./db";
 import { RILEY_RECEPTIONIST_PROMPT, RILEY_OPS_MANAGER_PROMPT } from "./prompts/riley";
-import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients, subscriptions } from "../drizzle/schema";
+import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients, subscriptions, users } from "../drizzle/schema";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, isConnected } from "./googleCalendar";
 import { stripeRouter } from "./stripe/router";
@@ -641,14 +641,14 @@ export const appRouter = router({
   dashboard: router({
     stats: protectedProcedure.query(async ({ ctx }) => {
       const db = await getDb();
-      if (!db) return { bookingsToday: 0, bookingsTotal: 0, conversationsTotal: 0, leadsTotal: 0, planName: "Free" };
+      if (!db) return { bookingsToday: 0, bookingsTotal: 0, conversationsTotal: 0, leadsTotal: 0, planName: "Free", assignedPhoneNumber: null as string | null };
 
       const todayStart = new Date();
       todayStart.setHours(0, 0, 0, 0);
       const todayEnd = new Date();
       todayEnd.setHours(23, 59, 59, 999);
 
-      const [bookingsTodayRows, bookingsTotalRows, conversationsRows, leadsRows, subRows] = await Promise.all([
+      const [bookingsTodayRows, bookingsTotalRows, conversationsRows, leadsRows, subRows, userRows] = await Promise.all([
         db.select({ count: sql<number>`count(*)` }).from(bookings)
           .where(and(eq(bookings.userId, ctx.user.id), gte(bookings.createdAt, todayStart), lte(bookings.createdAt, todayEnd))),
         db.select({ count: sql<number>`count(*)` }).from(bookings).where(eq(bookings.userId, ctx.user.id)),
@@ -658,6 +658,7 @@ export const appRouter = router({
           ? db.select({ count: sql<number>`count(*)` }).from(leads)
           : Promise.resolve([{ count: 0 }]),
         db.select().from(subscriptions).where(and(eq(subscriptions.userId, ctx.user.id), eq(subscriptions.status, "active"))).limit(1),
+        db.select({ assignedPhoneNumber: users.assignedPhoneNumber }).from(users).where(eq(users.id, ctx.user.id)).limit(1),
       ]);
 
       return {
@@ -666,6 +667,7 @@ export const appRouter = router({
         conversationsTotal: Number(conversationsRows[0]?.count ?? 0),
         leadsTotal: Number(leadsRows[0]?.count ?? 0),
         planName: subRows[0]?.planName ?? "Field Starter",
+        assignedPhoneNumber: userRows[0]?.assignedPhoneNumber ?? null,
       };
     }),
 

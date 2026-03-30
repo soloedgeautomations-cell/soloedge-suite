@@ -11,7 +11,7 @@ import {
   Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
   User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
   AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity, Settings as SettingsIcon,
-  CreditCard,
+  CreditCard, Copy, CheckCheck,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
@@ -21,6 +21,7 @@ export default function AppDashboard() {
   const { t, lang, setLang } = useLang();
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [activeView, setActiveView] = useState<ActiveView>(null);
+  const [phoneCopied, setPhoneCopied] = useState(false);
 
   const { data: stats, isLoading: statsLoading } = trpc.dashboard.stats.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -216,6 +217,54 @@ export default function AppDashboard() {
             </div>
           </div>
         </div>
+
+        {/* ── Your Riley Number Banner ───────────────────────────────────── */}
+        {stats?.assignedPhoneNumber ? (
+          <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center flex-shrink-0">
+                <Phone size={20} className="text-sky-600" />
+              </div>
+              <div>
+                <p className="text-xs font-semibold text-sky-600 uppercase tracking-wider mb-0.5">Your Riley AI Number</p>
+                <p className="text-2xl font-bold text-sky-900 tracking-wide font-mono">
+                  {stats.assignedPhoneNumber.replace(/(\+1)(\d{3})(\d{3})(\d{4})/, '($2) $3-$4')}
+                </p>
+                <p className="text-xs text-sky-600 mt-0.5">Share this number — Riley answers 24/7</p>
+              </div>
+            </div>
+            <div className="flex items-center gap-2 sm:flex-shrink-0">
+              <button
+                onClick={() => {
+                  navigator.clipboard.writeText(stats.assignedPhoneNumber!);
+                  setPhoneCopied(true);
+                  setTimeout(() => setPhoneCopied(false), 2000);
+                }}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-medium transition-all"
+              >
+                {phoneCopied ? <CheckCheck size={13} /> : <Copy size={13} />}
+                {phoneCopied ? "Copied!" : "Copy Number"}
+              </button>
+              <a
+                href={`tel:${stats.assignedPhoneNumber}`}
+                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium transition-all"
+              >
+                <Phone size={13} />
+                Test Call
+              </a>
+            </div>
+          </div>
+        ) : stats && !statsLoading ? (
+          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
+              <Phone size={20} className="text-amber-500" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-amber-800">Riley number being provisioned…</p>
+              <p className="text-xs text-amber-600 mt-0.5">Your dedicated phone number will appear here shortly. Check back in a few minutes or contact support.</p>
+            </div>
+          </div>
+        ) : null}
 
         {/* ── Stats Bar ─────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
