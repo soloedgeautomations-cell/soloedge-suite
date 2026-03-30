@@ -35,23 +35,29 @@ export default function GetStarted() {
 
   const { data: tiers = [], isLoading } = trpc.stripe.getTiers.useQuery();
   const createCheckout = trpc.stripe.createCheckout.useMutation();
+  const createGuestCheckout = trpc.stripe.createGuestCheckout.useMutation();
 
   const filteredTiers = tiers.filter((t) => t.suite === activeSuite);
 
   async function handleGetStarted(tierId: string) {
-    if (!user) {
-      // Redirect to login, then come back
-      window.location.href = getLoginUrl();
-      return;
-    }
     setCheckingOut(tierId);
     toast.info("Redirecting to secure checkout…");
     try {
-      const { url } = await createCheckout.mutateAsync({
-        tierId,
-        origin: window.location.origin,
-      });
-      window.open(url, "_blank");
+      if (user) {
+        // Logged-in path: attach existing account to the checkout session
+        const { url } = await createCheckout.mutateAsync({
+          tierId,
+          origin: window.location.origin,
+        });
+        window.open(url, "_blank");
+      } else {
+        // Guest path: no login required — account is created automatically after payment
+        const { url } = await createGuestCheckout.mutateAsync({
+          tierId,
+          origin: window.location.origin,
+        });
+        window.open(url, "_blank");
+      }
     } catch (err) {
       toast.error("Could not start checkout. Please try again.");
       console.error(err);

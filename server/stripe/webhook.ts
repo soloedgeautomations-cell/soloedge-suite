@@ -33,6 +33,7 @@ import { eq } from "drizzle-orm";
 import { TIER_MAP } from "./products";
 import { provisionTwilioNumber, savePhoneToUser } from "./provision";
 import { sendWelcomeSms, sendWelcomeEmail } from "./notify";
+import { sdk } from "../_core/sdk";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-03-25.dahlia",
@@ -116,6 +117,7 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
   let userId: number | null = null;
   let tempPassword: string | undefined;
   let isNewAccount = false;
+  let guestOpenId: string | null = null; // set when a new account is auto-created
 
   // 1a. Try to find by user_id from metadata (logged-in checkout)
   if (metaUserId && !isNaN(metaUserId)) {
@@ -157,15 +159,36 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
       tempPassword,
     });
 
-    const [created] = await db.select({ id: users.id })
+    const [created] = await db.select({ id: users.id, openId: users.openId })
       .from(users).where(eq(users.email, customerEmail)).limit(1);
     userId = created?.id ?? null;
+    guestOpenId = created?.openId ?? null;
     console.log(`[Webhook] Auto-created user ${userId} (${customerEmail})`);
   }
 
   if (!userId) {
     console.error("[Webhook] Could not resolve or create a user — aborting automation");
     return;
+  }
+
+  // ── Step 1d: Generate a one-time magic login token for guest buyers ──────────
+  // Stored in the DB (magicLoginToken column) and consumed by GET /api/auth/magic
+  // which sets the session cookie and redirects to /app. Expires in 15 minutes.
+  let magicLoginToken: string | null = null;
+  if (isNewAccount && guestOpenId) {
+    try {
+      magicLoginToken = await sdk.createSessionToken(guestOpenId, {
+        name: customerName,
+        expiresInMs: 15 * 60 * 1000, // 15 minutes — enough time to land on success page
+      });
+      // Persist the token so the /api/auth/magic endpoint can verify it
+      await db.update(users)
+        .set({ magicLoginToken } as any)
+        .where(eq(users.id, userId!));
+      console.log(`[Webhook] Magic login token generated for new account ${userId}`);
+    } catch (err) {
+      console.error("[Webhook] Magic token generation failed (non-fatal):", err);
+    }
   }
 
   // ── Step 2: Activate the subscription ────────────────────────────────────────

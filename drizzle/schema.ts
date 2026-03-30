@@ -25,6 +25,7 @@ export const users = mysqlTable("users", {
   stripeSubscriptionStatus: varchar("stripeSubscriptionStatus", { length: 32 }),
   assignedPhoneNumber: varchar("assignedPhoneNumber", { length: 32 }), // Twilio number provisioned on signup
   tempPassword: varchar("tempPassword", { length: 128 }), // one-time password for new auto-created accounts
+  magicLoginToken: varchar("magicLoginToken", { length: 512 }), // short-lived JWT for guest post-checkout auto-login
 });
 
 export const leads = mysqlTable("leads", {

@@ -43,6 +43,13 @@
       "when": 1774900000000,
       "tag": "0005_zero_touch_provisioning",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1774910000000,
+      "tag": "0006_guest_checkout_magic_token",
+      "breakpoints": true
     }
   ]
 }

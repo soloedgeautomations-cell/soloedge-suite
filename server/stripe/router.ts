@@ -90,6 +90,50 @@ export const stripeRouter = router({
       return { url: session.url! };
     }),
 
+  /**
+   * Create a Stripe Checkout Session for a GUEST (unauthenticated) visitor.
+   * No login required. The webhook will auto-create the account after payment.
+   */
+  createGuestCheckout: publicProcedure
+    .input(z.object({
+      tierId: z.string(),
+      origin: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const tier = TIER_MAP[input.tierId];
+      if (!tier) throw new Error(`Unknown tier: ${input.tierId}`);
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "subscription",
+        // No customer — Stripe will collect email at checkout
+        customer_creation: "always",
+        allow_promotion_codes: true,
+        phone_number_collection: { enabled: true },
+        metadata: {
+          // No user_id — webhook will create the account from customer_details.email
+          tier_id: tier.id,
+          tier_name: tier.name,
+          guest_checkout: "true",
+        },
+        line_items: [
+          { price: tier.setupPriceId, quantity: 1 },
+          { price: tier.monthlyPriceId, quantity: 1 },
+        ],
+        subscription_data: {
+          metadata: {
+            tier_id: tier.id,
+            tier_name: tier.name,
+          },
+        },
+        // success_url includes {CHECKOUT_SESSION_ID} so the success page can
+        // poll the server for the magic auto-login token
+        success_url: `${input.origin}/app/checkout-success?session_id={CHECKOUT_SESSION_ID}&tier=${tier.id}&guest=1`,
+        cancel_url: `${input.origin}/get-started?cancelled=1`,
+      });
+
+      return { url: session.url! };
+    }),
+
   /** Get current subscription status for the logged-in user */
   getSubscription: protectedProcedure.query(async ({ ctx }) => {
     const db = await getDb();
@@ -124,6 +168,41 @@ export const stripeRouter = router({
       currentPeriodEnd,
     };
   }),
+
+  /**
+   * Poll for the magic auto-login token after a guest checkout.
+   * Called by CheckoutSuccess.tsx every 3s until the webhook has created the
+   * user account and stored the token. Returns null until it's ready.
+   */
+  getMagicToken: publicProcedure
+    .input(z.object({ sessionId: z.string() }))
+    .query(async ({ input }) => {
+      if (!input.sessionId) return { token: null };
+
+      // Retrieve the Stripe checkout session to get the customer email
+      let customerEmail: string | null = null;
+      try {
+        const session = await stripe.checkout.sessions.retrieve(input.sessionId, {
+          expand: ["customer_details"],
+        });
+        customerEmail = session.customer_details?.email ?? null;
+      } catch {
+        return { token: null };
+      }
+
+      if (!customerEmail) return { token: null };
+
+      const db = await getDb();
+      if (!db) return { token: null };
+
+      const [userRow] = await db
+        .select({ magicLoginToken: users.magicLoginToken })
+        .from(users)
+        .where(eq(users.email, customerEmail))
+        .limit(1);
+
+      return { token: userRow?.magicLoginToken ?? null };
+    }),
 
   /** Get payment history from Stripe */
   getPaymentHistory: protectedProcedure.query(async ({ ctx }) => {

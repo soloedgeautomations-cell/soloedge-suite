@@ -4,6 +4,7 @@ import { createServer } from "http";
 import net from "net";
 import { createExpressMiddleware } from "@trpc/server/adapters/express";
 import { registerOAuthRoutes } from "./oauth";
+import { registerMagicAuthRoute } from "./magicAuth";
 import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
@@ -43,6 +44,9 @@ async function startServer() {
 
   // OAuth callback under /api/oauth/callback
   registerOAuthRoutes(app);
+
+  // Magic auto-login for guest customers after Stripe checkout
+  registerMagicAuthRoute(app);
 
   // Riley voice webhook (Twilio inbound calls) — must be before tRPC
   app.use("/api", voiceRouter);
