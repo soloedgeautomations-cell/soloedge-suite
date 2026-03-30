@@ -6,10 +6,13 @@
 import { z } from "zod";
 import Stripe from "stripe";
 import { router, protectedProcedure, publicProcedure } from "../_core/trpc";
-import { TIER_MAP, TIERS } from "./products";
+import { getActiveTiers } from "./products";
 import { getDb } from "../db";
 import { users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
+
+// Build live-mode-aware maps at request time
+const getActiveTierMap = () => Object.fromEntries(getActiveTiers().map(t => [t.id, t]));
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2026-03-25.dahlia",
@@ -18,7 +21,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 export const stripeRouter = router({
   /** Return all tier definitions for the pricing page */
   getTiers: publicProcedure.query(() => {
-    return TIERS.map((t) => ({
+    return getActiveTiers().map((t) => ({
       id: t.id,
       name: t.name,
       subtitle: t.subtitle,
@@ -38,7 +41,7 @@ export const stripeRouter = router({
       origin: z.string(), // window.location.origin from frontend
     }))
     .mutation(async ({ input, ctx }) => {
-      const tier = TIER_MAP[input.tierId];
+      const tier = getActiveTierMap()[input.tierId];
       if (!tier) throw new Error(`Unknown tier: ${input.tierId}`);
 
       const db = await getDb();
@@ -100,10 +103,10 @@ export const stripeRouter = router({
       origin: z.string(),
     }))
     .mutation(async ({ input }) => {
-      const tier = TIER_MAP[input.tierId];
+      const tier = getActiveTierMap()[input.tierId];
       if (!tier) throw new Error(`Unknown tier: ${input.tierId}`);
 
-      const session = await stripe.checkout.sessions.create({
+      const db = await getDb();ipe.checkout.sessions.create({
         mode: "subscription",
         // No customer — Stripe will collect email at checkout
         customer_creation: "always",
@@ -149,7 +152,7 @@ export const stripeRouter = router({
       return { status: null, planId: null, planName: null, subscriptionId: null };
     }
 
-    const tier = userRow.stripePlanId ? TIER_MAP[userRow.stripePlanId] : null;
+    const tier = userRow.stripePlanId ? getActiveTierMap()[userRow.stripePlanId] : null;
 
     // Optionally fetch live status from Stripe
     let currentPeriodEnd: number | null = null;

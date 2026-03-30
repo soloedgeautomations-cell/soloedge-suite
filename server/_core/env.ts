@@ -23,6 +23,8 @@ export const ENV = {
   // Stripe
   stripeSecretKey: process.env.STRIPE_SECRET_KEY ?? "",
   stripeWebhookSecret: process.env.STRIPE_WEBHOOK_SECRET ?? "",
+  // Set to "live" (or use sk_live_ key) to enable Stripe live mode pricing
+  stripeMode: process.env.STRIPE_MODE ?? "test",
 
   // Telegram owner alerts
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN ?? "",

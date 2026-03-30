@@ -30,7 +30,7 @@ import { nanoid } from "nanoid";
 import { getDb } from "../db";
 import { users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
-import { TIER_MAP } from "./products";
+import { getActiveTiers } from "./products";
 import { provisionTwilioNumber, savePhoneToUser } from "./provision";
 import { sendWelcomeSms, sendWelcomeEmail } from "./notify";
 import { sdk } from "../_core/sdk";
@@ -217,7 +217,8 @@ async function handleCheckoutCompleted(session: Stripe.Checkout.Session): Promis
 
   // ── Step 5 & 6: Send welcome notifications ───────────────────────────────────
   const dashboardUrl = `${(process.env.APP_BASE_URL ?? "https://soloedgeautomations.com").replace(/\/+$/, "")}/app`;
-  const planName = TIER_MAP[tierId ?? ""]?.name ?? tierId ?? "SoloEdge Plan";
+  const activeTierMap = Object.fromEntries(getActiveTiers().map(t => [t.id, t]));
+  const planName = activeTierMap[tierId ?? ""]?.name ?? tierId ?? "SoloEdge Plan";
 
   if (assignedPhone) {
     // Welcome SMS — only if we have the customer's personal mobile number

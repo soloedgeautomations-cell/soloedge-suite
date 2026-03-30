@@ -1,7 +1,14 @@
 /**
  * server/stripe/products.ts
  * Single source of truth for SoloEdge pricing tiers and Stripe Price IDs.
- * All prices are in USD cents. Price IDs were created in Stripe Test Mode.
+ * All prices are in USD cents.
+ *
+ * In TEST mode (default): uses the test Price IDs defined in TIERS below.
+ * In LIVE mode: overlays the live Price IDs from products.live.ts.
+ *
+ * To enable live mode, set in your deployment:
+ *   STRIPE_SECRET_KEY=sk_live_xxx
+ *   STRIPE_MODE=live
  */
 
 export interface TierDefinition {
@@ -154,7 +161,50 @@ export const TIERS: TierDefinition[] = [
 
 export const TIER_MAP = Object.fromEntries(TIERS.map((t) => [t.id, t])) as Record<string, TierDefinition>;
 
-/** Format cents as "$X.XX" */
+/**
+ * Returns the active tier list with the correct Price IDs for the current mode.
+ * In live mode, overlays the LIVE_PRICE_IDS from products.live.ts.
+ * Falls back to test mode if live IDs are not yet populated.
+ */
+export function getActiveTiers(): TierDefinition[] {
+  const stripeKey = process.env.STRIPE_SECRET_KEY ?? "";
+  const stripeMode = process.env.STRIPE_MODE ?? "";
+  const isLive = stripeKey.startsWith("sk_live_") || stripeMode === "live";
+
+  if (!isLive) return TIERS;
+
+  // Dynamically import live IDs — avoids hard dependency in test environments
+  try {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { LIVE_PRICE_IDS, validateLivePriceIds } = require("./products.live") as
+      typeof import("./products.live");
+
+    const { valid, missing } = validateLivePriceIds();
+    if (!valid) {
+      console.warn(
+        `[Stripe] LIVE mode enabled but ${missing.length} Price IDs are still placeholders. ` +
+        `Falling back to TEST mode. Missing: ${missing.slice(0, 3).join(", ")}${missing.length > 3 ? "..." : ""}`
+      );
+      return TIERS;
+    }
+
+    return TIERS.map((tier) => {
+      const live = LIVE_PRICE_IDS[tier.id];
+      if (!live) return tier;
+      return {
+        ...tier,
+        productId:      live.productId,
+        setupPriceId:   live.setupPriceId,
+        monthlyPriceId: live.monthlyPriceId,
+      };
+    });
+  } catch {
+    console.warn("[Stripe] Could not load products.live.ts — using test mode Price IDs");
+    return TIERS;
+  }
+}
+
+/** Format cents as "$X" */
 export function formatPrice(cents: number): string {
   return `$${(cents / 100).toFixed(0)}`;
 }
