@@ -36,6 +36,13 @@
       "when": 1774889444564,
       "tag": "0004_striped_old_lace",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "5",
+      "when": 1774900000000,
+      "tag": "0005_zero_touch_provisioning",
+      "breakpoints": true
     }
   ]
 }
