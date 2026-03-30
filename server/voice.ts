@@ -213,8 +213,28 @@ voiceRouter.all("/incoming-call", (req: Request, res: Response) => {
   const callerNumber = (req.body?.From || req.query?.From || "") as string;
   const streamCallerValue = callerNumber.replace(/[^+\d]/g, "");
 
-  const host = req.headers.host || "";
-  const wsBase = `wss://${host}`;
+  // Build the WebSocket base URL.
+  // Priority order:
+  //   1. APP_BASE_URL env var (most reliable — set explicitly in deployment)
+  //   2. x-forwarded-host header (set by reverse proxies like Nginx/Railway/Render)
+  //   3. req.headers.host (fallback — may be internal hostname behind a proxy)
+  //
+  // We MUST use the public hostname here because Twilio connects to this URL
+  // from the public internet. Using localhost or an internal IP will cause
+  // the media stream to fail silently (Riley connects but never speaks).
+  const appBaseUrl = (process.env.APP_BASE_URL ?? "").replace(/\/+$/, "");
+  let wsBase: string;
+  if (appBaseUrl) {
+    // Convert https:// → wss://, http:// → ws://
+    wsBase = appBaseUrl.replace(/^https:\/\//, "wss://").replace(/^http:\/\//, "ws://");
+  } else {
+    const forwardedHost = req.headers["x-forwarded-host"] as string | undefined;
+    const host = forwardedHost || req.headers.host || "";
+    const proto = (req.headers["x-forwarded-proto"] as string | undefined) || "https";
+    wsBase = `${proto === "https" ? "wss" : "ws"}://${host}`;
+  }
+
+  console.log(`[voice] /incoming-call from ${callerNumber} — stream URL: ${wsBase}/api/media-stream`);
 
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
@@ -259,9 +279,15 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   const transcriptLines: string[] = [];
 
   // ─── OpenAI Realtime connection ─────────────────────────────────────────────
+  // Use OPENAI_API_KEY if set directly; otherwise fall back to BUILT_IN_FORGE_API_KEY
+  // (the platform-injected key used by the rest of the server).
+  const openAiKey = process.env.OPENAI_API_KEY || process.env.BUILT_IN_FORGE_API_KEY || "";
+  if (!openAiKey) {
+    console.error("[voice] CRITICAL: No OpenAI API key found — OPENAI_API_KEY and BUILT_IN_FORGE_API_KEY are both unset. Riley cannot answer calls.");
+  }
   const openAiWs = new WebSocket(REALTIME_URL, {
     headers: {
-      Authorization: `Bearer ${process.env.OPENAI_API_KEY}`,
+      Authorization: `Bearer ${openAiKey}`,
       "OpenAI-Beta": "realtime=v1",
     },
   });
