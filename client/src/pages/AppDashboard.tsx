@@ -11,7 +11,7 @@ import {
   Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
   User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
   AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity, Settings as SettingsIcon,
-  CreditCard, Copy, CheckCheck,
+  CreditCard, Copy, CheckCheck, PhoneCall, Mail, ExternalLink,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
@@ -266,6 +266,70 @@ export default function AppDashboard() {
           </div>
         ) : null}
 
+        {/* ── Onboarding Checklist ──────────────────────────────────────── */}
+        {stats && !statsLoading && !(stats.hasSubscription && stats.hasPhone && stats.hasCalendar && stats.hasFirstBooking) && (
+          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+            <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
+              <CheckCircle2 size={15} className="text-blue-500" />
+              <span className="text-sm font-semibold text-gray-900">Getting Started</span>
+              <span className="ml-auto text-xs text-gray-400">
+                {[stats.hasSubscription, stats.hasPhone, stats.hasCalendar, stats.hasFirstBooking].filter(Boolean).length}/4 complete
+              </span>
+            </div>
+            <div className="divide-y divide-gray-50">
+              {[
+                {
+                  done: stats.hasSubscription,
+                  label: "Subscription active",
+                  sub: "Your plan is live and billing is set up",
+                  action: null,
+                  actionLabel: null,
+                },
+                {
+                  done: stats.hasPhone,
+                  label: "Riley phone number assigned",
+                  sub: stats.hasPhone ? `Your number: ${stats.assignedPhoneNumber}` : "Being provisioned — check back shortly",
+                  action: null,
+                  actionLabel: null,
+                },
+                {
+                  done: stats.hasCalendar,
+                  label: "Google Calendar connected",
+                  sub: stats.hasCalendar ? "Calendar is synced" : "Connect so Riley can book appointments automatically",
+                  action: "/app/settings",
+                  actionLabel: "Connect →",
+                },
+                {
+                  done: stats.hasFirstBooking,
+                  label: "First booking created",
+                  sub: stats.hasFirstBooking ? "You're off to a great start!" : "Test Riley by calling your new number or adding a booking manually",
+                  action: "/app/bookings",
+                  actionLabel: "Add booking →",
+                },
+              ].map((item, i) => (
+                <div key={i} className="flex items-center gap-3 px-4 py-3">
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
+                    item.done ? "bg-green-100" : "bg-gray-100"
+                  }`}>
+                    {item.done
+                      ? <CheckCircle2 size={14} className="text-green-600" />
+                      : <Clock size={14} className="text-gray-400" />}
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className={`text-sm font-medium ${ item.done ? "text-gray-400 line-through" : "text-gray-900" }`}>{item.label}</p>
+                    <p className="text-xs text-gray-400 truncate">{item.sub}</p>
+                  </div>
+                  {!item.done && item.action && (
+                    <a href={item.action} className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap flex items-center gap-0.5 transition-colors">
+                      {item.actionLabel} <ExternalLink size={10} />
+                    </a>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* ── Stats Bar ─────────────────────────────────────────────────────── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
           <StatCard
@@ -359,6 +423,7 @@ export default function AppDashboard() {
                 { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
                 { icon: <Users size={16} />, label: "Contacts", sub: "Leads & CRM", color: "purple", action: () => window.location.href = "/app/contacts" },
                 { icon: <CreditCard size={16} />, label: "Billing", sub: "Plan & Invoices", color: "green", action: () => window.location.href = "/app/billing" },
+                ...(stats?.assignedPhoneNumber ? [{ icon: <PhoneCall size={16} />, label: "Test Riley", sub: "Call your number", color: "cyan", action: () => window.open(`tel:${stats.assignedPhoneNumber}`, "_self") }] : []),
               ].map(item => (
                 <button
                   key={item.label}

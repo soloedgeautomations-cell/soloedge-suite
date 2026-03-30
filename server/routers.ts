@@ -648,7 +648,7 @@ export const appRouter = router({
       const todayEnd = new Date();
       todayEnd.setHours(23, 59, 59, 999);
 
-      const [bookingsTodayRows, bookingsTotalRows, conversationsRows, leadsRows, subRows, userRows] = await Promise.all([
+      const [bookingsTodayRows, bookingsTotalRows, conversationsRows, leadsRows, subRows, userRows, calendarConnected] = await Promise.all([
         db.select({ count: sql<number>`count(*)` }).from(bookings)
           .where(and(eq(bookings.userId, ctx.user.id), gte(bookings.createdAt, todayStart), lte(bookings.createdAt, todayEnd))),
         db.select({ count: sql<number>`count(*)` }).from(bookings).where(eq(bookings.userId, ctx.user.id)),
@@ -658,7 +658,8 @@ export const appRouter = router({
           ? db.select({ count: sql<number>`count(*)` }).from(leads)
           : Promise.resolve([{ count: 0 }]),
         db.select().from(subscriptions).where(and(eq(subscriptions.userId, ctx.user.id), eq(subscriptions.status, "active"))).limit(1),
-        db.select({ assignedPhoneNumber: users.assignedPhoneNumber }).from(users).where(eq(users.id, ctx.user.id)).limit(1),
+        db.select({ assignedPhoneNumber: users.assignedPhoneNumber, stripeSubscriptionStatus: users.stripeSubscriptionStatus }).from(users).where(eq(users.id, ctx.user.id)).limit(1),
+        isConnected(ctx.user.id),
       ]);
 
       return {
@@ -668,6 +669,11 @@ export const appRouter = router({
         leadsTotal: Number(leadsRows[0]?.count ?? 0),
         planName: subRows[0]?.planName ?? "Field Starter",
         assignedPhoneNumber: userRows[0]?.assignedPhoneNumber ?? null,
+        // Onboarding checklist
+        hasSubscription: (userRows[0]?.stripeSubscriptionStatus === "active") || (subRows.length > 0),
+        hasPhone: !!(userRows[0]?.assignedPhoneNumber),
+        hasCalendar: calendarConnected,
+        hasFirstBooking: Number(bookingsTotalRows[0]?.count ?? 0) > 0,
       };
     }),
 
