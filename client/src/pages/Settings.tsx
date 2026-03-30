@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { trpc } from "@/lib/trpc";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { getLoginUrl } from "@/const";
@@ -6,7 +6,7 @@ import { CDN } from "../../../shared/assets";
 import {
   Settings as SettingsIcon, ChevronLeft, User, Bell, Globe, CreditCard,
   Shield, LogOut, Check, ChevronRight, Smartphone, Mail, Phone,
-  Building2, Zap, Star, HardHat,
+  Building2, Zap, Star, HardHat, Calendar, CheckCircle2, XCircle, Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useLang } from "@/contexts/LanguageContext";
@@ -50,9 +50,38 @@ const LANGUAGE_OPTIONS = [
 export default function Settings() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const { lang: language, setLang: setLanguage } = useLang();
-  const [activeSection, setActiveSection] = useState<"profile" | "notifications" | "language" | "plan" | "security">("profile");
+  const [activeSection, setActiveSection] = useState<"profile" | "notifications" | "language" | "plan" | "integrations" | "security">("profile");
+
+  // Check URL params for Google Calendar callback result
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const gcal = params.get("gcal");
+    if (gcal === "connected") {
+      toast.success("Google Calendar connected! Bookings will now sync automatically.");
+      setActiveSection("integrations");
+      // Clean URL
+      window.history.replaceState({}, "", "/app/settings");
+    } else if (gcal === "error") {
+      toast.error("Google Calendar connection failed. Please try again.");
+      setActiveSection("integrations");
+      window.history.replaceState({}, "", "/app/settings");
+    } else if (gcal === "no_refresh_token") {
+      toast.error("Google didn't return a refresh token. Please revoke access at myaccount.google.com/permissions and try again.");
+      setActiveSection("integrations");
+      window.history.replaceState({}, "", "/app/settings");
+    }
+  }, []);
 
   const { data: stats } = trpc.dashboard.stats.useQuery(undefined, { enabled: isAuthenticated });
+  const { data: gcalStatus, refetch: refetchGcal } = trpc.googleCalendar.status.useQuery(undefined, { enabled: isAuthenticated });
+  const { data: connectUrlData } = trpc.googleCalendar.getConnectUrl.useQuery(undefined, { enabled: isAuthenticated });
+  const disconnectMutation = trpc.googleCalendar.disconnect.useMutation({
+    onSuccess: () => {
+      toast.success("Google Calendar disconnected.");
+      refetchGcal();
+    },
+    onError: () => toast.error("Failed to disconnect. Please try again."),
+  });
 
   // ── Auth guards ───────────────────────────────────────────────────────────
   if (loading) {
@@ -81,11 +110,13 @@ export default function Settings() {
 
   const planName = stats?.planName ?? "Free";
   const planCfg = PLAN_CONFIG[planName] ?? PLAN_CONFIG.Free;
+  const gcalConnected = gcalStatus?.connected ?? false;
 
   const NAV_SECTIONS = [
     { id: "profile" as const, icon: <User size={16} />, label: "Profile" },
     { id: "language" as const, icon: <Globe size={16} />, label: "Language" },
     { id: "notifications" as const, icon: <Bell size={16} />, label: "Notifications" },
+    { id: "integrations" as const, icon: <Calendar size={16} />, label: "Integrations" },
     { id: "plan" as const, icon: <CreditCard size={16} />, label: "Plan & Usage" },
     { id: "security" as const, icon: <Shield size={16} />, label: "Security" },
   ];
@@ -141,6 +172,9 @@ export default function Settings() {
                   >
                     <span className={activeSection === s.id ? "text-blue-600" : "text-gray-400"}>{s.icon}</span>
                     {s.label}
+                    {s.id === "integrations" && gcalConnected && (
+                      <span className="ml-auto w-2 h-2 rounded-full bg-green-500 flex-shrink-0" />
+                    )}
                   </button>
                 ))}
               </div>
@@ -281,6 +315,131 @@ export default function Settings() {
               </div>
             )}
 
+            {/* Integrations — Google Calendar */}
+            {activeSection === "integrations" && (
+              <div className="space-y-4">
+                {/* Google Calendar card */}
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-blue-700 flex items-center justify-center shadow-md shadow-blue-200 flex-shrink-0">
+                      <Calendar size={16} className="text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="font-display text-base font-bold text-gray-900">Google Calendar</h2>
+                      <p className="text-xs text-gray-400 mt-0.5">Sync bookings to your Google Calendar automatically.</p>
+                    </div>
+                    {gcalConnected ? (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                        <CheckCircle2 size={12} /> Connected
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                        <XCircle size={12} /> Not Connected
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="p-5 space-y-4">
+                    {gcalConnected ? (
+                      <>
+                        {/* Connected state */}
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
+                          <CheckCircle2 size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="text-sm font-semibold text-green-800">Calendar sync is active</div>
+                            <div className="text-xs text-green-600 mt-0.5">
+                              New bookings, confirmations, reschedules, and cancellations will automatically appear in your Google Calendar (primary calendar, America/Chicago timezone).
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          {[
+                            { label: "New booking created", desc: "Adds event to your calendar immediately" },
+                            { label: "Booking confirmed", desc: "Updates event status in calendar" },
+                            { label: "Booking rescheduled", desc: "Removes old event, creates new one" },
+                            { label: "Booking cancelled", desc: "Removes event from calendar" },
+                          ].map(item => (
+                            <div key={item.label} className="flex items-center gap-3 py-2.5 border-b border-gray-100 last:border-0">
+                              <Check size={14} className="text-green-500 flex-shrink-0" />
+                              <div>
+                                <span className="text-sm font-medium text-gray-800">{item.label}</span>
+                                <span className="text-xs text-gray-400 ml-2">{item.desc}</span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+
+                        <button
+                          onClick={() => disconnectMutation.mutate()}
+                          disabled={disconnectMutation.isPending}
+                          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition-all disabled:opacity-50"
+                        >
+                          {disconnectMutation.isPending ? <Loader2 size={15} className="animate-spin" /> : <XCircle size={15} />}
+                          Disconnect Google Calendar
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {/* Disconnected state */}
+                        <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                          <div className="text-sm font-semibold text-blue-800 mb-1">Connect your Google Calendar</div>
+                          <div className="text-xs text-blue-600">
+                            Once connected, every booking you create, confirm, reschedule, or cancel in SoloEdge will automatically sync to your Google Calendar. No manual entry needed.
+                          </div>
+                        </div>
+
+                        <div className="space-y-2">
+                          {[
+                            "Bookings appear in your calendar the moment they're created",
+                            "Reschedules move the event automatically",
+                            "Cancellations remove the event from your calendar",
+                            "Customer name, phone, email, and notes included in each event",
+                          ].map(item => (
+                            <div key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                              <Check size={14} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+
+                        <a
+                          href={connectUrlData?.url ?? "#"}
+                          className={`w-full flex items-center justify-center gap-2.5 py-3 rounded-xl font-semibold text-sm transition-all shadow-md ${
+                            connectUrlData?.url
+                              ? "bg-blue-600 hover:bg-blue-700 text-white shadow-blue-200 cursor-pointer"
+                              : "bg-gray-200 text-gray-400 cursor-not-allowed"
+                          }`}
+                          onClick={e => { if (!connectUrlData?.url) e.preventDefault(); }}
+                        >
+                          <Calendar size={16} />
+                          Connect Google Calendar
+                        </a>
+
+                        <p className="text-xs text-gray-400 text-center">
+                          You'll be redirected to Google to grant calendar access. SoloEdge only requests permission to create and manage events — it cannot read your existing calendar events.
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                {/* Future integrations placeholder */}
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden opacity-60">
+                  <div className="px-5 py-4 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gray-100 flex items-center justify-center flex-shrink-0">
+                      <Building2 size={16} className="text-gray-400" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="text-sm font-semibold text-gray-600">More integrations coming soon</div>
+                      <div className="text-xs text-gray-400">Outlook Calendar, Stripe, QuickBooks, and more.</div>
+                    </div>
+                    <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-1 rounded-full flex-shrink-0">Soon</span>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Plan & Usage */}
             {activeSection === "plan" && (
               <div className="space-y-4">
@@ -315,35 +474,31 @@ export default function Settings() {
                   <div className="px-5 py-4 border-b border-gray-100">
                     <h2 className="font-display text-base font-bold text-gray-900">Usage This Month</h2>
                   </div>
-                  <div className="p-5 grid grid-cols-2 gap-3">
+                  <div className="p-5 space-y-3">
                     {[
-                      { icon: <Building2 size={16} />, label: "Bookings Today", value: stats?.bookingsToday ?? 0, color: "blue" },
-                      { icon: <HardHat size={16} />, label: "Total Bookings", value: stats?.bookingsTotal ?? 0, color: "green" },
-                      { icon: <Phone size={16} />, label: "AI Conversations", value: stats?.conversationsTotal ?? 0, color: "purple" },
-                      { icon: <User size={16} />, label: "Leads Captured", value: stats?.leadsTotal ?? 0, color: "orange" },
+                      { label: "Bookings Today", value: stats?.bookingsToday ?? 0, icon: <HardHat size={14} /> },
+                      { label: "Total Bookings", value: stats?.bookingsTotal ?? 0, icon: <Calendar size={14} /> },
+                      { label: "Conversations", value: stats?.conversationsTotal ?? 0, icon: <Zap size={14} /> },
                     ].map(item => (
-                      <div key={item.label} className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                        <div className={`text-${item.color}-500 mb-2`}>{item.icon}</div>
-                        <div className="text-2xl font-bold text-gray-900">{item.value}</div>
-                        <div className="text-xs text-gray-400 mt-0.5">{item.label}</div>
+                      <div key={item.label} className="flex items-center justify-between py-2.5 border-b border-gray-100 last:border-0">
+                        <div className="flex items-center gap-2 text-sm text-gray-600">
+                          <span className="text-gray-400">{item.icon}</span>
+                          {item.label}
+                        </div>
+                        <span className="text-sm font-bold text-gray-900">{item.value}</span>
                       </div>
                     ))}
                   </div>
                 </div>
 
                 {/* Upgrade CTA */}
-                {planName === "Free" || planName === "Field Starter" ? (
-                  <div className="bg-gradient-to-br from-blue-600 to-blue-800 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
-                    <div className="font-bold text-lg mb-1">Upgrade to Field Pro</div>
-                    <p className="text-blue-200 text-sm mb-4">Unlock Riley Ops Manager, Live Interpreter, and Construction Tools.</p>
-                    <a
-                      href="tel:+15127029685"
-                      className="inline-flex items-center gap-2 bg-white text-blue-700 font-semibold text-sm px-4 py-2.5 rounded-xl hover:bg-blue-50 transition-all shadow-md"
-                    >
-                      <Phone size={14} /> Call (512) 702-9685 to Upgrade
-                    </a>
-                  </div>
-                ) : null}
+                <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white">
+                  <div className="font-bold text-base mb-1">Need more capacity?</div>
+                  <div className="text-sm text-blue-100 mb-4">Call (512) 702-9685 to upgrade your plan or add white-label clients.</div>
+                  <a href="tel:+15127029685" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white text-blue-700 font-semibold text-sm hover:bg-blue-50 transition-all">
+                    <Phone size={14} /> Call the Team
+                  </a>
+                </div>
               </div>
             )}
 

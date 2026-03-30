@@ -72,6 +72,24 @@
 - [x] Analytics overview: total leads, clients, bookings, logs
 - [ ] Broadcast message tool (future enhancement)
 
+## Google Calendar Integration (user request)
+- [x] Store GOOGLE_CLIENT_ID and GOOGLE_CLIENT_SECRET as secrets
+- [x] Add google_calendar_tokens table to drizzle schema and apply migration
+- [x] Add googleCalendarEventId column to bookings table and apply migration
+- [x] Build server/googleCalendar.ts: OAuth URL builder, token exchange, refresh, save/get/isConnected/disconnect helpers
+- [x] Build Calendar API helpers: createCalendarEvent, updateCalendarEvent, deleteCalendarEvent
+- [x] Register GET /api/google/connect, /api/google/callback, /api/google/status Express routes
+- [x] Wire bookings.create → createCalendarEvent (stores eventId back to DB)
+- [x] Wire bookings.updateStatus → updateCalendarEvent (confirmed/pending) or deleteCalendarEvent (cancelled/completed)
+- [x] Wire bookings.reschedule → deleteCalendarEvent (old) + createCalendarEvent (new)
+- [x] Wire bookings.delete → deleteCalendarEvent before DB delete
+- [x] Add googleCalendar tRPC router: status, getConnectUrl, disconnect
+- [x] Add Integrations section to Settings page with Connect/Disconnect Google Calendar UI
+- [x] Handle gcal=connected/error/no_refresh_token URL params on Settings page return
+- [x] Add Google credential tests to credentials.test.ts
+- [x] Add googleCalendar tRPC procedure tests to soloedge.test.ts (6 new tests)
+- [x] All 61 tests passing
+
 ## Phase 11: Tests, Polish & Delivery
 - [x] 25 vitest tests passing (auth, Riley, leads, interpreter, construction, bookings, admin)
 - [x] Pulse-dot animation
@@ -364,4 +382,32 @@
 ## Live Translation Restore (2026-03-29)
 - [x] Read old server.js to find how live meeting translation worked
 - [x] Restore translation mode trigger and behavior in voice.ts and riley.ts
+- [ ] Save checkpoint and publish
+
+## Google Calendar Integration (2026-03-30)
+- [ ] Add googleCalendarTokens table to drizzle/schema.ts
+- [ ] Run migration via webdev_execute_sql
+- [ ] Build server/googleCalendar.ts: OAuth helpers, token storage, event CRUD
+- [ ] Add /api/google/connect and /api/google/callback Express routes
+- [ ] Wire bookings.create to create Google Calendar event
+- [ ] Wire bookings.updateStatus (confirmed) to update Google Calendar event
+- [ ] Wire bookings.reschedule to update Google Calendar event
+- [ ] Wire bookings.delete to delete Google Calendar event
+- [ ] Add googleCalendar tRPC procedures: connectStatus, disconnect
+- [ ] Add "Connect Google Calendar" section to Settings page
+- [ ] Write vitest tests for Google Calendar procedures
+- [ ] Save checkpoint and publish
+
+## Google Calendar Integration (2026-03-30)
+- [ ] Add googleCalendarTokens table to drizzle/schema.ts
+- [ ] Run migration via webdev_execute_sql
+- [ ] Build server/googleCalendar.ts: OAuth helpers, token storage, event CRUD
+- [ ] Add /api/google/connect and /api/google/callback Express routes
+- [ ] Wire bookings.create to create Google Calendar event
+- [ ] Wire bookings.updateStatus (confirmed) to update Google Calendar event
+- [ ] Wire bookings.reschedule to update Google Calendar event
+- [ ] Wire bookings.delete to delete Google Calendar event
+- [ ] Add googleCalendar tRPC procedures: connectStatus, disconnect
+- [ ] Add Connect Google Calendar section to Settings page
+- [ ] Write vitest tests for Google Calendar procedures
 - [ ] Save checkpoint and publish

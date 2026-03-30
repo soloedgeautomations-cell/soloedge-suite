@@ -54,4 +54,18 @@ describe("credentials — environment variables", () => {
     expect(val).toBeTruthy();
     expect(val).toBe("America/Chicago");
   });
+
+  it("GOOGLE_CLIENT_ID is set and looks like a Google OAuth client ID", () => {
+    const val = process.env.GOOGLE_CLIENT_ID;
+    expect(val).toBeTruthy();
+    expect(typeof val).toBe("string");
+    expect(val).toMatch(/\.apps\.googleusercontent\.com$/);
+  });
+
+  it("GOOGLE_CLIENT_SECRET is set and starts with GOCSPX-", () => {
+    const val = process.env.GOOGLE_CLIENT_SECRET;
+    expect(val).toBeTruthy();
+    expect(typeof val).toBe("string");
+    expect(val).toMatch(/^GOCSPX-/);
+  });
 });

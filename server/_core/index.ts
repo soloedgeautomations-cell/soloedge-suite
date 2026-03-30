@@ -8,6 +8,7 @@ import { appRouter } from "../routers";
 import { createContext } from "./context";
 import { serveStatic, setupVite } from "./vite";
 import { voiceRouter, mediaStreamWss } from "../voice";
+import { handleGoogleConnect, handleGoogleCallback, handleGoogleStatus } from "../googleCalendar";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -41,6 +42,11 @@ async function startServer() {
 
   // Riley voice webhook (Twilio inbound calls) — must be before tRPC
   app.use("/api", voiceRouter);
+
+  // Google Calendar OAuth routes — must be before tRPC
+  app.get("/api/google/connect", handleGoogleConnect);
+  app.get("/api/google/callback", handleGoogleCallback);
+  app.get("/api/google/status", handleGoogleStatus);
 
   // tRPC API
   app.use(

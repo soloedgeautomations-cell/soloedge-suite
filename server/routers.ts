@@ -8,6 +8,7 @@ import { getDb } from "./db";
 import { RILEY_RECEPTIONIST_PROMPT, RILEY_OPS_MANAGER_PROMPT } from "./prompts/riley";
 import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients, subscriptions } from "../drizzle/schema";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
+import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, isConnected } from "./googleCalendar";
 
 // ─── Riley System Prompts (imported from shared source of truth) ─────────────
 // Edit server/prompts/riley.ts to update Riley's personality, pricing, or behavior.
@@ -454,7 +455,7 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new Error("Database unavailable");
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        await (db.insert(bookings) as any).values({
+        const insertResult = await (db.insert(bookings) as any).values({
           userId: ctx.user.id,
           serviceType: input.serviceType,
           customerName: input.customerName,
@@ -467,12 +468,39 @@ export const appRouter = router({
           language: input.language,
           status: "pending",
         });
+        // Sync to Google Calendar if connected — use insertId to avoid race conditions
+        try {
+          const newBookingId: number | undefined = insertResult?.insertId;
+          if (newBookingId) {
+            const [newBooking] = await db.select().from(bookings)
+              .where(and(eq(bookings.id, newBookingId), eq(bookings.userId, ctx.user.id))).limit(1);
+            if (newBooking) {
+              const eventId = await createCalendarEvent(ctx.user.id, {
+                id: newBooking.id,
+                customerName: newBooking.customerName,
+                customerPhone: newBooking.customerPhone,
+                customerEmail: newBooking.customerEmail,
+                serviceType: newBooking.serviceType,
+                preferredDate: newBooking.preferredDate ? String(newBooking.preferredDate) : null,
+                preferredTime: newBooking.preferredTime ? String(newBooking.preferredTime) : null,
+                duration: newBooking.duration,
+                notes: newBooking.notes,
+                status: newBooking.status,
+              });
+              if (eventId) {
+                await db.update(bookings).set({ googleCalendarEventId: eventId }).where(eq(bookings.id, newBooking.id));
+              }
+            }
+          }
+        } catch (e) {
+          console.error("[GCal] create sync failed:", e);
+        }
         return { success: true };
       }),
 
     updateStatus: protectedProcedure
       .input(z.object({ id: z.number(), status: z.enum(["confirmed", "pending", "cancelled", "completed"]) }))
-      .mutation(async ({ input }) => {
+      .mutation(async ({ input, ctx }) => {
         const db = await getDb();
         if (!db) throw new Error("Database unavailable");
         const now = new Date();
@@ -480,6 +508,33 @@ export const appRouter = router({
         if (input.status === "confirmed") extra.confirmedAt = now;
         if (input.status === "cancelled") extra.cancelledAt = now;
         await db.update(bookings).set({ status: input.status, ...extra }).where(eq(bookings.id, input.id));
+        // Sync to Google Calendar if connected — enforce ownership with userId filter
+        try {
+          const [booking] = await db.select().from(bookings)
+            .where(and(eq(bookings.id, input.id), eq(bookings.userId, ctx.user.id))).limit(1);
+          if (booking?.googleCalendarEventId) {
+            if (input.status === "cancelled" || input.status === "completed") {
+              await deleteCalendarEvent(ctx.user.id, booking.googleCalendarEventId);
+              // Clear the stored event ID since the event is gone
+              await db.update(bookings).set({ googleCalendarEventId: null }).where(eq(bookings.id, input.id));
+            } else {
+              await updateCalendarEvent(ctx.user.id, booking.googleCalendarEventId, {
+                id: booking.id,
+                customerName: booking.customerName,
+                customerPhone: booking.customerPhone,
+                customerEmail: booking.customerEmail,
+                serviceType: booking.serviceType,
+                preferredDate: booking.preferredDate ? String(booking.preferredDate) : null,
+                preferredTime: booking.preferredTime ? String(booking.preferredTime) : null,
+                duration: booking.duration,
+                notes: booking.notes,
+                status: input.status,
+              });
+            }
+          }
+        } catch (e) {
+          console.error("[GCal] updateStatus sync failed:", e);
+        }
         return { success: true };
       }),
     listByDateRange: protectedProcedure
@@ -530,6 +585,35 @@ export const appRouter = router({
         });
         // Mark original as cancelled
         await db.update(bookings).set({ status: "cancelled", cancelledAt: new Date() }).where(eq(bookings.id, input.id));
+        // Sync reschedule to Google Calendar: delete old event, create new one for the new booking
+        try {
+          const [oldBooking] = await db.select().from(bookings).where(eq(bookings.id, input.id)).limit(1);
+          if (oldBooking?.googleCalendarEventId) {
+            await deleteCalendarEvent(ctx.user.id, oldBooking.googleCalendarEventId);
+          }
+          const [newBooking] = await db.select().from(bookings)
+            .where(and(eq(bookings.userId, ctx.user.id), eq(bookings.rescheduledFrom, input.id)))
+            .orderBy(desc(bookings.createdAt)).limit(1);
+          if (newBooking) {
+            const eventId = await createCalendarEvent(ctx.user.id, {
+              id: newBooking.id,
+              customerName: newBooking.customerName,
+              customerPhone: newBooking.customerPhone,
+              customerEmail: newBooking.customerEmail,
+              serviceType: newBooking.serviceType,
+              preferredDate: newBooking.preferredDate ? String(newBooking.preferredDate) : null,
+              preferredTime: newBooking.preferredTime ? String(newBooking.preferredTime) : null,
+              duration: newBooking.duration,
+              notes: newBooking.notes,
+              status: newBooking.status,
+            });
+            if (eventId) {
+              await db.update(bookings).set({ googleCalendarEventId: eventId }).where(eq(bookings.id, newBooking.id));
+            }
+          }
+        } catch (e) {
+          console.error("[GCal] reschedule sync failed:", e);
+        }
         return { success: true };
       }),
     delete: protectedProcedure
@@ -537,6 +621,16 @@ export const appRouter = router({
       .mutation(async ({ input, ctx }) => {
         const db = await getDb();
         if (!db) throw new Error("Database unavailable");
+        // Delete from Google Calendar if event exists
+        try {
+          const [booking] = await db.select().from(bookings)
+            .where(and(eq(bookings.id, input.id), eq(bookings.userId, ctx.user.id))).limit(1);
+          if (booking?.googleCalendarEventId) {
+            await deleteCalendarEvent(ctx.user.id, booking.googleCalendarEventId);
+          }
+        } catch (e) {
+          console.error("[GCal] delete sync failed:", e);
+        }
         await db.delete(bookings).where(and(eq(bookings.id, input.id), eq(bookings.userId, ctx.user.id)));
         return { success: true };
       }),
@@ -663,6 +757,29 @@ export const appRouter = router({
         }
         return { success: true };
       }),
+  }),
+
+  // ─── Google Calendar ──────────────────────────────────────────────────────
+  googleCalendar: router({
+    /** Returns whether the current user has connected Google Calendar */
+    status: protectedProcedure.query(async ({ ctx }) => {
+      const { isConnected: checkConnected } = await import("./googleCalendar");
+      const connected = await checkConnected(ctx.user.id);
+      return { connected };
+    }),
+
+    /** Returns the connect URL for the frontend to redirect to */
+    getConnectUrl: protectedProcedure.query(async ({ ctx }) => {
+      // The frontend will navigate to this URL directly
+      return { url: `/api/google/connect?userId=${ctx.user.id}` };
+    }),
+
+    /** Disconnects Google Calendar by removing stored tokens */
+    disconnect: protectedProcedure.mutation(async ({ ctx }) => {
+      const { disconnectCalendar } = await import("./googleCalendar");
+      await disconnectCalendar(ctx.user.id);
+      return { success: true };
+    }),
   }),
 });
 

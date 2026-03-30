@@ -337,3 +337,42 @@ describe("admin", () => {
     expect(Array.isArray(result)).toBe(true);
   });
 });
+
+// ─── Google Calendar ──────────────────────────────────────────────────────────
+describe("googleCalendar", () => {
+  it("status requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.googleCalendar.status()).rejects.toThrow();
+  });
+
+  it("status returns connected:false when DB is unavailable", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.googleCalendar.status();
+    expect(result).toHaveProperty("connected");
+    expect(typeof result.connected).toBe("boolean");
+  });
+
+  it("getConnectUrl requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.googleCalendar.getConnectUrl()).rejects.toThrow();
+  });
+
+  it("getConnectUrl returns a URL string for authenticated user", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.googleCalendar.getConnectUrl();
+    expect(result).toHaveProperty("url");
+    expect(typeof result.url).toBe("string");
+    expect(result.url).toContain("/api/google/connect");
+  });
+
+  it("disconnect requires authentication", async () => {
+    const caller = appRouter.createCaller(makePublicCtx());
+    await expect(caller.googleCalendar.disconnect()).rejects.toThrow();
+  });
+
+  it("disconnect succeeds for authenticated user (no-op when DB unavailable)", async () => {
+    const caller = appRouter.createCaller(makeAuthCtx());
+    const result = await caller.googleCalendar.disconnect();
+    expect(result).toHaveProperty("success", true);
+  });
+});

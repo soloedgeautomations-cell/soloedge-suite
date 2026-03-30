@@ -70,6 +70,7 @@ export const bookings = mysqlTable("bookings", {
   confirmedAt: timestamp("confirmedAt"),
   cancelledAt: timestamp("cancelledAt"),
   rescheduledFrom: int("rescheduledFrom"), // original booking id
+  googleCalendarEventId: varchar("googleCalendarEventId", { length: 255 }), // Google Calendar event ID for sync
   createdAt: timestamp("createdAt").defaultNow().notNull(),
   updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
 });
@@ -133,6 +134,17 @@ export const interpreterSessions = mysqlTable("interpreter_sessions", {
   endedAt: timestamp("endedAt"),
 });
 
+export const googleCalendarTokens = mysqlTable("google_calendar_tokens", {
+  id: int("id").autoincrement().primaryKey(),
+  userId: int("userId").notNull().unique(),
+  accessToken: text("accessToken").notNull(),
+  refreshToken: text("refreshToken").notNull(),
+  expiresAt: timestamp("expiresAt").notNull(),
+  calendarId: varchar("calendarId", { length: 255 }).default("primary"),
+  createdAt: timestamp("createdAt").defaultNow().notNull(),
+  updatedAt: timestamp("updatedAt").defaultNow().onUpdateNow().notNull(),
+});
+
 export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 export type Lead = typeof leads.$inferSelect;
@@ -143,3 +155,4 @@ export type Subscription = typeof subscriptions.$inferSelect;
 export type WhiteLabelClient = typeof whiteLabelClients.$inferSelect;
 export type ConstructionLog = typeof constructionLogs.$inferSelect;
 export type InterpreterSession = typeof interpreterSessions.$inferSelect;
+export type GoogleCalendarToken = typeof googleCalendarTokens.$inferSelect;
