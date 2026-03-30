@@ -1,15 +1,30 @@
 /**
  * Riley Voice Handler — OpenAI Realtime API (WebSocket)
  *
- * Architecture matches the original Replit server.js exactly:
- *   POST /api/incoming-call  — Twilio webhook, returns TwiML to open a media stream
- *   WS   /api/media-stream   — Twilio media stream ↔ OpenAI Realtime bridge
+ * Architecture:
+ *   POST /api/incoming-call   — Twilio webhook, returns TwiML to open a media stream
+ *   GET  /api/voice-health    — Health check: verifies env vars, WSS URL, OpenAI key
+ *   WS   /api/media-stream    — Twilio media stream ↔ OpenAI Realtime bridge
  *
  * Riley speaks live audio via OpenAI Realtime API (gpt-4o-realtime-preview).
  * No text-to-speech. No TwiML Say. Real-time bidirectional audio.
  *
  * Post-call: transcript is accumulated, LLM generates a structured lead summary,
  * and the report is sent to Telegram (TELEGRAM_BOT_TOKEN + TELEGRAM_ALERT_CHAT_ID).
+ *
+ * ── DIAGNOSTIC LOGGING ──────────────────────────────────────────────────────────
+ * Every stage of the pipeline emits a [VOICE:STAGE] log line so you can pinpoint
+ * exactly where a failure occurs in production logs:
+ *
+ *   [VOICE:1-WEBHOOK]   — /api/incoming-call was hit by Twilio
+ *   [VOICE:2-TWIML]     — TwiML returned to Twilio (includes the WSS URL)
+ *   [VOICE:3-WS-CONN]   — Twilio WebSocket connected to /api/media-stream
+ *   [VOICE:4-OPENAI]    — OpenAI Realtime WebSocket opened / failed
+ *   [VOICE:5-SESSION]   — OpenAI session configured
+ *   [VOICE:6-STREAM]    — Twilio stream started (streamSid received)
+ *   [VOICE:7-GREETING]  — Initial greeting sent to OpenAI
+ *   [VOICE:8-AUDIO]     — First audio delta received from OpenAI → sent to Twilio
+ *   [VOICE:ERR]         — Any error at any stage
  */
 
 import { Router, Request, Response } from "express";
@@ -21,6 +36,88 @@ export const voiceRouter = Router();
 
 const REALTIME_MODEL = "gpt-4o-realtime-preview-2024-12-17";
 const REALTIME_URL = `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(REALTIME_MODEL)}`;
+
+// ─── Resolve the public WSS base URL once at startup ─────────────────────────
+// This is the URL Twilio will connect to for the media stream.
+// It MUST be the public hostname — never localhost.
+function resolveWssBase(req?: Request): string {
+  // 1. APP_BASE_URL is the most reliable — set explicitly in deployment secrets
+  const appBase = (process.env.APP_BASE_URL ?? "").replace(/\/+$/, "");
+  if (appBase) {
+    return appBase
+      .replace(/^https:\/\//, "wss://")
+      .replace(/^http:\/\//, "ws://");
+  }
+
+  // 2. x-forwarded-host set by reverse proxies (Railway, Render, Nginx, etc.)
+  if (req) {
+    const fwdHost = req.headers["x-forwarded-host"] as string | undefined;
+    const fwdProto = (req.headers["x-forwarded-proto"] as string | undefined) ?? "https";
+    if (fwdHost) {
+      return `${fwdProto === "https" ? "wss" : "ws"}://${fwdHost}`;
+    }
+
+    // 3. req.headers.host — last resort (may be internal behind a proxy)
+    const host = req.headers.host ?? "";
+    return `wss://${host}`;
+  }
+
+  return "wss://soloedge.app"; // absolute fallback
+}
+
+// ─── Resolve OpenAI API key ───────────────────────────────────────────────────
+function resolveOpenAiKey(): string {
+  return (
+    process.env.OPENAI_API_KEY ||
+    process.env.BUILT_IN_FORGE_API_KEY ||
+    ""
+  );
+}
+
+// ─── Startup diagnostics ─────────────────────────────────────────────────────
+const startupWssBase = resolveWssBase();
+const startupOpenAiKey = resolveOpenAiKey();
+
+console.log("[VOICE:STARTUP] ─────────────────────────────────────────────");
+console.log(`[VOICE:STARTUP] APP_BASE_URL         = ${process.env.APP_BASE_URL ?? "(not set)"}`);
+console.log(`[VOICE:STARTUP] Resolved WSS base    = ${startupWssBase}`);
+console.log(`[VOICE:STARTUP] Media stream URL     = ${startupWssBase}/api/media-stream`);
+console.log(`[VOICE:STARTUP] OpenAI key source    = ${
+  process.env.OPENAI_API_KEY
+    ? "OPENAI_API_KEY"
+    : process.env.BUILT_IN_FORGE_API_KEY
+    ? "BUILT_IN_FORGE_API_KEY"
+    : "MISSING — Riley CANNOT answer calls"
+}`);
+console.log(`[VOICE:STARTUP] OpenAI key prefix    = ${startupOpenAiKey ? startupOpenAiKey.slice(0, 8) + "..." : "(none)"}`);
+console.log(`[VOICE:STARTUP] Realtime model       = ${REALTIME_MODEL}`);
+console.log("[VOICE:STARTUP] ─────────────────────────────────────────────");
+
+// ─── Health check endpoint ────────────────────────────────────────────────────
+// GET /api/voice-health — call this from a browser to verify the pipeline config
+voiceRouter.get("/voice-health", (_req: Request, res: Response) => {
+  const openAiKey = resolveOpenAiKey();
+  const wssBase = resolveWssBase(_req);
+  const checks = {
+    APP_BASE_URL: process.env.APP_BASE_URL ?? "(not set — will use x-forwarded-host or req.host)",
+    resolved_wss_base: wssBase,
+    media_stream_url: `${wssBase}/api/media-stream`,
+    openai_key_present: !!openAiKey,
+    openai_key_source: process.env.OPENAI_API_KEY
+      ? "OPENAI_API_KEY"
+      : process.env.BUILT_IN_FORGE_API_KEY
+      ? "BUILT_IN_FORGE_API_KEY"
+      : "MISSING",
+    openai_key_prefix: openAiKey ? openAiKey.slice(0, 8) + "..." : "(none)",
+    twilio_account_sid: process.env.TWILIO_ACCOUNT_SID
+      ? process.env.TWILIO_ACCOUNT_SID.slice(0, 6) + "..."
+      : "(not set)",
+    twilio_auth_token_present: !!process.env.TWILIO_AUTH_TOKEN,
+    realtime_model: REALTIME_MODEL,
+    status: openAiKey ? "OK" : "ERROR: missing OpenAI key",
+  };
+  res.json(checks);
+});
 
 // ─── Telegram helper ──────────────────────────────────────────────────────────
 
@@ -206,60 +303,60 @@ function formatTelegramReport(lead: LeadSummary, callerNumber: string): string {
 }
 
 // ─── /api/incoming-call ───────────────────────────────────────────────────────
-// Twilio calls this when someone dials (737) 259-5692.
-// We return TwiML that opens a media stream back to /api/media-stream.
+// STAGE 1: Twilio hits this endpoint when someone calls the Riley number.
+// We return TwiML that tells Twilio to open a bidirectional media stream.
 
 voiceRouter.all("/incoming-call", (req: Request, res: Response) => {
-  const callerNumber = (req.body?.From || req.query?.From || "") as string;
+  const callerNumber = (req.body?.From || req.query?.From || "unknown") as string;
+  const callSid      = (req.body?.CallSid || req.query?.CallSid || "unknown") as string;
   const streamCallerValue = callerNumber.replace(/[^+\d]/g, "");
 
-  // Build the WebSocket base URL.
-  // Priority order:
-  //   1. APP_BASE_URL env var (most reliable — set explicitly in deployment)
-  //   2. x-forwarded-host header (set by reverse proxies like Nginx/Railway/Render)
-  //   3. req.headers.host (fallback — may be internal hostname behind a proxy)
-  //
-  // We MUST use the public hostname here because Twilio connects to this URL
-  // from the public internet. Using localhost or an internal IP will cause
-  // the media stream to fail silently (Riley connects but never speaks).
-  const appBaseUrl = (process.env.APP_BASE_URL ?? "").replace(/\/+$/, "");
-  let wsBase: string;
-  if (appBaseUrl) {
-    // Convert https:// → wss://, http:// → ws://
-    wsBase = appBaseUrl.replace(/^https:\/\//, "wss://").replace(/^http:\/\//, "ws://");
-  } else {
-    const forwardedHost = req.headers["x-forwarded-host"] as string | undefined;
-    const host = forwardedHost || req.headers.host || "";
-    const proto = (req.headers["x-forwarded-proto"] as string | undefined) || "https";
-    wsBase = `${proto === "https" ? "wss" : "ws"}://${host}`;
-  }
+  // ── STAGE 1 LOG ──────────────────────────────────────────────────────────────
+  console.log("[VOICE:1-WEBHOOK] ══════════════════════════════════════════");
+  console.log(`[VOICE:1-WEBHOOK] Twilio hit /api/incoming-call`);
+  console.log(`[VOICE:1-WEBHOOK] CallSid     = ${callSid}`);
+  console.log(`[VOICE:1-WEBHOOK] From        = ${callerNumber}`);
+  console.log(`[VOICE:1-WEBHOOK] To          = ${req.body?.To || req.query?.To || "unknown"}`);
+  console.log(`[VOICE:1-WEBHOOK] req.host    = ${req.headers.host ?? "(none)"}`);
+  console.log(`[VOICE:1-WEBHOOK] x-fwd-host  = ${req.headers["x-forwarded-host"] ?? "(none)"}`);
+  console.log(`[VOICE:1-WEBHOOK] x-fwd-proto = ${req.headers["x-forwarded-proto"] ?? "(none)"}`);
 
-  console.log(`[voice] /incoming-call from ${callerNumber} — stream URL: ${wsBase}/api/media-stream`);
+  const wssBase = resolveWssBase(req);
+  const streamUrl = `${wssBase}/api/media-stream`;
 
+  console.log(`[VOICE:1-WEBHOOK] Resolved WSS base = ${wssBase}`);
+  console.log(`[VOICE:1-WEBHOOK] Stream URL         = ${streamUrl}`);
+
+  // ── STAGE 2: Build and return TwiML ─────────────────────────────────────────
   const twiml = `<?xml version="1.0" encoding="UTF-8"?>
 <Response>
   <Pause length="1"/>
   <Connect>
-    <Stream url="${wsBase}/api/media-stream">
+    <Stream url="${streamUrl}">
       <Parameter name="from" value="${streamCallerValue}" />
     </Stream>
   </Connect>
 </Response>`;
+
+  console.log("[VOICE:2-TWIML] Returning TwiML:");
+  console.log(twiml);
+  console.log("[VOICE:2-TWIML] Content-Type: text/xml");
 
   res.setHeader("Content-Type", "text/xml");
   res.send(twiml);
 });
 
 // ─── WebSocket Server for /api/media-stream ───────────────────────────────────
+// STAGE 3+: Twilio opens a WebSocket here after receiving the TwiML above.
 
 export const mediaStreamWss = new WebSocketServer({ noServer: true });
 
 mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
-  const log = (msg: string, data?: unknown) => {
+  const log = (stage: string, msg: string, data?: unknown) => {
     if (data !== undefined) {
-      console.log(`[voice] ${msg}`, JSON.stringify(data));
+      console.log(`[VOICE:${stage}] ${msg}`, JSON.stringify(data));
     } else {
-      console.log(`[voice] ${msg}`);
+      console.log(`[VOICE:${stage}] ${msg}`);
     }
   };
 
@@ -274,17 +371,25 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   let languageFollowupTimer: ReturnType<typeof setTimeout> | null = null;
   let notificationsSent = false;
   let detectedLanguage = "Unknown";
+  let firstAudioSent = false;
 
   // Transcript accumulation — captures everything the caller says
   const transcriptLines: string[] = [];
 
-  // ─── OpenAI Realtime connection ─────────────────────────────────────────────
-  // Use OPENAI_API_KEY if set directly; otherwise fall back to BUILT_IN_FORGE_API_KEY
-  // (the platform-injected key used by the rest of the server).
-  const openAiKey = process.env.OPENAI_API_KEY || process.env.BUILT_IN_FORGE_API_KEY || "";
+  log("3-WS-CONN", "══════════════════════════════════════════");
+  log("3-WS-CONN", "Twilio WebSocket connected to /api/media-stream");
+  log("3-WS-CONN", `Active connections: ${mediaStreamWss.clients.size}`);
+
+  // ── STAGE 4: Connect to OpenAI Realtime ─────────────────────────────────────
+  const openAiKey = resolveOpenAiKey();
   if (!openAiKey) {
-    console.error("[voice] CRITICAL: No OpenAI API key found — OPENAI_API_KEY and BUILT_IN_FORGE_API_KEY are both unset. Riley cannot answer calls.");
+    log("ERR", "CRITICAL — No OpenAI API key. OPENAI_API_KEY and BUILT_IN_FORGE_API_KEY are both unset. Riley cannot speak.");
+  } else {
+    log("4-OPENAI", `Connecting to OpenAI Realtime — model: ${REALTIME_MODEL}`);
+    log("4-OPENAI", `Key prefix: ${openAiKey.slice(0, 8)}...`);
+    log("4-OPENAI", `URL: ${REALTIME_URL}`);
   }
+
   const openAiWs = new WebSocket(REALTIME_URL, {
     headers: {
       Authorization: `Bearer ${openAiKey}`,
@@ -320,13 +425,20 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   }
 
   function sendToOpenAI(event: object, label = "event") {
-    if (openAiWs.readyState !== WebSocket.OPEN) return;
-    log(`→ OpenAI [${label}]`, { type: (event as { type: string }).type });
+    if (openAiWs.readyState !== WebSocket.OPEN) {
+      log("ERR", `sendToOpenAI called but WS not open (state=${openAiWs.readyState}) — label: ${label}`);
+      return;
+    }
+    log("4-OPENAI", `→ sending [${label}]`, { type: (event as { type: string }).type });
     openAiWs.send(JSON.stringify(event));
   }
 
   function sendTwilioAudio(base64Audio: string) {
     if (!streamSid || !base64Audio) return;
+    if (!firstAudioSent) {
+      firstAudioSent = true;
+      log("8-AUDIO", "First audio delta from OpenAI → forwarding to Twilio ✓");
+    }
     twilioSocket.send(
       JSON.stringify({
         event: "media",
@@ -342,6 +454,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   }
 
   function sendSessionUpdate() {
+    log("5-SESSION", "Sending session.update to OpenAI");
     sendToOpenAI(
       {
         type: "session.update",
@@ -368,8 +481,10 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   }
 
   function maybeSendInitialGreeting() {
+    log("7-GREETING", `maybeSendInitialGreeting check — openAiReady=${openAiReady} sessionReady=${sessionReady} streamSid=${streamSid} greetingSent=${greetingSent}`);
     if (!openAiReady || !sessionReady || !streamSid || greetingSent) return;
     greetingSent = true;
+    log("7-GREETING", "Sending initial greeting to OpenAI ✓");
     sendToOpenAI(
       {
         type: "response.create",
@@ -390,21 +505,21 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
     notificationsSent = true;
     clearLanguageFollowupTimer();
 
-    log("Finalizing post-call notifications", { reason, transcriptLines: transcriptLines.length, callerNumber });
+    log("POST-CALL", `Finalizing — reason: ${reason} | transcript lines: ${transcriptLines.length} | caller: ${callerNumber}`);
 
     try {
       const lead = await buildLeadSummary(transcriptLines, callerNumber, detectedLanguage);
       const message = formatTelegramReport(lead, callerNumber);
       await sendTelegram(message);
     } catch (err) {
-      log("Post-call notification failed", err);
+      log("ERR", `Post-call notification failed: ${(err as Error).message}`);
     }
   }
 
   // ─── OpenAI events ───────────────────────────────────────────────────────────
 
   openAiWs.on("open", () => {
-    log("Connected to OpenAI Realtime", { model: REALTIME_MODEL });
+    log("4-OPENAI", "✓ Connected to OpenAI Realtime successfully");
     openAiReady = true;
     sendSessionUpdate();
   });
@@ -413,19 +528,25 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
     try {
       const msg = JSON.parse(data.toString());
 
+      if (msg.type === "session.created") {
+        log("5-SESSION", "OpenAI session.created received");
+      }
+
       if (msg.type === "session.updated") {
         sessionReady = true;
-        log("OpenAI session ready");
+        log("5-SESSION", "✓ OpenAI session.updated — Riley is ready to speak");
         maybeSendInitialGreeting();
       }
 
       if (msg.type === "response.created") {
         responseInProgress = true;
+        log("4-OPENAI", "response.created — Riley is generating a response");
       }
 
       if (msg.type === "input_audio_buffer.speech_started") {
         clearLanguageFollowupTimer();
         if (responseInProgress) {
+          log("4-OPENAI", "Barge-in detected — cancelling current response");
           sendToOpenAI({ type: "response.cancel" }, "cancel on barge-in");
           clearTwilioBuffer();
         }
@@ -437,7 +558,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         msg.transcript
       ) {
         transcriptLines.push(`Caller: ${msg.transcript}`);
-        log("Transcript line captured", { line: msg.transcript });
+        log("4-OPENAI", `Transcript captured: "${msg.transcript}"`);
 
         const t = msg.transcript.toLowerCase();
 
@@ -482,20 +603,24 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
       }
 
       if (msg.type === "error") {
-        log("OpenAI error", msg);
+        log("ERR", `OpenAI Realtime error: ${JSON.stringify(msg)}`);
       }
     } catch (err) {
-      log("Error parsing OpenAI message", err);
+      log("ERR", `Error parsing OpenAI message: ${(err as Error).message}`);
     }
   });
 
-  openAiWs.on("close", (code: number) => {
-    log("Disconnected from OpenAI Realtime", { code });
+  openAiWs.on("close", (code: number, reason: Buffer) => {
+    log("4-OPENAI", `Disconnected from OpenAI Realtime — code: ${code} reason: ${reason.toString() || "(none)"}`);
     finalizeNotifications("openai closed");
   });
 
   openAiWs.on("error", (err: Error) => {
-    log("OpenAI WebSocket error", { message: err.message });
+    log("ERR", `OpenAI WebSocket error: ${err.message}`);
+    // Common errors:
+    // - 401 Unauthorized → OPENAI_API_KEY is wrong or missing
+    // - ECONNREFUSED     → network issue
+    // - 503              → OpenAI Realtime API is down
   });
 
   // ─── Twilio media stream events ──────────────────────────────────────────────
@@ -506,7 +631,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
 
       switch (data.event) {
         case "connected":
-          log("Twilio media stream connected");
+          log("3-WS-CONN", "Twilio 'connected' event received");
           break;
 
         case "start":
@@ -515,7 +640,12 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
             data.start?.customParameters?.from ||
             data.start?.from ||
             callerNumber;
-          log("Twilio stream started", { streamSid, callerNumber });
+          log("6-STREAM", "══════════════════════════════════════════");
+          log("6-STREAM", `✓ Twilio stream started`);
+          log("6-STREAM", `  streamSid    = ${streamSid}`);
+          log("6-STREAM", `  callerNumber = ${callerNumber}`);
+          log("6-STREAM", `  openAiReady  = ${openAiReady}`);
+          log("6-STREAM", `  sessionReady = ${sessionReady}`);
           maybeSendInitialGreeting();
           break;
 
@@ -529,7 +659,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           break;
 
         case "stop":
-          log("Twilio stream stopped", { streamSid });
+          log("6-STREAM", `Twilio stream stopped — streamSid: ${streamSid}`);
           finalizeNotifications("twilio stop");
           if (openAiWs.readyState === WebSocket.OPEN) openAiWs.close();
           break;
@@ -538,17 +668,17 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           break;
       }
     } catch (err) {
-      log("Error parsing Twilio message", err);
+      log("ERR", `Error parsing Twilio message: ${(err as Error).message}`);
     }
   });
 
   twilioSocket.on("close", () => {
-    log("Twilio WebSocket closed", { streamSid });
+    log("3-WS-CONN", `Twilio WebSocket closed — streamSid: ${streamSid}`);
     finalizeNotifications("twilio disconnected");
     if (openAiWs.readyState === WebSocket.OPEN) openAiWs.close();
   });
 
   twilioSocket.on("error", (err: Error) => {
-    log("Twilio WebSocket error", { message: err.message });
+    log("ERR", `Twilio WebSocket error: ${err.message}`);
   });
 });
