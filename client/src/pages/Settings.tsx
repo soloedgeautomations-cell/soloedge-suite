@@ -78,6 +78,7 @@ export default function Settings() {
   const disconnectMutation = trpc.googleCalendar.disconnect.useMutation({
     onSuccess: () => {
       toast.success("Google Calendar disconnected.");
+
       refetchGcal();
     },
     onError: () => toast.error("Failed to disconnect. Please try again."),
@@ -111,6 +112,27 @@ export default function Settings() {
   const planName = stats?.planName ?? "Free";
   const planCfg = PLAN_CONFIG[planName] ?? PLAN_CONFIG.Free;
   const gcalConnected = gcalStatus?.connected ?? false;
+
+  // ── Telegram state ──────────────────────────────────────────────────────────
+  const { data: tgStatus, refetch: refetchTg } = trpc.telegram.status.useQuery(undefined, { enabled: isAuthenticated });
+  const tgConnected = tgStatus?.connected ?? false;
+  const [tgDeepLink, setTgDeepLink] = useState<string | null>(null);
+  const [tgLinkCopied, setTgLinkCopied] = useState(false);
+  const generateTgLink = trpc.telegram.generateConnectLink.useMutation({
+    onSuccess: (data) => {
+      setTgDeepLink(data.deepLink);
+      toast.success("Connect link generated! Open it in Telegram.");
+    },
+    onError: () => toast.error("Failed to generate link. Please try again."),
+  });
+  const disconnectTg = trpc.telegram.disconnect.useMutation({
+    onSuccess: () => {
+      refetchTg();
+      setTgDeepLink(null);
+      toast.success("Telegram disconnected.");
+    },
+    onError: () => toast.error("Failed to disconnect Telegram."),
+  });
 
   const NAV_SECTIONS = [
     { id: "profile" as const, icon: <User size={16} />, label: "Profile" },
@@ -424,6 +446,146 @@ export default function Settings() {
                   </div>
                 </div>
 
+                {/* Telegram card */}
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl flex items-center justify-center shadow-md flex-shrink-0" style={{ background: 'linear-gradient(135deg, #2AABEE 0%, #229ED9 100%)' }}>
+                      <svg width="18" height="18" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/>
+                      </svg>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="font-display text-base font-bold text-gray-900">Telegram</h2>
+                      <p className="text-xs text-gray-400 mt-0.5">Let Riley answer messages in your Telegram chat.</p>
+                    </div>
+                    {tgConnected ? (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                        <CheckCircle2 size={12} /> Connected
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                        <XCircle size={12} /> Not Connected
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="p-5 space-y-4">
+                    {tgConnected ? (
+                      <>
+                        {/* Connected state */}
+                        <div className="bg-green-50 border border-green-200 rounded-xl p-4 flex items-start gap-3">
+                          <CheckCircle2 size={18} className="text-green-600 flex-shrink-0 mt-0.5" />
+                          <div>
+                            <div className="text-sm font-semibold text-green-800">Riley is active on Telegram</div>
+                            <div className="text-xs text-green-600 mt-0.5">
+                              Anyone who messages your connected Telegram chat will get an instant AI response from Riley — 24/7, no phone call required.
+                            </div>
+                          </div>
+                        </div>
+                        <div className="space-y-2">
+                          {[
+                            "Riley reads every incoming Telegram message",
+                            "Responds instantly using your business context",
+                            "Conversation history is saved in your dashboard",
+                            "Works in English, Spanish, and Chinese",
+                          ].map(item => (
+                            <div key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                              <Check size={14} className="text-green-500 flex-shrink-0 mt-0.5" />
+                              {item}
+                            </div>
+                          ))}
+                        </div>
+                        <button
+                          onClick={() => disconnectTg.mutate()}
+                          disabled={disconnectTg.isPending}
+                          className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-red-200 text-red-600 text-sm font-semibold hover:bg-red-50 transition-all disabled:opacity-50"
+                        >
+                          {disconnectTg.isPending ? <Loader2 size={15} className="animate-spin" /> : <XCircle size={15} />}
+                          Disconnect Telegram
+                        </button>
+                      </>
+                    ) : (
+                      <>
+                        {/* Disconnected state */}
+                        {tgDeepLink ? (
+                          <>
+                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                              <div className="text-sm font-semibold text-blue-800 mb-1">Your connection link is ready</div>
+                              <div className="text-xs text-blue-600">
+                                Open this link on your phone to connect Telegram. The link expires after one use.
+                              </div>
+                            </div>
+                            <div className="flex gap-2">
+                              <a
+                                href={tgDeepLink}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-semibold text-sm text-white shadow-md transition-all"
+                                style={{ background: 'linear-gradient(135deg, #2AABEE 0%, #229ED9 100%)' }}
+                              >
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+                                Open in Telegram
+                              </a>
+                              <button
+                                onClick={() => {
+                                  navigator.clipboard.writeText(tgDeepLink);
+                                  setTgLinkCopied(true);
+                                  setTimeout(() => setTgLinkCopied(false), 2000);
+                                }}
+                                className="px-4 py-3 rounded-xl border border-gray-200 text-gray-600 text-sm font-semibold hover:bg-gray-50 transition-all"
+                              >
+                                {tgLinkCopied ? <Check size={15} className="text-green-500" /> : <Smartphone size={15} />}
+                              </button>
+                            </div>
+                            <p className="text-xs text-gray-400 text-center">
+                              After you tap Start in Telegram, come back here and refresh to see your connection status.
+                            </p>
+                            <button
+                              onClick={() => refetchTg()}
+                              className="w-full py-2 rounded-xl border border-gray-200 text-gray-500 text-xs font-medium hover:bg-gray-50 transition-all"
+                            >
+                              Check connection status
+                            </button>
+                          </>
+                        ) : (
+                          <>
+                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                              <div className="text-sm font-semibold text-blue-800 mb-1">Connect Telegram to Riley</div>
+                              <div className="text-xs text-blue-600">
+                                Once connected, Riley will automatically respond to messages sent to your Telegram chat — the same AI that handles your phone calls.
+                              </div>
+                            </div>
+                            <div className="space-y-2">
+                              {[
+                                "No extra phone number required",
+                                "Riley responds instantly, 24/7",
+                                "Same AI logic as your voice receptionist",
+                                "Conversation history saved in your dashboard",
+                              ].map(item => (
+                                <div key={item} className="flex items-start gap-2 text-sm text-gray-600">
+                                  <Check size={14} className="text-blue-500 flex-shrink-0 mt-0.5" />
+                                  {item}
+                                </div>
+                              ))}
+                            </div>
+                            <button
+                              onClick={() => generateTgLink.mutate()}
+                              disabled={generateTgLink.isPending}
+                              className="w-full flex items-center justify-center gap-2.5 py-3 rounded-xl font-semibold text-sm text-white shadow-md transition-all disabled:opacity-60"
+                              style={{ background: 'linear-gradient(135deg, #2AABEE 0%, #229ED9 100%)' }}
+                            >
+                              {generateTgLink.isPending ? <Loader2 size={15} className="animate-spin" /> : (
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="white"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.833.941z"/></svg>
+                              )}
+                              Connect Telegram
+                            </button>
+                          </>
+                        )}
+                      </>
+                    )}
+                  </div>
+                </div>
+
                 {/* Future integrations placeholder */}
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden opacity-60">
                   <div className="px-5 py-4 flex items-center gap-3">
@@ -432,7 +594,7 @@ export default function Settings() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="text-sm font-semibold text-gray-600">More integrations coming soon</div>
-                      <div className="text-xs text-gray-400">Outlook Calendar, Stripe, QuickBooks, and more.</div>
+                      <div className="text-xs text-gray-400">WhatsApp, Slack, Outlook Calendar, and more.</div>
                     </div>
                     <span className="text-xs font-semibold text-gray-400 bg-gray-100 px-2 py-1 rounded-full flex-shrink-0">Soon</span>
                   </div>

@@ -11,6 +11,7 @@ import { serveStatic, setupVite } from "./vite";
 import { voiceRouter, mediaStreamWss } from "../voice";
 import { handleGoogleConnect, handleGoogleCallback, handleGoogleStatus } from "../googleCalendar";
 import { handleStripeWebhook } from "../stripe/webhook";
+import { handleTelegramWebhook } from "../telegram/webhook";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -50,6 +51,9 @@ async function startServer() {
 
   // Riley voice webhook (Twilio inbound calls) — must be before tRPC
   app.use("/api", voiceRouter);
+
+  // Telegram bot webhook — receives messages from Telegram servers
+  app.post("/api/telegram/webhook", handleTelegramWebhook);
 
   // Google Calendar OAuth routes — must be before tRPC
   app.get("/api/google/connect", handleGoogleConnect);

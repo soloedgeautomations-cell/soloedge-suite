@@ -7,6 +7,7 @@ import {
   varchar,
   date,
   time,
+  boolean,
 } from "drizzle-orm/mysql-core";
 
 export const users = mysqlTable("users", {
@@ -26,6 +27,10 @@ export const users = mysqlTable("users", {
   assignedPhoneNumber: varchar("assignedPhoneNumber", { length: 32 }), // Twilio number provisioned on signup
   tempPassword: varchar("tempPassword", { length: 128 }), // one-time password for new auto-created accounts
   magicLoginToken: varchar("magicLoginToken", { length: 512 }), // short-lived JWT for guest post-checkout auto-login
+  // ── Telegram integration ──────────────────────────────────────────────────
+  telegramChatId: varchar("telegramChatId", { length: 64 }),         // Telegram chat_id after successful connect
+  telegramConnectToken: varchar("telegramConnectToken", { length: 128 }), // one-time deep-link token
+  telegramConnected: boolean("telegramConnected").default(false),    // true once customer has connected
 });
 
 export const leads = mysqlTable("leads", {
