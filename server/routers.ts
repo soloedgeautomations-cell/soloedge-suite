@@ -1,10 +1,12 @@
 import z from "zod";
-import { COOKIE_NAME } from "@shared/const";
+import bcrypt from "bcryptjs";
+import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { invokeLLM } from "./_core/llm";
 import { getDb } from "./db";
+import { sdk } from "./_core/sdk";
 import { RILEY_RECEPTIONIST_PROMPT, RILEY_OPS_MANAGER_PROMPT } from "./prompts/riley";
 import { leads, conversations, messages, bookings, constructionLogs, interpreterSessions, whiteLabelClients, subscriptions, users } from "../drizzle/schema";
 import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
@@ -81,6 +83,152 @@ export const appRouter = router({
 
   auth: router({
     me: publicProcedure.query(opts => opts.ctx.user),
+
+    login: publicProcedure
+      .input(z.object({
+        email: z.string().email(),
+        password: z.string().min(1),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+
+        // Find user by email
+        const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+        if (!user) throw new Error("Invalid email or password");
+
+        // Check password — support both bcrypt hash and tempPassword (first login)
+        let passwordOk = false;
+        if (user.passwordHash) {
+          passwordOk = await bcrypt.compare(input.password, user.passwordHash);
+        } else if (user.tempPassword) {
+          passwordOk = input.password === user.tempPassword;
+          if (passwordOk) {
+            // Upgrade to hashed password on first real login
+            const hash = await bcrypt.hash(input.password, 12);
+            await db.update(users).set({ passwordHash: hash, tempPassword: null }).where(eq(users.id, user.id));
+          }
+        }
+        if (!passwordOk) throw new Error("Invalid email or password");
+
+        // Issue session cookie
+        const sessionToken = await sdk.createSessionToken(user.openId, { name: user.name ?? user.email ?? "" });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        // Update last signed in
+        await db.update(users).set({ lastSignedIn: new Date() }).where(eq(users.id, user.id));
+
+        return { success: true, user: { id: user.id, email: user.email, name: user.name, role: user.role } };
+      }),
+
+    register: publicProcedure
+      .input(z.object({
+        name: z.string().min(1).max(100),
+        email: z.string().email(),
+        password: z.string().min(8, "Password must be at least 8 characters"),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+
+        // Check if email already exists
+        const [existing] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+        if (existing) throw new Error("An account with this email already exists");
+
+        const passwordHash = await bcrypt.hash(input.password, 12);
+        const openId = `local_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+
+        await db.insert(users).values({
+          openId,
+          name: input.name,
+          email: input.email,
+          passwordHash,
+          loginMethod: "email",
+          role: "user",
+        });
+
+        const [newUser] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+        if (!newUser) throw new Error("Failed to create account");
+
+        const sessionToken = await sdk.createSessionToken(newUser.openId, { name: newUser.name ?? newUser.email ?? "" });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        return { success: true, user: { id: newUser.id, email: newUser.email, name: newUser.name, role: newUser.role } };
+      }),
+
+    forgotPassword: publicProcedure
+      .input(z.object({ email: z.string().email() }))
+      .mutation(async ({ input }) => {
+        const db = await getDb();
+        if (!db) return { success: true }; // Don't reveal DB errors
+
+        const [user] = await db.select().from(users).where(eq(users.email, input.email)).limit(1);
+        if (!user) return { success: true }; // Don't reveal whether email exists
+
+        // Generate a reset token (reuse the magicLoginToken column)
+        const resetToken = `reset_${Date.now()}_${Math.random().toString(36).slice(2)}`;
+        const tokenExpiry = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+        await db.update(users).set({ magicLoginToken: resetToken }).where(eq(users.id, user.id));
+
+        // Send reset email via SendGrid
+        const resetUrl = `${process.env.APP_BASE_URL ?? 'https://soloedge.app'}/login?reset=${resetToken}`;
+        try {
+          await fetch('https://api.sendgrid.com/v3/mail/send', {
+            method: 'POST',
+            headers: {
+              'Authorization': `Bearer ${process.env.SENDGRID_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              personalizations: [{ to: [{ email: input.email }] }],
+              from: { email: process.env.FROM_EMAIL ?? 'riley@soloedge.app', name: 'SoloEdge' },
+              subject: 'Reset your SoloEdge password',
+              content: [{
+                type: 'text/html',
+                value: `<div style="font-family:sans-serif;max-width:480px;margin:0 auto;padding:24px">
+                  <h2 style="color:#0ea5e9">Reset your password</h2>
+                  <p>Hi ${user.name ?? 'there'},</p>
+                  <p>Click the button below to reset your SoloEdge password. This link expires in 1 hour.</p>
+                  <a href="${resetUrl}" style="display:inline-block;background:#0ea5e9;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0">Reset Password</a>
+                  <p style="color:#666;font-size:13px">If you didn't request this, you can safely ignore this email.</p>
+                  <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
+                  <p style="color:#999;font-size:12px">Powered by SoloEdge Automations</p>
+                </div>`,
+              }],
+            }),
+          });
+        } catch (e) {
+          console.error('[Auth] Failed to send password reset email:', e);
+        }
+
+        return { success: true };
+      }),
+
+    resetPassword: publicProcedure
+      .input(z.object({
+        token: z.string(),
+        newPassword: z.string().min(8),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error('Database unavailable');
+
+        const [user] = await db.select().from(users).where(eq(users.magicLoginToken, input.token)).limit(1);
+        if (!user || !input.token.startsWith('reset_')) throw new Error('Invalid or expired reset link');
+
+        const passwordHash = await bcrypt.hash(input.newPassword, 12);
+        await db.update(users).set({ passwordHash, magicLoginToken: null, tempPassword: null }).where(eq(users.id, user.id));
+
+        // Auto-login after reset
+        const sessionToken = await sdk.createSessionToken(user.openId, { name: user.name ?? user.email ?? '' });
+        const cookieOptions = getSessionCookieOptions(ctx.req);
+        ctx.res.cookie(COOKIE_NAME, sessionToken, { ...cookieOptions, maxAge: ONE_YEAR_MS });
+
+        return { success: true };
+      }),
+
     logout: publicProcedure.mutation(({ ctx }) => {
       const cookieOptions = getSessionCookieOptions(ctx.req);
       ctx.res.clearCookie(COOKIE_NAME, { ...cookieOptions, maxAge: -1 });

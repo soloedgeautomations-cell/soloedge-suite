@@ -12,6 +12,7 @@ import { voiceRouter, mediaStreamWss } from "../voice";
 import { handleGoogleConnect, handleGoogleCallback, handleGoogleStatus } from "../googleCalendar";
 import { handleStripeWebhook } from "../stripe/webhook";
 import { handleTelegramWebhook } from "../telegram/webhook";
+import { registerGoogleAuthRoutes } from "./googleAuth";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -48,6 +49,9 @@ async function startServer() {
 
   // Magic auto-login for guest customers after Stripe checkout
   registerMagicAuthRoute(app);
+
+  // Google OAuth for customer login
+  registerGoogleAuthRoutes(app);
 
   // Riley voice webhook (Twilio inbound calls) — must be before tRPC
   app.use("/api", voiceRouter);

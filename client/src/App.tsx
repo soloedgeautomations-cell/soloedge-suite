@@ -14,10 +14,12 @@ import Settings from "./pages/Settings";
 import GetStarted from "./pages/GetStarted";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Billing from "./pages/Billing";
+import Login from "./pages/Login";
 
 function Router() {
   return (
     <Switch>
+      <Route path="/login" component={Login} />
       <Route path="/" component={Home} />
       <Route path="/app" component={AppDashboard} />
       <Route path="/app/bookings" component={Bookings} />

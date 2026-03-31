@@ -26,6 +26,7 @@ export const users = mysqlTable("users", {
   stripeSubscriptionStatus: varchar("stripeSubscriptionStatus", { length: 32 }),
   assignedPhoneNumber: varchar("assignedPhoneNumber", { length: 32 }), // Twilio number provisioned on signup
   tempPassword: varchar("tempPassword", { length: 128 }), // one-time password for new auto-created accounts
+  passwordHash: varchar("passwordHash", { length: 255 }), // bcrypt hash for email+password login
   magicLoginToken: varchar("magicLoginToken", { length: 512 }), // short-lived JWT for guest post-checkout auto-login
   // ── Message forwarding ──────────────────────────────────────────────
   forwardingPhone: varchar("forwardingPhone", { length: 32 }),      // personal cell for SMS forwarding

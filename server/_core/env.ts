@@ -29,4 +29,9 @@ export const ENV = {
   // Telegram owner alerts
   telegramBotToken: process.env.TELEGRAM_BOT_TOKEN ?? "",
   telegramAlertChatId: process.env.TELEGRAM_ALERT_CHAT_ID ?? "",
+
+  // Google OAuth (for customer login)
+  googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
+  googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
+  googleRedirectUri: process.env.GOOGLE_REDIRECT_URI ?? "https://soloedge.app/api/auth/google/callback",
 };

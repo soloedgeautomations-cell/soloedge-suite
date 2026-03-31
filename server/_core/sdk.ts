@@ -272,6 +272,10 @@ class SDKServer {
 
     // If user not in DB, sync from OAuth server automatically
     if (!user) {
+      // Local email/password users have openId starting with "local_" — no OAuth sync needed
+      if (sessionUserId.startsWith("local_")) {
+        throw ForbiddenError("Local user not found in database");
+      }
       try {
         const userInfo = await this.getUserInfoWithJwt(sessionCookie ?? "");
         await db.upsertUser({
