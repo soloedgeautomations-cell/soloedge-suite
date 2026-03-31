@@ -109,7 +109,6 @@ export const stripeRouter = router({
       const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         // No customer — Stripe will collect email at checkout
-        customer_creation: "always",
         allow_promotion_codes: true,
         phone_number_collection: { enabled: true },
         metadata: {
