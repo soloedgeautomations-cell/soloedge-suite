@@ -184,8 +184,7 @@ Return only one valid JSON object with this exact schema:
   "description": string,
   "suggested_action": string,
   "language_detected": string,
-  "english_summary": string,
-  "spanish_summary": string
+  "english_summary": string
 }
 
 CRITICAL RULES — FOLLOW EXACTLY:
@@ -200,7 +199,6 @@ CRITICAL RULES — FOLLOW EXACTLY:
 - "job_type" may be: demo request, communication system inquiry, scheduling inquiry, email support inquiry, roofing, plumbing, HVAC, electrical, remodeling, general construction, quote request, or other.
 - "suggested_action" should be practical based only on what was actually discussed.
 - "english_summary" must summarize only what actually happened in the call.
-- "spanish_summary" must be the Spanish equivalent of the english_summary.
 - Always return valid JSON only. No markdown.`;
 
   const userContent = `Caller phone from Twilio: ${safeText(callerNumber)}
@@ -230,9 +228,8 @@ ${transcriptText || "No transcript captured."}`;
               suggested_action: { type: "string" },
               language_detected: { type: "string" },
               english_summary: { type: "string" },
-              spanish_summary: { type: "string" },
             },
-            required: ["job_type", "location", "customer_phone", "description", "suggested_action", "language_detected", "english_summary", "spanish_summary"],
+            required: ["job_type", "location", "customer_phone", "description", "suggested_action", "language_detected", "english_summary"],
             additionalProperties: false,
           },
         },
@@ -250,7 +247,7 @@ ${transcriptText || "No transcript captured."}`;
       suggestedAction: safeText(parsed.suggested_action),
       languageDetected: safeText(parsed.language_detected, safeText(language)),
       englishSummary: safeText(parsed.english_summary),
-      spanishSummary: safeText(parsed.spanish_summary),
+      spanishSummary: "",
       rawTranscript: transcriptText || "No transcript captured.",
     };
   } catch (err) {
@@ -267,38 +264,32 @@ ${transcriptText || "No transcript captured."}`;
       suggestedAction: "Return call or follow up to schedule a demo.",
       languageDetected: safeText(language),
       englishSummary: fallback,
-      spanishSummary: "La persona llamó al demo de recepcionista con IA de SoloEdge. Se necesita seguimiento.",
+      spanishSummary: "",
       rawTranscript: transcriptLines.join("\n") || "No transcript captured.",
     };
   }
 }
 
 function formatTelegramReport(lead: LeadSummary, callerNumber: string): string {
-  const rawSection = lead.rawTranscript && lead.rawTranscript !== "No transcript captured."
-    ? `\n\n<b>📝 Raw Transcript:</b>\n${lead.rawTranscript.slice(0, 2000)}`
-    : "\n\n<i>No transcript captured — caller may have hung up quickly.</i>";
+  const hasTranscript = lead.rawTranscript && lead.rawTranscript !== "No transcript captured.";
+  const transcriptSection = hasTranscript
+    ? `\n\n📝 <b>Full Transcript:</b>\n<i>${lead.rawTranscript.slice(0, 2500)}</i>`
+    : "\n\n<i>⚠️ No transcript captured — caller may have hung up before Riley could respond.</i>";
 
   return [
-    "📞 <b>NEW CALL SUMMARY</b>",
-    "Source: SoloEdge AI Receptionist",
+    "📞 <b>NEW CALL — SoloEdge Riley</b>",
     "",
-    `<b>Type:</b> ${lead.jobType}`,
-    `<b>Location:</b> ${lead.location}`,
-    `<b>Caller Phone:</b> ${lead.customerPhone || callerNumber}`,
-    `<b>Language:</b> ${lead.languageDetected}`,
+    `🔧 <b>Type:</b> ${lead.jobType}`,
+    `📍 <b>Location:</b> ${lead.location}`,
+    `📱 <b>Caller:</b> ${lead.customerPhone || callerNumber}`,
+    `🌐 <b>Language:</b> ${lead.languageDetected}`,
     "",
-    "<b>Description:</b>",
-    lead.description,
+    `📋 <b>What Happened:</b>\n${lead.description}`,
     "",
-    "<b>Suggested Action:</b>",
-    lead.suggestedAction,
+    `✅ <b>Suggested Action:</b>\n${lead.suggestedAction}`,
     "",
-    "<b>English Summary:</b>",
-    lead.englishSummary,
-    "",
-    "<b>Spanish Summary:</b>",
-    lead.spanishSummary,
-    rawSection,
+    `💬 <b>Summary:</b>\n${lead.englishSummary}`,
+    transcriptSection,
   ].join("\n");
 }
 
