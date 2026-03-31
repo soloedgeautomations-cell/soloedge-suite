@@ -134,6 +134,32 @@ export default function Settings() {
     onError: () => toast.error("Failed to disconnect Telegram."),
   });
 
+  // ── Forwarding state ──────────────────────────────────────────────────────────
+  const { data: fwdStatus, refetch: refetchFwd } = trpc.forwarding.getStatus.useQuery(undefined, { enabled: isAuthenticated });
+  const [fwdPhone, setFwdPhone] = useState("");
+  const [fwdEnabled, setFwdEnabled] = useState(false);
+  const [fwdConsentChecked, setFwdConsentChecked] = useState(false);
+  const [fwdEditing, setFwdEditing] = useState(false);
+  // Sync fetched data into local state
+  useEffect(() => {
+    if (fwdStatus) {
+      setFwdPhone(fwdStatus.phone ?? "");
+      setFwdEnabled(fwdStatus.enabled ?? false);
+    }
+  }, [fwdStatus]);
+  const saveFwd = trpc.forwarding.save.useMutation({
+    onSuccess: () => {
+      refetchFwd();
+      setFwdEditing(false);
+      toast.success("Forwarding settings saved.");
+    },
+    onError: () => toast.error("Failed to save. Please try again."),
+  });
+  const toggleFwd = trpc.forwarding.toggle.useMutation({
+    onSuccess: () => { refetchFwd(); },
+    onError: () => toast.error("Failed to update forwarding."),
+  });
+
   const NAV_SECTIONS = [
     { id: "profile" as const, icon: <User size={16} />, label: "Profile" },
     { id: "language" as const, icon: <Globe size={16} />, label: "Language" },
@@ -340,6 +366,132 @@ export default function Settings() {
             {/* Integrations — Google Calendar */}
             {activeSection === "integrations" && (
               <div className="space-y-4">
+
+                {/* ── Personal Cell Phone Forwarding ─────────────────────────────── */}
+                <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
+                  <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
+                    <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-green-500 to-emerald-600 flex items-center justify-center shadow-md shadow-green-200 flex-shrink-0">
+                      <Smartphone size={16} className="text-white" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h2 className="font-display text-base font-bold text-gray-900">Forward Messages to My Phone</h2>
+                      <p className="text-xs text-gray-400 mt-0.5">Get Riley's messages and notifications sent to your personal cell phone via SMS.</p>
+                    </div>
+                    {fwdEnabled ? (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                        <CheckCircle2 size={12} /> Active
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1.5 text-xs font-semibold text-gray-500 bg-gray-100 border border-gray-200 px-2.5 py-1 rounded-full flex-shrink-0">
+                        <XCircle size={12} /> Off
+                      </span>
+                    )}
+                  </div>
+
+                  <div className="p-5 space-y-4">
+                    {/* Toggle row */}
+                    <div className="flex items-center justify-between p-4 rounded-xl bg-gray-50 border border-gray-200">
+                      <div className="flex-1 min-w-0 pr-4">
+                        <div className="text-sm font-semibold text-gray-900">Forward all Riley messages and notifications to my personal cell phone</div>
+                        <div className="text-xs text-gray-400 mt-0.5">Missed calls, new leads, booking confirmations, and urgent alerts.</div>
+                      </div>
+                      <button
+                        onClick={() => {
+                          if (!fwdPhone) {
+                            setFwdEditing(true);
+                            toast("Enter your phone number first.");
+                            return;
+                          }
+                          const newVal = !fwdEnabled;
+                          setFwdEnabled(newVal);
+                          toggleFwd.mutate({ enabled: newVal });
+                        }}
+                        className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+                          fwdEnabled ? "bg-green-500" : "bg-gray-300"
+                        }`}
+                      >
+                        <span className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                          fwdEnabled ? "translate-x-5" : "translate-x-0"
+                        }`} />
+                      </button>
+                    </div>
+
+                    {/* Phone number input */}
+                    {(!fwdPhone || fwdEditing) ? (
+                      <div className="space-y-3">
+                        <label className="block text-sm font-semibold text-gray-700">Your personal cell phone number</label>
+                        <div className="flex gap-2">
+                          <input
+                            type="tel"
+                            value={fwdPhone}
+                            onChange={e => setFwdPhone(e.target.value)}
+                            placeholder="+1 (512) 555-0100"
+                            className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                          />
+                        </div>
+
+                        {/* TCPA Consent */}
+                        <div className="bg-amber-50 border border-amber-200 rounded-xl p-4">
+                          <div className="text-xs font-semibold text-amber-800 mb-2">Required Consent</div>
+                          <label className="flex items-start gap-3 cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={fwdConsentChecked}
+                              onChange={e => setFwdConsentChecked(e.target.checked)}
+                              className="mt-0.5 h-4 w-4 rounded border-amber-300 text-amber-600 focus:ring-amber-500 flex-shrink-0"
+                            />
+                            <span className="text-xs text-amber-700 leading-relaxed">
+                              By enabling forwarding, I consent to receiving automated SMS messages from SoloEdge/Riley on this number. I can turn this off at any time. Message and data rates may apply. This complies with TCPA regulations.
+                            </span>
+                          </label>
+                        </div>
+
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => {
+                              if (!fwdConsentChecked) {
+                                toast.error("Please check the consent box to continue.");
+                                return;
+                              }
+                              if (!fwdPhone.trim()) {
+                                toast.error("Please enter a phone number.");
+                                return;
+                              }
+                              saveFwd.mutate({ phone: fwdPhone.trim(), enabled: true });
+                            }}
+                            disabled={saveFwd.isPending || !fwdConsentChecked}
+                            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-green-600 hover:bg-green-700 text-white text-sm font-semibold transition-all disabled:opacity-50 shadow-md shadow-green-200"
+                          >
+                            {saveFwd.isPending ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
+                            Save & Enable Forwarding
+                          </button>
+                          {fwdEditing && fwdPhone && (
+                            <button
+                              onClick={() => setFwdEditing(false)}
+                              className="px-4 py-2.5 rounded-xl border border-gray-200 text-gray-500 text-sm font-medium hover:bg-gray-50 transition-all"
+                            >
+                              Cancel
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-between p-3 rounded-xl bg-gray-50 border border-gray-200">
+                        <div>
+                          <div className="text-xs text-gray-400">Forwarding to</div>
+                          <div className="text-sm font-semibold text-gray-900">{fwdPhone}</div>
+                        </div>
+                        <button
+                          onClick={() => setFwdEditing(true)}
+                          className="text-xs text-blue-600 hover:text-blue-700 font-medium px-3 py-1.5 rounded-lg hover:bg-blue-50 transition-all"
+                        >
+                          Change
+                        </button>
+                      </div>
+                    )}
+                  </div>
+                </div>
+
                 {/* Google Calendar card */}
                 <div className="bg-white rounded-2xl border border-gray-200 shadow-sm overflow-hidden">
                   <div className="px-5 py-4 border-b border-gray-100 flex items-center gap-3">
@@ -455,8 +607,8 @@ export default function Settings() {
                       </svg>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="font-display text-base font-bold text-gray-900">Telegram</h2>
-                      <p className="text-xs text-gray-400 mt-0.5">Let Riley answer messages in your Telegram chat.</p>
+                      <h2 className="font-display text-base font-bold text-gray-900">Connect Telegram</h2>
+                      <p className="text-xs text-gray-400 mt-0.5">Or connect Telegram to avoid additional SMS regulatory steps — Riley will answer messages here too.</p>
                     </div>
                     {tgConnected ? (
                       <span className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full flex-shrink-0">

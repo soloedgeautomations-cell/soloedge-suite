@@ -27,6 +27,9 @@ export const users = mysqlTable("users", {
   assignedPhoneNumber: varchar("assignedPhoneNumber", { length: 32 }), // Twilio number provisioned on signup
   tempPassword: varchar("tempPassword", { length: 128 }), // one-time password for new auto-created accounts
   magicLoginToken: varchar("magicLoginToken", { length: 512 }), // short-lived JWT for guest post-checkout auto-login
+  // ── Message forwarding ──────────────────────────────────────────────
+  forwardingPhone: varchar("forwardingPhone", { length: 32 }),      // personal cell for SMS forwarding
+  forwardingEnabled: boolean("forwardingEnabled").default(false),  // TCPA-consented forwarding toggle
   // ── Telegram integration ──────────────────────────────────────────────────
   telegramChatId: varchar("telegramChatId", { length: 64 }),         // Telegram chat_id after successful connect
   telegramConnectToken: varchar("telegramConnectToken", { length: 128 }), // one-time deep-link token

@@ -797,6 +797,51 @@ export const appRouter = router({
       return { success: true };
     }),
   }),
+
+  // ─── Message Forwarding ──────────────────────────────────────────────────────────
+  forwarding: router({
+    /** Get current forwarding settings for the logged-in user */
+    getStatus: protectedProcedure.query(async ({ ctx }) => {
+      const db = await getDb();
+      if (!db) return { enabled: false, phone: null as string | null };
+      const rows = await db
+        .select({ forwardingEnabled: users.forwardingEnabled, forwardingPhone: users.forwardingPhone })
+        .from(users)
+        .where(eq(users.id, ctx.user.id))
+        .limit(1);
+      return {
+        enabled: rows[0]?.forwardingEnabled ?? false,
+        phone: rows[0]?.forwardingPhone ?? null,
+      };
+    }),
+
+    /** Save forwarding phone number and enable forwarding (TCPA consent captured on frontend) */
+    save: protectedProcedure
+      .input(z.object({
+        phone: z.string().min(7).max(32),
+        enabled: z.boolean(),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        await db.update(users)
+          .set({ forwardingPhone: input.phone, forwardingEnabled: input.enabled })
+          .where(eq(users.id, ctx.user.id));
+        return { success: true };
+      }),
+
+    /** Toggle forwarding on/off without changing the phone number */
+    toggle: protectedProcedure
+      .input(z.object({ enabled: z.boolean() }))
+      .mutation(async ({ input, ctx }) => {
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        await db.update(users)
+          .set({ forwardingEnabled: input.enabled })
+          .where(eq(users.id, ctx.user.id));
+        return { success: true };
+      }),
+  }),
 });
 
 export type AppRouter = typeof appRouter;
