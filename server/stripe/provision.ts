@@ -58,7 +58,7 @@ async function searchAvailableNumber(preferredAreaCode = "512"): Promise<string 
   ];
 
   // Deduplicate while preserving order
-  const queue = [...new Set(areaCodesToTry)];
+  const queue = Array.from(new Set(areaCodesToTry));
 
   for (const areaCode of queue) {
     try {

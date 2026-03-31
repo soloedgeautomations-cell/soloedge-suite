@@ -106,7 +106,7 @@ export const stripeRouter = router({
       const tier = getActiveTierMap()[input.tierId];
       if (!tier) throw new Error(`Unknown tier: ${input.tierId}`);
 
-      const db = await getDb();ipe.checkout.sessions.create({
+      const session = await stripe.checkout.sessions.create({
         mode: "subscription",
         // No customer — Stripe will collect email at checkout
         customer_creation: "always",
