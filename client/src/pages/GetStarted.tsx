@@ -281,16 +281,17 @@ export default function GetStarted() {
           </h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
-              { icon: Phone, label: "Dedicated Riley phone number" },
-              { icon: MessageSquare, label: "SMS & call notifications" },
-              { icon: Calendar, label: "Google Calendar ready" },
-              { icon: BarChart2, label: "Monthly summary report" },
-            ].map(({ icon: Icon, label }) => (
+              { icon: Phone,         label: "Dedicated Riley Phone Number",        desc: "Your own dedicated phone number that Riley answers 24/7. No sharing, no confusion." },
+              { icon: MessageSquare, label: "SMS & Call Notifications",            desc: "Instant SMS alerts for every call, booking, or lead. Know what's happening immediately. (Telegram support coming soon)" },
+              { icon: Calendar,      label: "Google Calendar Appointment Setting", desc: "Riley books appointments directly into your Google Calendar in real time. No double-bookings, no manual entry needed." },
+              { icon: BarChart2,     label: "Monthly Summary Report",              desc: "Clear monthly report showing calls answered, leads captured, appointments booked, and time saved." },
+            ].map(({ icon: Icon, label, desc }) => (
               <div key={label} className="flex flex-col items-center text-center p-4 bg-white rounded-xl border border-gray-200 shadow-sm">
                 <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center mb-3">
                   <Icon className="w-5 h-5 text-blue-600" />
                 </div>
-                <span className="text-sm text-gray-600 font-medium">{label}</span>
+                <span className="text-sm text-gray-800 font-semibold mb-1">{label}</span>
+                <span className="text-xs text-gray-500 leading-relaxed">{desc}</span>
               </div>
             ))}
           </div>
