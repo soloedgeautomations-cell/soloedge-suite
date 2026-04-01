@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { toast } from "sonner";
 import { Check, Zap, Shield, Crown, ArrowRight, Phone } from "lucide-react";
 import SectionBackground from "@/components/SectionBackground";
 import { trpc } from "@/lib/trpc";
@@ -81,6 +82,24 @@ function fmt(cents: number) {
 
 export default function PricingSection() {
   const [hoveredId, setHoveredId] = useState<string | null>(null);
+  const [checkingOut, setCheckingOut] = useState<string | null>(null);
+  const createGuestCheckout = trpc.stripe.createGuestCheckout.useMutation();
+
+  async function handleCheckout(tierId: string) {
+    setCheckingOut(tierId);
+    toast.info("Redirecting to secure checkout…");
+    try {
+      const { url } = await createGuestCheckout.mutateAsync({
+        tierId,
+        origin: window.location.origin,
+      });
+      window.location.href = url;
+    } catch {
+      toast.error("Could not start checkout. Please try again.");
+    } finally {
+      setCheckingOut(null);
+    }
+  }
 
   // Attempt to load live tier data from server (falls back to static)
   const { data: serverTiers } = trpc.stripe.getTiers.useQuery(undefined, {
@@ -199,9 +218,10 @@ export default function PricingSection() {
                 </ul>
 
                 {/* CTA */}
-                <a
-                  href="#contact"
-                  className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all ${
+                <button
+                  onClick={() => handleCheckout(plan.id)}
+                  disabled={checkingOut === plan.id}
+                  className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-60 disabled:cursor-wait ${
                     plan.popular
                       ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200"
                       : plan.id === "premium"
@@ -209,9 +229,9 @@ export default function PricingSection() {
                       : "bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
                   }`}
                 >
-                  {plan.cta}
-                  <ArrowRight size={14} />
-                </a>
+                  {checkingOut === plan.id ? "Redirecting…" : plan.cta}
+                  {checkingOut !== plan.id && <ArrowRight size={14} />}
+                </button>
 
                 <a
                   href="tel:+17372595692"

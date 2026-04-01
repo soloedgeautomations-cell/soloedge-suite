@@ -101,7 +101,7 @@ export default function Navbar() {
 
             {/* CTA */}
             <a
-              href="#contact"
+              href="/get-started"
               className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-md shadow-blue-200"
             >
               {t.nav.bookSession}
@@ -151,7 +151,7 @@ export default function Navbar() {
               {t.nav.dashboard}
             </Link>
             <a
-              href="#contact"
+              href="/get-started"
               onClick={() => setMobileOpen(false)}
               className="mt-2 py-3 px-4 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-center transition-all"
             >

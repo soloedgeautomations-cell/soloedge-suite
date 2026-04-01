@@ -130,7 +130,7 @@ export default function IndustriesSection() {
                   </ul>
 
                   <a
-                    href="#contact"
+                    href="/get-started"
                     className={`inline-flex items-center gap-1.5 text-sm font-semibold ${ind.accent} hover:opacity-70 transition-opacity`}
                   >
                     Get started for {ind.title.split(" ")[0]}

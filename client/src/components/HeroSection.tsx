@@ -266,7 +266,7 @@ export default function HeroSection() {
           {/* CTAs */}
           <div className="flex flex-wrap gap-3">
             <a
-              href="#contact"
+              href="/get-started"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-900/40 active:scale-95"
             >
               {t.hero.cta}
