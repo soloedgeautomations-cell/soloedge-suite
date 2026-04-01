@@ -161,7 +161,7 @@ export default function HeroSection() {
       </div>
 
       <div className="relative container py-16 md:py-24">
-        <div className="max-w-2xl">
+        <div className="max-w-full">
           {/* Live badge */}
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-white text-xs font-semibold mb-6">
             <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />

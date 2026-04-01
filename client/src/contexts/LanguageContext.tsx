@@ -56,8 +56,8 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: "SoloEdge · Online Now",
-      headline1: "Built in Austin for Texas businesses.",
-      headline2: "Every edge covered.",
+      headline1: "SoloEdge Automations — Austin built for Texas businesses!",
+      headline2: "SoloEdge Has every Edge covered!",
       subtext: "SoloEdge gives you the power of a fully staffed front-office without the overhead!!",
       cta: "See Pricing →",
       ctaSecondary: "Get Started Free",
