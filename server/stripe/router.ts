@@ -67,12 +67,11 @@ export const stripeRouter = router({
           tier_id: tier.id,
           tier_name: tier.name,
         },
+        // One-time setup fee billed on the first invoice alongside the subscription
+        add_invoice_items: [
+          { price: tier.setupPriceId, quantity: 1 },
+        ],
         line_items: [
-          // One-time setup fee (added as first invoice item)
-          {
-            price: tier.setupPriceId,
-            quantity: 1,
-          },
           // Recurring monthly subscription
           {
             price: tier.monthlyPriceId,
@@ -117,8 +116,11 @@ export const stripeRouter = router({
           tier_name: tier.name,
           guest_checkout: "true",
         },
-        line_items: [
+        // One-time setup fee billed on the first invoice alongside the subscription
+        add_invoice_items: [
           { price: tier.setupPriceId, quantity: 1 },
+        ],
+        line_items: [
           { price: tier.monthlyPriceId, quantity: 1 },
         ],
         subscription_data: {
