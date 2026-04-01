@@ -94,7 +94,8 @@ export default function PricingSection() {
         origin: window.location.origin,
       });
       window.location.href = url;
-    } catch {
+    } catch (error) {
+      console.error("Checkout error:", error);
       toast.error("Could not start checkout. Please try again.");
     } finally {
       setCheckingOut(null);
