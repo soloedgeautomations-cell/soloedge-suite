@@ -52,15 +52,15 @@ const translations: Record<Language, Translations> = {
   en: {
     nav: {
       services: "Services", pricing: "Pricing", industries: "Industries",
-      contact: "Contact", dashboard: "Dashboard", bookSession: "Talk to Us",
+      contact: "Contact", dashboard: "Dashboard", bookSession: "Get Started",
     },
     hero: {
       badge: "SoloEdge · Online Now",
       headline1: "One person.",
       headline2: "Every edge covered.",
       subtext: "SoloEdge gives solo operators and small crews the same communication power as a full office — without the overhead.",
-      cta: "See How It Works →",
-      ctaSecondary: "Talk to the Team",
+      cta: "See Pricing →",
+      ctaSecondary: "Get Started Free",
       greeting: "What's taking up too much of your time?",
       chips: [
         { label: "Missed calls while on the job", key: "calls" },

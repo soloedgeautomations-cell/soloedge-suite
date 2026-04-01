@@ -19,10 +19,10 @@ export default function Navbar() {
   const currentLang = LANGUAGES.find(l => l.code === lang)!;
 
   const navLinks = [
-    { label: t.nav.services, href: "#services" },
-    { label: t.nav.industries, href: "#industries" },
-    { label: t.nav.pricing, href: "#pricing" },
-    { label: t.nav.contact, href: "#contact" },
+    { label: t.nav.services, href: "#services", highlight: false },
+    { label: t.nav.industries, href: "#industries", highlight: false },
+    { label: t.nav.pricing, href: "#pricing", highlight: true },
+    { label: t.nav.contact, href: "#contact", highlight: false },
   ];
 
   return (
@@ -45,7 +45,11 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
-                className="text-sm text-gray-600 hover:text-blue-700 transition-colors font-medium"
+                className={`text-sm transition-colors font-medium ${
+                  link.highlight
+                    ? "text-blue-700 font-bold hover:text-blue-800"
+                    : "text-gray-600 hover:text-blue-700"
+                }`}
               >
                 {link.label}
               </a>

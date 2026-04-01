@@ -141,6 +141,10 @@ export default function PricingSection() {
             Every plan includes a dedicated phone number, 24/7 call answering, and zero-touch setup.
             No long-term contracts. Cancel anytime.
           </p>
+          {/* Action tagline */}
+          <p className="mt-5 text-base font-semibold text-gray-800">
+            Ready to get your own Riley? Choose your plan below and be live in 24–48 hours.
+          </p>
         </div>
 
         {/* Cards */}
@@ -280,6 +284,18 @@ export default function PricingSection() {
             (737) 259-5692
           </a>
         </p>
+
+        {/* Bottom CTA */}
+        <div className="text-center mt-6">
+          <a
+            href="/get-started"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all shadow-lg shadow-blue-200 active:scale-95"
+          >
+            Get Riley Now
+            <ArrowRight size={15} />
+          </a>
+          <p className="text-xs text-gray-400 mt-2">Setup takes 24–48 hours. No contracts.</p>
+        </div>
       </div>
     </section>
   );

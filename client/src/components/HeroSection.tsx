@@ -266,23 +266,23 @@ export default function HeroSection() {
           {/* CTAs */}
           <div className="flex flex-wrap gap-3">
             <a
-              href="/get-started"
+              href="#pricing"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-900/40 active:scale-95"
             >
               {t.hero.cta}
             </a>
             <a
-              href="tel:+17372595692"
+              href="/get-started"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white/15 backdrop-blur-sm border border-white/30 hover:bg-white/25 text-white font-semibold text-sm transition-all active:scale-95"
+            >
+              {t.hero.ctaSecondary}
+            </a>
+            <a
+              href="tel:+17372595692"
+              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white/80 font-medium text-sm transition-all active:scale-95"
             >
               <Phone size={15} />
               (737) 259-5692
-            </a>
-            <a
-              href="#services"
-              className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white/80 font-medium text-sm transition-all active:scale-95"
-            >
-              {t.hero.ctaSecondary}
             </a>
           </div>
         </div>

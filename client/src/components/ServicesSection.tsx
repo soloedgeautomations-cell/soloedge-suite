@@ -59,6 +59,17 @@ export default function ServicesSection() {
             );
           })}
         </div>
+
+        {/* Funnel CTA */}
+        <div className="text-center mt-10">
+          <a
+            href="#pricing"
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md shadow-blue-200"
+          >
+            See Pricing &amp; Get Started
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </section>
   );

@@ -6,6 +6,7 @@ import PricingSection from "@/components/PricingSection";
 import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import FloatingRiley from "@/components/FloatingRiley";
+import FloatingCTA from "@/components/FloatingCTA";
 
 export default function Home() {
   return (
@@ -18,6 +19,7 @@ export default function Home() {
       <ContactSection />
       <Footer />
       <FloatingRiley />
+      <FloatingCTA />
     </div>
   );
 }
