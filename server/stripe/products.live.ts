@@ -32,17 +32,17 @@ export const LIVE_PRICE_IDS: Record<string, {
 }> = {
   "starter": {
     productId:      "prod_UFiKRwX1KTI28J",
-    setupPriceId:   "price_1THCtsFFvpsf1OXSMfxzp1FS",
+    setupPriceId:   "price_1THXcqFFvpsf1OXSmfvRDipt",
     monthlyPriceId: "price_1THCtuFFvpsf1OXSVob72B7h",
   },
   "pro": {
     productId:      "prod_UFiKVyyiwk6lCB",
-    setupPriceId:   "price_1THCtxFFvpsf1OXSY31tM10q",
+    setupPriceId:   "price_1THXcsFFvpsf1OXSgFnk9Prg",
     monthlyPriceId: "price_1THCtzFFvpsf1OXSGmJIIagA",
   },
   "premium": {
     productId:      "prod_UFiKJMaO0IT2c8",
-    setupPriceId:   "price_1THCu2FFvpsf1OXSDa5hMeWk",
+    setupPriceId:   "price_1THXctFFvpsf1OXSrjB8tg7t",
     monthlyPriceId: "price_1THCu3FFvpsf1OXSC037wkec",
   },
 };
