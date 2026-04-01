@@ -6,6 +6,13 @@ import { trpc } from "@/lib/trpc";
 
 const CHIP_ICONS = [Phone, Globe, Calendar, Mail, Users];
 
+const INDUSTRY_TEXT: Record<string, string> = {
+  construction: "Riley answers job-site calls, books subs, coordinates crews in English & Spanish, and sends daily progress summaries — so you stay on the tools.",
+  gym: "Riley handles membership inquiries, books classes and personal training sessions, manages cancellations, and follows up with trial sign-ups — 24/7.",
+  massage: "Riley books appointments, sends reminders, handles reschedules, and upsells packages — so your table stays full without you touching the phone.",
+  corporate: "Riley answers your main line professionally, schedules meetings, triages email, and coordinates visitors — like a front-desk team that never calls in sick.",
+};
+
 const INDUSTRIES = [
   { key: "construction" as const, label: "Construction" },
   { key: "gym" as const, label: "Gym & Fitness" },
@@ -60,9 +67,11 @@ export default function HeroSection() {
         }
       }, 16);
     },
-    onError: () => {
+    onError: (err) => {
+      console.error("[heroChat] LLM error:", err);
       setIsLoadingAI(false);
-      // Fallback to static response
+      setIsTyping(false);
+      // Fallback to static response — never crash the page
       const fallback = t.hero.responses[activeChip ?? "calls"] ?? "";
       setDisplayedResponse(fallback);
     },
@@ -172,7 +181,7 @@ export default function HeroSection() {
           </p>
 
           {/* Industry tabs */}
-          <div className="flex flex-wrap gap-2 mb-8">
+          <div className="flex flex-wrap gap-2 mb-3">
             {INDUSTRIES.map((industry, idx) => (
               <button
                 key={industry.key}
@@ -187,6 +196,11 @@ export default function HeroSection() {
               </button>
             ))}
           </div>
+
+          {/* Dynamic industry description */}
+          <p className="text-sm text-white/75 max-w-md mb-6 leading-relaxed transition-all duration-300">
+            {INDUSTRY_TEXT[INDUSTRIES[activeIndustry].key]}
+          </p>
 
           {/* Riley Demo Card — glass, no white box */}
           <div className={`backdrop-blur-md bg-white/12 rounded-2xl p-5 mb-6 max-w-xl border transition-all duration-500 shadow-2xl ${

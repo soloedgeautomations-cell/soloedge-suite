@@ -56,9 +56,9 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: "SoloEdge · Online Now",
-      headline1: "One person.",
+      headline1: "Built in Austin for Texas businesses.",
       headline2: "Every edge covered.",
-      subtext: "SoloEdge gives solo operators and small crews the same communication power as a full office — without the overhead.",
+      subtext: "Riley gives you the power of a full Front-Office without the overhead!",
       cta: "See Pricing →",
       ctaSecondary: "Get Started Free",
       greeting: "What's taking up too much of your time?",
