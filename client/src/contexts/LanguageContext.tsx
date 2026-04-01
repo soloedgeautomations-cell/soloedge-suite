@@ -58,7 +58,7 @@ const translations: Record<Language, Translations> = {
       badge: "SoloEdge · Online Now",
       headline1: "Built in Austin for Texas businesses.",
       headline2: "Every edge covered.",
-      subtext: "Riley gives you the power of a full Front-Office without the overhead!",
+      subtext: "SoloEdge gives you the power of a fully staffed front-office without the overhead!!",
       cta: "See Pricing →",
       ctaSecondary: "Get Started Free",
       greeting: "What's taking up too much of your time?",
