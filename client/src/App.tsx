@@ -15,6 +15,7 @@ import GetStarted from "./pages/GetStarted";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Billing from "./pages/Billing";
 import Login from "./pages/Login";
+import ForTeams from "./pages/ForTeams";
 
 function Router() {
   return (
@@ -29,6 +30,7 @@ function Router() {
       <Route path="/app/checkout-success" component={CheckoutSuccess} />
       <Route path="/get-started" component={GetStarted} />
       <Route path="/admin" component={AdminPanel} />
+      <Route path="/for-teams-enterprises" component={ForTeams} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
