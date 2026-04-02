@@ -106,7 +106,7 @@ export default function Navbar() {
             {/* CTA */}
             <a
               href="/get-started"
-              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-all shadow-md shadow-blue-200"
+              className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 hover:scale-105 hover:shadow-lg hover:shadow-blue-400/40 text-white text-sm font-semibold transition-all shadow-md shadow-blue-200 active:scale-95"
             >
               {t.nav.bookSession}
             </a>
