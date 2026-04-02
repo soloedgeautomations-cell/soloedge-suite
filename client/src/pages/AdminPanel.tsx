@@ -2,12 +2,12 @@ import { useState } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { trpc } from "@/lib/trpc";
 import { CDN } from "../../../shared/assets";
-import { Users, BarChart3, Settings, LogOut, Shield, RefreshCw } from "lucide-react";
+import { Users, BarChart3, Settings, LogOut, Shield, RefreshCw, Zap } from "lucide-react";
 import { Link } from "wouter";
 
 export default function AdminPanel() {
   const { user, loading, isAuthenticated, logout } = useAuth();
-  const [activeTab, setActiveTab] = useState<"clients" | "stats" | "settings">("clients");
+  const [activeTab, setActiveTab] = useState<"clients" | "provision" | "stats" | "settings">("clients");
 
   const { data: clients, refetch: refetchClients } = trpc.admin.getClients.useQuery(undefined, {
     enabled: isAuthenticated && user?.role === "admin",
@@ -20,6 +20,8 @@ export default function AdminPanel() {
   });
 
   const upsertClient = trpc.admin.upsertClient.useMutation({ onSuccess: () => refetchClients() });
+  const manualProvision = trpc.admin.manualProvision.useMutation();
+  const [provForm, setProvForm] = useState({ email: "", name: "", phone: "", tier: "starter" as "starter" | "pro" | "premium", trialDays: 14 });
 
   if (loading) {
     return (
@@ -83,6 +85,7 @@ export default function AdminPanel() {
         <div className="flex items-center gap-1 p-1 rounded-xl bg-gray-100 border border-gray-200 mb-5 w-fit">
           {[
             { key: "clients", label: "Clients", icon: Users },
+            { key: "provision", label: "Provision", icon: Zap },
             { key: "stats", label: "Analytics", icon: BarChart3 },
             { key: "settings", label: "Settings", icon: Settings },
           ].map(tab => {
@@ -183,6 +186,33 @@ export default function AdminPanel() {
           </div>
         )}
 
+        {activeTab === "provision" && (
+          <div className="bg-white rounded-2xl p-6 border border-gray-200 shadow-sm">
+            <h3 className="text-sm font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <Zap size={16} className="text-blue-600" />
+              Manual Provision (Free Trial)
+            </h3>
+            <form onSubmit={async (e) => {
+              e.preventDefault();
+              await manualProvision.mutateAsync(provForm);
+              alert("Provisioned! Check email/SMS.");
+              setProvForm({ email: "", name: "", phone: "", tier: "starter", trialDays: 14 });
+            }} className="space-y-3">
+              <input type="email" placeholder="Email" value={provForm.email} onChange={e => setProvForm({...provForm, email: e.target.value})} required className="w-full px-3 py-2 border rounded-lg" />
+              <input type="text" placeholder="Name" value={provForm.name} onChange={e => setProvForm({...provForm, name: e.target.value})} required className="w-full px-3 py-2 border rounded-lg" />
+              <input type="tel" placeholder="Phone (optional)" value={provForm.phone} onChange={e => setProvForm({...provForm, phone: e.target.value})} className="w-full px-3 py-2 border rounded-lg" />
+              <select value={provForm.tier} onChange={e => setProvForm({...provForm, tier: e.target.value as any})} className="w-full px-3 py-2 border rounded-lg">
+                <option value="starter">Starter</option>
+                <option value="pro">Pro</option>
+                <option value="premium">Premium</option>
+              </select>
+              <input type="number" placeholder="Trial days" value={provForm.trialDays} onChange={e => setProvForm({...provForm, trialDays: +e.target.value})} min="0" max="90" className="w-full px-3 py-2 border rounded-lg" />
+              <button type="submit" disabled={manualProvision.isPending} className="w-full px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold disabled:opacity-50">
+                {manualProvision.isPending ? "Provisioning..." : "Provision Now"}
+              </button>
+            </form>
+          </div>
+        )}
         {activeTab === "stats" && (
           <div className="bg-white rounded-2xl p-8 text-center border border-gray-200 shadow-sm">
             <BarChart3 size={32} className="text-gray-300 mx-auto mb-3" />

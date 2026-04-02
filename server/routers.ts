@@ -13,6 +13,8 @@ import { eq, desc, and, gte, lte, sql } from "drizzle-orm";
 import { createCalendarEvent, updateCalendarEvent, deleteCalendarEvent, isConnected } from "./googleCalendar";
 import { stripeRouter } from "./stripe/router";
 import { telegramRouter } from "./telegram/router";
+import { provisionTwilioNumber, savePhoneToUser } from "./stripe/provision";
+import { sendWelcomeSms, sendWelcomeEmail } from "./stripe/notify";
 
 // ─── Riley System Prompts (imported from shared source of truth) ─────────────
 // Edit server/prompts/riley.ts to update Riley's personality, pricing, or behavior.
@@ -914,6 +916,53 @@ export const appRouter = router({
           });
         }
         return { success: true };
+      }),
+
+    manualProvision: protectedProcedure
+      .input(z.object({
+        email: z.string().email(),
+        name: z.string(),
+        phone: z.string().optional(),
+        tier: z.enum(["starter", "pro", "premium"]),
+        trialDays: z.number().min(0).max(90).default(14),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Forbidden");
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+
+        // 1. Create user account
+        const [newUser] = await db.insert(users).values({
+          email: input.email,
+          name: input.name,
+          role: "user",
+        }).$returningId();
+
+        // 2. Provision Twilio number
+        const phoneNumber = await provisionTwilioNumber();
+        if (!phoneNumber) throw new Error("Failed to provision Twilio number");
+
+        // 3. Save to user record
+        await savePhoneToUser(newUser.id, phoneNumber);
+
+        // 4. Create subscription record (trial)
+        const planMap: Record<string, string> = { starter: "field-starter", pro: "field-pro", premium: "field-team" };
+        const trialEnd = new Date(Date.now() + input.trialDays * 24 * 60 * 60 * 1000);
+        await db.insert(subscriptions).values({
+          userId: newUser.id,
+          planId: planMap[input.tier],
+          status: "trialing",
+          trialEnd,
+        });
+
+        // 5. Send welcome SMS + email
+        const dashboardUrl = `${process.env.APP_BASE_URL || "https://soloedge.app"}/dashboard`;
+        if (input.phone) {
+          await sendWelcomeSms(input.phone, phoneNumber, input.tier, dashboardUrl);
+        }
+        await sendWelcomeEmail(input.email, input.name, input.tier, phoneNumber, dashboardUrl);
+
+        return { success: true, phoneNumber, userId: newUser.id };
       }),
   }),
 
