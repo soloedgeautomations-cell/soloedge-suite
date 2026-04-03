@@ -5,6 +5,7 @@ export const CDN = {
   logoSymbolOpaque: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/SoloEdgeLogoNoText_7bb6766a.png", // original with white bg (kept for reference)
   logoSymbolAlt: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/Gemini_Generated_Image_y23fxoy23fxoy23f_456b4f4e.png",
   logoHd: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/soloedge-logo-hd_65bec2ef.jpg",
+  logoTransparent: "https://files.manuscdn.com/user_upload_by_module/session_file/310519663484404034/mBHpXiFzaSxBkBzr.png", // full horizontal logo, transparent bg
 
   // ── Construction ─────────────────────────────────────────────────────────
   constructionTeam: "https://d2xsxph8kpxj0f.cloudfront.net/310519663484404034/FiVshgf3qfTrxVwkPzvsD3/construction-team_f8c90968.jpeg",
