@@ -13,6 +13,9 @@ import { handleGoogleConnect, handleGoogleCallback, handleGoogleStatus } from ".
 import { handleStripeWebhook } from "../stripe/webhook";
 import { handleTelegramWebhook } from "../telegram/webhook";
 import { registerGoogleAuthRoutes } from "./googleAuth";
+import { getDb } from "../db";
+import { users } from "../../drizzle/schema";
+import { eq } from "drizzle-orm";
 
 function isPortAvailable(port: number): Promise<boolean> {
   return new Promise(resolve => {
@@ -105,3 +108,49 @@ async function startServer() {
 }
 
 startServer().catch(console.error);
+
+// ─── One-time startup: link existing Twilio number to admin user ──────────────
+// Runs every boot but only updates if assignedPhoneNumber is not yet set.
+async function autoLinkAdminPhone() {
+  try {
+    const db = await getDb();
+    if (!db) return;
+    const sid = process.env.TWILIO_ACCOUNT_SID ?? "";
+    const token = process.env.TWILIO_AUTH_TOKEN ?? "";
+    if (!sid || !token) return;
+
+    // Find admin user without a phone number
+    const adminRows = await db.select({ id: users.id, phone: users.assignedPhoneNumber })
+      .from(users).where(eq(users.role, "admin")).limit(1);
+    if (!adminRows.length || adminRows[0].phone) {
+      console.log("[AutoLink] Admin already has phone:", adminRows[0]?.phone ?? "(no admin)");
+      return;
+    }
+
+    const PHONE = "+17372595692";
+    const auth = "Basic " + Buffer.from(`${sid}:${token}`).toString("base64");
+    const base = `https://api.twilio.com/2010-04-01/Accounts/${sid}`;
+    const voiceUrl = `${(process.env.APP_BASE_URL ?? "https://soloedge.app").replace(/\/+$/, "")}/api/incoming-call`;
+
+    // Get Twilio number SID
+    const searchRes = await fetch(`${base}/IncomingPhoneNumbers.json?PhoneNumber=${encodeURIComponent(PHONE)}`,
+      { headers: { Authorization: auth } });
+    const searchData = await searchRes.json() as { incoming_phone_numbers?: { sid: string }[] };
+    const phoneSid = searchData.incoming_phone_numbers?.[0]?.sid;
+    if (!phoneSid) { console.log("[AutoLink] Phone not found in Twilio account"); return; }
+
+    // Set webhook
+    await fetch(`${base}/IncomingPhoneNumbers/${phoneSid}.json`, {
+      method: "POST",
+      headers: { Authorization: auth, "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams({ VoiceUrl: voiceUrl, VoiceMethod: "POST" }).toString(),
+    });
+
+    // Save to DB
+    await db.update(users).set({ assignedPhoneNumber: PHONE }).where(eq(users.id, adminRows[0].id));
+    console.log(`[AutoLink] ✅ Linked ${PHONE} to admin user ${adminRows[0].id}, webhook → ${voiceUrl}`);
+  } catch (e) {
+    console.error("[AutoLink] Error:", e);
+  }
+}
+autoLinkAdminPhone();
