@@ -809,7 +809,7 @@ export const appRouter = router({
           ? db.select({ count: sql<number>`count(*)` }).from(leads)
           : Promise.resolve([{ count: 0 }]),
         db.select().from(subscriptions).where(and(eq(subscriptions.userId, ctx.user.id), eq(subscriptions.status, "active"))).limit(1),
-        db.select({ assignedPhoneNumber: users.assignedPhoneNumber, stripeSubscriptionStatus: users.stripeSubscriptionStatus }).from(users).where(eq(users.id, ctx.user.id)).limit(1),
+        db.select({ assignedPhoneNumber: users.assignedPhoneNumber, stripeSubscriptionStatus: users.stripeSubscriptionStatus, checklistOverride: users.checklistOverride }).from(users).where(eq(users.id, ctx.user.id)).limit(1),
         isConnected(ctx.user.id),
       ]);
 
@@ -820,11 +820,17 @@ export const appRouter = router({
         leadsTotal: Number(leadsRows[0]?.count ?? 0),
         planName: subRows[0]?.planName ?? "Field Starter",
         assignedPhoneNumber: userRows[0]?.assignedPhoneNumber ?? null,
-        // Onboarding checklist
-        hasSubscription: (userRows[0]?.stripeSubscriptionStatus === "active") || (subRows.length > 0),
-        hasPhone: !!(userRows[0]?.assignedPhoneNumber),
-        hasCalendar: calendarConnected,
-        hasFirstBooking: Number(bookingsTotalRows[0]?.count ?? 0) > 0,
+        // Onboarding checklist — admin can override any step via checklistOverride JSON
+        ...(() => {
+          let ov: Record<string, boolean> = {};
+          try { ov = JSON.parse(userRows[0]?.checklistOverride ?? "{}"); } catch {}
+          return {
+            hasSubscription: ov.hasSubscription ?? ((userRows[0]?.stripeSubscriptionStatus === "active") || (subRows.length > 0)),
+            hasPhone: ov.hasPhone ?? !!(userRows[0]?.assignedPhoneNumber),
+            hasCalendar: ov.hasCalendar ?? calendarConnected,
+            hasFirstBooking: ov.hasFirstBooking ?? (Number(bookingsTotalRows[0]?.count ?? 0) > 0),
+          };
+        })(),
       };
     }),
 
@@ -1005,10 +1011,41 @@ export const appRouter = router({
         }
         await sendWelcomeEmail(input.email, input.name, input.tier, phoneNumber, dashboardUrl);
 
-        return { success: true, phoneNumber, userId: newUser.id };
+         return { success: true, phoneNumber, userId: newUser.id };
+      }),
+
+    // List all users (for admin checklist override UI)
+    listUsers: protectedProcedure.query(async ({ ctx }) => {
+      if (ctx.user.role !== "admin") throw new Error("Forbidden");
+      const db = await getDb();
+      if (!db) throw new Error("Database unavailable");
+      return db.select({ id: users.id, email: users.email, name: users.name, assignedPhoneNumber: users.assignedPhoneNumber, checklistOverride: users.checklistOverride, role: users.role }).from(users).orderBy(users.id);
+    }),
+
+    // Set checklist override for a user
+    setChecklistOverride: protectedProcedure
+      .input(z.object({
+        userId: z.number(),
+        overrides: z.object({
+          hasSubscription: z.boolean().optional(),
+          hasPhone: z.boolean().optional(),
+          hasCalendar: z.boolean().optional(),
+          hasFirstBooking: z.boolean().optional(),
+        }),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Forbidden");
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+        // Merge with existing overrides
+        const [existing] = await db.select({ checklistOverride: users.checklistOverride }).from(users).where(eq(users.id, input.userId)).limit(1);
+        let current: Record<string, boolean> = {};
+        try { current = JSON.parse(existing?.checklistOverride ?? "{}"); } catch {}
+        const merged = { ...current, ...Object.fromEntries(Object.entries(input.overrides).filter(([, v]) => v !== undefined)) };
+        await db.update(users).set({ checklistOverride: JSON.stringify(merged) }).where(eq(users.id, input.userId));
+        return { success: true, overrides: merged };
       }),
   }),
-
   // ─── Stripe ──────────────────────────────────────────────────────────────
   stripe: stripeRouter,
 

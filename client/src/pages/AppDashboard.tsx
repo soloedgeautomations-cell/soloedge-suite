@@ -11,7 +11,7 @@ import {
   Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
   User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
   AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity, Settings as SettingsIcon,
-  CreditCard, Copy, CheckCheck, PhoneCall, Mail, ExternalLink,
+  CreditCard, Copy, CheckCheck, PhoneCall, Mail, ExternalLink, X, Sparkles,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
@@ -22,6 +22,8 @@ export default function AppDashboard() {
   const { user, loading, isAuthenticated, logout } = useAuth();
   const [activeView, setActiveView] = useState<ActiveView>(null);
   const [phoneCopied, setPhoneCopied] = useState(false);
+  const [showWizard, setShowWizard] = useState(false);
+  const [wizardStep, setWizardStep] = useState(0);
 
   const { data: stats, isLoading: statsLoading } = trpc.dashboard.stats.useQuery(undefined, {
     enabled: isAuthenticated,
@@ -271,9 +273,16 @@ export default function AppDashboard() {
             <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
               <CheckCircle2 size={15} className="text-blue-500" />
               <span className="text-sm font-semibold text-gray-900">Getting Started</span>
-              <span className="ml-auto text-xs text-gray-400">
+              <span className="ml-auto text-xs text-gray-400 mr-2">
                 {[stats.hasSubscription, stats.hasPhone, stats.hasCalendar, stats.hasFirstBooking].filter(Boolean).length}/4 complete
               </span>
+              <button
+                onClick={() => { setWizardStep(0); setShowWizard(true); }}
+                className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all"
+              >
+                <Sparkles size={11} />
+                Setup Guide
+              </button>
             </div>
             <div className="divide-y divide-gray-50">
               {[
@@ -496,6 +505,115 @@ export default function AppDashboard() {
         </div>
 
       </div>
+
+      {/* ── Onboarding Wizard Modal ────────────────────────────────────── */}
+      {showWizard && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
+            <button
+              onClick={() => setShowWizard(false)}
+              className="absolute top-4 right-4 p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all"
+            >
+              <X size={16} />
+            </button>
+
+            {/* Step indicator */}
+            <div className="flex items-center gap-2 mb-5">
+              {[0,1,2].map(i => (
+                <div key={i} className={`h-1.5 flex-1 rounded-full transition-all ${i <= wizardStep ? "bg-blue-600" : "bg-gray-200"}`} />
+              ))}
+            </div>
+
+            {wizardStep === 0 && (
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-blue-50 flex items-center justify-center mb-4">
+                  <Globe size={24} className="text-blue-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Step 1: Connect Your Business</h2>
+                <p className="text-gray-500 text-sm mb-4">Tell Riley where to find your business info so it can answer questions accurately.</p>
+                <div className="space-y-2 mb-5">
+                  <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
+                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center">
+                      <Globe size={16} className="text-gray-500 group-hover:text-blue-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">Add your website or Google listing</p>
+                      <p className="text-xs text-gray-400">Riley will learn from it automatically</p>
+                    </div>
+                    <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-blue-500" />
+                  </a>
+                </div>
+                <button
+                  onClick={() => setWizardStep(1)}
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all"
+                >
+                  Next: Connect Calendar →
+                </button>
+                <button onClick={() => setWizardStep(1)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">Skip for now</button>
+              </div>
+            )}
+
+            {wizardStep === 1 && (
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-green-50 flex items-center justify-center mb-4">
+                  <Calendar size={24} className="text-green-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Step 2: Connect Google Calendar</h2>
+                <p className="text-gray-500 text-sm mb-4">Riley will book appointments directly into your calendar — no double-booking, no missed calls.</p>
+                <div className="space-y-2 mb-5">
+                  <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all group">
+                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-green-100 flex items-center justify-center">
+                      <Calendar size={16} className="text-gray-500 group-hover:text-green-600" />
+                    </div>
+                    <div>
+                      <p className="text-sm font-semibold text-gray-900">Connect Google Calendar</p>
+                      <p className="text-xs text-gray-400">Takes about 30 seconds</p>
+                    </div>
+                    <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-green-500" />
+                  </a>
+                </div>
+                <button
+                  onClick={() => setWizardStep(2)}
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all"
+                >
+                  Next: Phone Setup →
+                </button>
+                <button onClick={() => setWizardStep(2)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">Skip for now</button>
+              </div>
+            )}
+
+            {wizardStep === 2 && (
+              <div>
+                <div className="w-12 h-12 rounded-2xl bg-sky-50 flex items-center justify-center mb-4">
+                  <Phone size={24} className="text-sky-600" />
+                </div>
+                <h2 className="text-xl font-bold text-gray-900 mb-2">Step 3: Your Riley Number</h2>
+                <p className="text-gray-500 text-sm mb-4">Riley answers every call 24/7 on your dedicated number. You can use an existing number or get a new one.</p>
+                {stats?.assignedPhoneNumber ? (
+                  <div className="p-4 rounded-xl bg-green-50 border border-green-200 mb-4">
+                    <p className="text-sm font-bold text-green-800">✅ You're all set!</p>
+                    <p className="text-2xl font-bold text-green-700 font-mono mt-1">
+                      {stats.assignedPhoneNumber.replace(/(\ +1)(\d{3})(\d{3})(\d{4})/, '($2) $3-$4')}
+                    </p>
+                    <p className="text-xs text-green-600 mt-1">Share this number — Riley answers 24/7</p>
+                  </div>
+                ) : (
+                  <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 mb-4">
+                    <p className="text-sm font-semibold text-amber-800">⏳ Your number is being set up</p>
+                    <p className="text-xs text-amber-600 mt-1">It usually takes just a few minutes. Contact support if it's been more than 10 minutes.</p>
+                  </div>
+                )}
+                <button
+                  onClick={() => setShowWizard(false)}
+                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all"
+                >
+                  🎉 Done — Go to Dashboard
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }

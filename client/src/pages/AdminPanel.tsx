@@ -22,7 +22,10 @@ export default function AdminPanel() {
   const upsertClient = trpc.admin.upsertClient.useMutation({ onSuccess: () => refetchClients() });
   const manualProvision = trpc.admin.manualProvision.useMutation();
   const linkExistingPhone = trpc.admin.linkExistingPhone.useMutation();
+  const setChecklistOverride = trpc.admin.setChecklistOverride.useMutation({ onSuccess: () => refetchUsers() });
+  const { data: allUsers, refetch: refetchUsers } = trpc.admin.listUsers.useQuery(undefined, { enabled: isAuthenticated && user?.role === "admin", retry: false });
   const [provForm, setProvForm] = useState({ email: "", name: "", phone: "", tier: "starter" as "starter" | "pro" | "premium", trialDays: 14 });
+  const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
 
   if (loading) {
     return (
@@ -232,6 +235,52 @@ export default function AdminPanel() {
                 {manualProvision.isPending ? "Provisioning..." : "Provision Now"}
               </button>
             </form>
+
+            {/* Checklist Override Section */}
+            <div className="mt-6 pt-6 border-t border-gray-100">
+              <h4 className="text-sm font-semibold text-gray-900 mb-3">🗂️ Manual Checklist Override</h4>
+              <p className="text-xs text-gray-500 mb-3">Force-complete any step in a customer's Getting Started checklist.</p>
+              <select
+                value={selectedUserId ?? ""}
+                onChange={e => setSelectedUserId(e.target.value ? Number(e.target.value) : null)}
+                className="w-full px-3 py-2 border rounded-lg text-sm mb-3"
+              >
+                <option value="">— Select a user —</option>
+                {allUsers?.map(u => (
+                  <option key={u.id} value={u.id}>{u.email ?? u.name ?? `User #${u.id}`} {u.assignedPhoneNumber ? `(${u.assignedPhoneNumber})` : ""}</option>
+                ))}
+              </select>
+              {selectedUserId && (() => {
+                const u = allUsers?.find(x => x.id === selectedUserId);
+                let ov: Record<string, boolean> = {};
+                try { ov = JSON.parse(u?.checklistOverride ?? "{}"); } catch {}
+                const steps = [
+                  { key: "hasSubscription", label: "✅ Subscription active" },
+                  { key: "hasPhone", label: "📞 Riley phone number assigned" },
+                  { key: "hasCalendar", label: "📅 Google Calendar connected" },
+                  { key: "hasFirstBooking", label: "📋 First booking created" },
+                ];
+                return (
+                  <div className="space-y-2">
+                    {steps.map(step => (
+                      <label key={step.key} className="flex items-center gap-3 p-3 rounded-lg border border-gray-200 bg-gray-50 cursor-pointer hover:bg-blue-50 hover:border-blue-200 transition-all">
+                        <input
+                          type="checkbox"
+                          checked={ov[step.key] ?? false}
+                          onChange={async (e) => {
+                            try {
+                              await setChecklistOverride.mutateAsync({ userId: selectedUserId, overrides: { [step.key]: e.target.checked } });
+                            } catch (err: any) { alert(`Error: ${err.message}`); }
+                          }}
+                          className="w-4 h-4 rounded accent-blue-600"
+                        />
+                        <span className="text-sm text-gray-700">{step.label}</span>
+                      </label>
+                    ))}
+                  </div>
+                );
+              })()}
+            </div>
           </div>
         )}
         {activeTab === "stats" && (

@@ -35,6 +35,7 @@ export const users = mysqlTable("users", {
   telegramChatId: varchar("telegramChatId", { length: 64 }),         // Telegram chat_id after successful connect
   telegramConnectToken: varchar("telegramConnectToken", { length: 128 }), // one-time deep-link token
   telegramConnected: boolean("telegramConnected").default(false),    // true once customer has connected
+  checklistOverride: varchar("checklistOverride", { length: 255 }),   // JSON: admin-forced checklist state e.g. {"hasSubscription":true}
 });
 
 export const leads = mysqlTable("leads", {
