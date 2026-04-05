@@ -21,6 +21,7 @@ export default function AdminPanel() {
 
   const upsertClient = trpc.admin.upsertClient.useMutation({ onSuccess: () => refetchClients() });
   const manualProvision = trpc.admin.manualProvision.useMutation();
+  const linkExistingPhone = trpc.admin.linkExistingPhone.useMutation();
   const [provForm, setProvForm] = useState({ email: "", name: "", phone: "", tier: "starter" as "starter" | "pro" | "premium", trialDays: 14 });
 
   if (loading) {
@@ -191,6 +192,27 @@ export default function AdminPanel() {
               <Zap size={16} className="text-blue-600" />
               Manual Provision (Free Trial)
             </h3>
+            {/* One-click fix for existing number */}
+            <div className="mb-5 p-4 bg-amber-50 border border-amber-200 rounded-xl">
+              <p className="text-xs font-semibold text-amber-800 mb-2">🔧 Link Existing Number (+17372595692)</p>
+              <p className="text-xs text-amber-700 mb-3">Sets the Twilio webhook and saves the number to your account. Run once.</p>
+              <button
+                type="button"
+                disabled={linkExistingPhone.isPending}
+                onClick={async () => {
+                  try {
+                    const r = await linkExistingPhone.mutateAsync({ phoneNumber: "+17372595692" });
+                    alert(`✅ Done! ${r.phoneNumber} linked. Webhook: ${r.webhookUrl}`);
+                  } catch (e: any) {
+                    alert(`❌ Error: ${e.message}`);
+                  }
+                }}
+                className="w-full px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-semibold text-sm disabled:opacity-50"
+              >
+                {linkExistingPhone.isPending ? "Linking..." : "Link +17372595692 to Riley Now"}
+              </button>
+            </div>
+
             <form onSubmit={async (e) => {
               e.preventDefault();
               await manualProvision.mutateAsync(provForm);

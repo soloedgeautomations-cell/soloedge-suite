@@ -918,6 +918,49 @@ export const appRouter = router({
         return { success: true };
       }),
 
+    linkExistingPhone: protectedProcedure
+      .input(z.object({
+        phoneNumber: z.string().default("+17372595692"),
+      }))
+      .mutation(async ({ input, ctx }) => {
+        if (ctx.user.role !== "admin") throw new Error("Forbidden");
+        const db = await getDb();
+        if (!db) throw new Error("Database unavailable");
+
+        const sid = process.env.TWILIO_ACCOUNT_SID ?? "";
+        const token = process.env.TWILIO_AUTH_TOKEN ?? "";
+        const auth = "Basic " + Buffer.from(`${sid}:${token}`).toString("base64");
+        const base = `https://api.twilio.com/2010-04-01/Accounts/${sid}`;
+        const voiceUrl = `${(process.env.APP_BASE_URL ?? "https://soloedge.app").replace(/\/+$/, "")}/api/incoming-call`;
+
+        // 1. Find the phone number SID in Twilio
+        const searchRes = await fetch(
+          `${base}/IncomingPhoneNumbers.json?PhoneNumber=${encodeURIComponent(input.phoneNumber)}`,
+          { headers: { Authorization: auth } }
+        );
+        const searchData = await searchRes.json() as { incoming_phone_numbers?: { sid: string }[] };
+        const phoneSid = searchData.incoming_phone_numbers?.[0]?.sid;
+        if (!phoneSid) throw new Error(`Number ${input.phoneNumber} not found in Twilio account`);
+
+        // 2. Set the voice webhook
+        const webhookRes = await fetch(`${base}/IncomingPhoneNumbers/${phoneSid}.json`, {
+          method: "POST",
+          headers: { Authorization: auth, "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({ VoiceUrl: voiceUrl, VoiceMethod: "POST" }).toString(),
+        });
+        if (!webhookRes.ok) {
+          const err = await webhookRes.text();
+          throw new Error(`Twilio webhook update failed: ${err}`);
+        }
+
+        // 3. Save to admin user's DB record
+        await db.update(users)
+          .set({ assignedPhoneNumber: input.phoneNumber })
+          .where(eq(users.id, ctx.user.id));
+
+        return { success: true, phoneNumber: input.phoneNumber, webhookUrl: voiceUrl, phoneSid };
+      }),
+
     manualProvision: protectedProcedure
       .input(z.object({
         email: z.string().email(),
