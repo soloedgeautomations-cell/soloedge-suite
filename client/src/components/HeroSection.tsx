@@ -165,11 +165,6 @@ export default function HeroSection() {
           {/* Hero logo */}
           <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-14 md:h-16 mb-6 object-contain" />
 
-          {/* Live badge */}
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white/15 backdrop-blur-sm border border-white/30 text-white text-xs font-semibold mb-6">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
-            {t.hero.badge}
-          </div>
 
           {/* Headline */}
           <h1 className="font-display text-5xl md:text-6xl lg:text-7xl font-bold leading-[1.05] mb-4 text-white drop-shadow-lg">
