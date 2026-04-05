@@ -71,7 +71,7 @@ export default function CheckoutSuccess() {
     <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center px-4">
       <div className="bg-white rounded-2xl shadow-xl border border-gray-100 max-w-md w-full p-10 text-center">
         {/* Logo */}
-        <img src={CDN.logoSymbol} alt="SoloEdge" className="h-14 mx-auto mb-6" />
+        <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-14 mx-auto mb-6 object-contain" />
 
         {/* Success icon */}
         <div className="w-16 h-16 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-5">

@@ -12,8 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-3">
-              <img src={CDN.logoSymbol} alt="S" className="h-16 w-16 object-contain drop-shadow-md" />
-              <img src={CDN.logo} alt="SoloEdge Automations" className="h-12 w-auto" />
+              <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-12 w-auto object-contain" />
             </div>
             <p className="text-sm text-gray-500 max-w-xs leading-relaxed mb-4">
               {t.footer.tagline}

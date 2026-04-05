@@ -176,7 +176,7 @@ export default function Bookings() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center border border-gray-200 shadow-xl">
-          <img src={CDN.logo} alt="SoloEdge" className="h-10 w-auto mx-auto mb-6" />
+          <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-10 w-auto mx-auto mb-6 object-contain" />
           <h2 className="font-display text-2xl font-bold text-gray-900 mb-2">Sign In Required</h2>
           <p className="text-gray-500 text-sm mb-6">Access your bookings calendar by signing in.</p>
           <a href={getLoginUrl()} className="block w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md shadow-blue-200">

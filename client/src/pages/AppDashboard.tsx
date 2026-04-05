@@ -60,7 +60,7 @@ export default function AppDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center border border-gray-200 shadow-xl shadow-gray-100">
-          <img src={CDN.logo} alt="SoloEdge" className="h-10 w-auto mx-auto mb-6" />
+          <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-10 w-auto mx-auto mb-6 object-contain" />
           <h2 className="font-display text-2xl font-bold text-gray-900 mb-2">SoloEdge Dashboard</h2>
           <p className="text-gray-500 text-sm mb-6">Sign in to access Riley, the Live Interpreter, and your business tools.</p>
           <a
@@ -127,8 +127,7 @@ export default function AppDashboard() {
       <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
         <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <img src={CDN.logoSymbol} alt="S" className="h-12 w-12 object-contain drop-shadow-sm" />
-            <img src={CDN.logo} alt="SoloEdge" className="h-9 w-auto hidden sm:block" />
+            <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-9 w-auto object-contain" />
           </div>
           <div className="flex items-center gap-2">
             <button

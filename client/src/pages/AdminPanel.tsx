@@ -50,8 +50,7 @@ export default function AdminPanel() {
       <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
         <div className="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <img src={CDN.logoSymbol} alt="S" className="h-12 w-12 object-contain drop-shadow-sm" />
-            <img src={CDN.logo} alt="SoloEdge" className="h-9 w-auto hidden sm:block" />
+            <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-9 w-auto object-contain" />
             <div className="w-px h-4 bg-gray-200" />
             <span className="text-sm font-semibold text-gray-600">Admin Panel</span>
             <span className="px-2 py-0.5 rounded-full bg-red-50 border border-red-200 text-red-600 text-xs font-medium">Gary Only</span>
