@@ -14,7 +14,7 @@
  * Environment variables required:
  *   TWILIO_ACCOUNT_SID      — Twilio Account SID
  *   TWILIO_AUTH_TOKEN       — Twilio Auth Token
- *   TWILIO_SMS_FROM         — SoloEdge outbound SMS number (e.g. +17372595692)
+ *   TWILIO_SMS_FROM         — SoloEdge outbound SMS number (e.g. +15123991605)
  *   SENDGRID_API_KEY        — SendGrid API key for transactional email
  *   FROM_EMAIL              — Verified sender email (e.g. riley@soloedgeautomations.com)
  *   APP_BASE_URL            — Public base URL (e.g. https://soloedgeautomations.com)

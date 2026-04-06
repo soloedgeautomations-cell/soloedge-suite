@@ -95,7 +95,7 @@ export default function Navbar() {
 
             {/* Phone */}
             <a
-              href="tel:+17372595692"
+              href="tel:+15123991605"
               className="hidden lg:flex items-center gap-1.5 text-sm text-gray-600 hover:text-blue-700 transition-colors font-medium"
             >
               <span className="text-gray-400">📞</span>

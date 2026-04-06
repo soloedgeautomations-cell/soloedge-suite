@@ -239,7 +239,7 @@ export default function PricingSection() {
                 </button>
 
                 <a
-                  href="tel:+17372595692"
+                  href="tel:+15123991605"
                   className={`flex items-center justify-center gap-1.5 w-full py-2 mt-2 rounded-xl text-xs font-medium transition-all ${
                     plan.popular
                       ? "text-blue-500 hover:text-blue-700"
@@ -281,7 +281,7 @@ export default function PricingSection() {
         <p className="text-center text-sm text-gray-400 mt-8">
           All plans include a 24–48 hour setup. No long-term contracts. Cancel anytime.{" "}
           Questions?{" "}
-          <a href="tel:+17372595692" className="text-blue-600 hover:underline font-medium">
+          <a href="tel:+15123991605" className="text-blue-600 hover:underline font-medium">
             (737) 259-5692
           </a>
         </p>

@@ -127,7 +127,7 @@ async function autoLinkAdminPhone() {
       return;
     }
 
-    const PHONE = "+17372595692";
+    const PHONE = "+15123991605";
     const auth = "Basic " + Buffer.from(`${sid}:${token}`).toString("base64");
     const base = `https://api.twilio.com/2010-04-01/Accounts/${sid}`;
     const voiceUrl = `${(process.env.APP_BASE_URL ?? "https://soloedge.app").replace(/\/+$/, "")}/api/incoming-call`;

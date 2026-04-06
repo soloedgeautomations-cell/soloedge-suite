@@ -290,7 +290,7 @@ export default function HeroSection() {
               {t.hero.ctaSecondary}
             </a>
             <a
-              href="tel:+17372595692"
+              href="tel:+15123991605"
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white/80 font-medium text-sm transition-all active:scale-95"
             >
               <Phone size={15} />

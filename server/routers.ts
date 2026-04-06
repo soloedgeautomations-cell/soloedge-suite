@@ -926,7 +926,7 @@ export const appRouter = router({
 
     linkExistingPhone: protectedProcedure
       .input(z.object({
-        phoneNumber: z.string().default("+17372595692"),
+        phoneNumber: z.string().default("+15123991605"),
       }))
       .mutation(async ({ input, ctx }) => {
         if (ctx.user.role !== "admin") throw new Error("Forbidden");
