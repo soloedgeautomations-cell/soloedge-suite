@@ -148,7 +148,7 @@ export default function FloatingRiley() {
                 href="tel:+15123991605"
                 className="px-2.5 py-1 rounded-full bg-green-50 border border-green-200 text-green-700 text-xs font-medium hover:bg-green-100 transition-colors"
               >
-                📞 Call (737) 259-5692
+                📞 Call (512) 399-1605
               </a>
             </div>
           )}

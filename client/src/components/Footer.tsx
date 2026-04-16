@@ -53,12 +53,12 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <a href="tel:+15123991605" className="text-sm text-gray-500 hover:text-blue-700 transition-colors font-medium">
-                  (737) 259-5692 — Demo / Book
+                  (512) 399-1605 — Demo / Book
                 </a>
               </li>
               <li>
                 <a href="tel:+15127029685" className="text-sm text-gray-500 hover:text-blue-700 transition-colors font-medium">
-                  (512) 702-9685 — Team
+                  (512) 702-9685 — Murphy
                 </a>
               </li>
               <li><a href="mailto:hello@soloedgeautomations.com" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">hello@soloedgeautomations.com</a></li>

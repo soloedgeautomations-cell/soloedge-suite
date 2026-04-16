@@ -247,7 +247,7 @@ export default function PricingSection() {
                   }`}
                 >
                   <Phone size={11} />
-                  or call (737) 259-5692
+                  or call (512) 399-1605
                 </a>
               </div>
             );
@@ -282,7 +282,7 @@ export default function PricingSection() {
           All plans include a 24–48 hour setup. No long-term contracts. Cancel anytime.{" "}
           Questions?{" "}
           <a href="tel:+15123991605" className="text-blue-600 hover:underline font-medium">
-            (737) 259-5692
+            (512) 399-1605
           </a>
         </p>
 

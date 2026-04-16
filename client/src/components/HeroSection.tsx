@@ -294,7 +294,7 @@ export default function HeroSection() {
               className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-white/10 backdrop-blur-sm border border-white/20 hover:bg-white/20 text-white/80 font-medium text-sm transition-all active:scale-95"
             >
               <Phone size={15} />
-              (737) 259-5692
+              (512) 399-1605
             </a>
           </div>
         </div>
