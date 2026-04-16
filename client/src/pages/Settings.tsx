@@ -5,7 +5,7 @@ import { getLoginUrl } from "@/const";
 import { CDN } from "../../../shared/assets";
 import {
   Settings as SettingsIcon, ChevronLeft, User, Bell, Globe, CreditCard,
-  Shield, LogOut, Check, ChevronRight, Smartphone, Mail, Phone,
+  Shield, LogOut, Check, ChevronRight, Smartphone, Mail, Phone, MessageSquare,
   Building2, Zap, Star, HardHat, Calendar, CheckCircle2, XCircle, Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -338,10 +338,9 @@ export default function Settings() {
                 </div>
                 <div className="p-5 space-y-4">
                   {[
-                    { icon: <Smartphone size={16} />, title: "SMS Alerts", desc: "New leads and bookings sent to your phone via Twilio", active: true },
-                    { icon: <Phone size={16} />, title: "Telegram Alerts", desc: "Instant Telegram messages for urgent events", active: true },
-                    { icon: <Mail size={16} />, title: "Email Digest", desc: "Daily summary of activity (coming soon)", active: false },
-                    { icon: <Bell size={16} />, title: "Browser Push", desc: "In-app notifications when dashboard is open (coming soon)", active: false },
+                    { icon: <Phone size={16} />, title: "Telegram Alerts", desc: "Instant alerts for every call, lead, and booking — recommended", active: true, badge: "Recommended" },
+                    { icon: <MessageSquare size={16} />, title: "WhatsApp Alerts", desc: "Get Riley's reports and lead summaries on WhatsApp", active: false, badge: "Coming Soon" },
+                    { icon: <Mail size={16} />, title: "Email Digest", desc: "Daily summary of all activity sent to your inbox", active: false, badge: "Coming Soon" },
                   ].map(item => (
                     <div key={item.title} className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 border border-gray-200">
                       <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${item.active ? "bg-green-100 text-green-600" : "bg-gray-200 text-gray-400"}`}>
@@ -351,13 +350,16 @@ export default function Settings() {
                         <div className="text-sm font-semibold text-gray-900">{item.title}</div>
                         <div className="text-xs text-gray-400">{item.desc}</div>
                       </div>
-                      <div className={`text-xs px-2 py-1 rounded-full font-semibold flex-shrink-0 ${item.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"}`}>
-                        {item.active ? "Active" : "Soon"}
+                      <div className={`text-xs px-2 py-1 rounded-full font-semibold flex-shrink-0 ${
+                        item.badge === "Recommended" ? "bg-blue-100 text-blue-700" :
+                        item.active ? "bg-green-100 text-green-700" : "bg-gray-100 text-gray-400"
+                      }`}>
+                        {item.badge}
                       </div>
                     </div>
                   ))}
-                  <div className="bg-blue-50 border border-blue-100 rounded-xl p-3 text-xs text-blue-600">
-                    SMS and Telegram are pre-configured with your credentials. To update phone numbers, contact support.
+                  <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 text-xs text-amber-700">
+                    <span className="font-semibold">SMS available on request.</span> SMS delivery requires additional carrier setup. Contact support to enable SMS alerts for your account.
                   </div>
                 </div>
               </div>
@@ -374,8 +376,8 @@ export default function Settings() {
                       <Smartphone size={16} className="text-white" />
                     </div>
                     <div className="flex-1 min-w-0">
-                      <h2 className="font-display text-base font-bold text-gray-900">Forward Messages to My Phone</h2>
-                      <p className="text-xs text-gray-400 mt-0.5">Get Riley's messages and notifications sent to your personal cell phone via SMS.</p>
+                      <h2 className="font-display text-base font-bold text-gray-900">SMS Forwarding <span className="ml-2 text-xs font-normal text-amber-600 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">Special Request</span></h2>
+                      <p className="text-xs text-gray-400 mt-0.5">SMS forwarding requires additional setup. We recommend Telegram or WhatsApp for instant, free alerts.</p>
                     </div>
                     {fwdEnabled ? (
                       <span className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full flex-shrink-0">

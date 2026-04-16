@@ -138,7 +138,7 @@ export async function sendWelcomeEmail(
   <ol style="line-height:1.8;">
     <li>Give your customers the number above — they can call it right now.</li>
     <li>Riley will answer, capture leads, and book appointments automatically.</li>
-    <li>You'll receive real-time alerts via SMS and Telegram for every call.</li>
+    <li>Connect Telegram or WhatsApp in your dashboard to get instant alerts for every call and lead. 📲</li>
     <li>Log in to your dashboard to view bookings, contacts, and call history.</li>
   </ol>
 
@@ -150,7 +150,7 @@ export async function sendWelcomeEmail(
 
   <hr style="border:none;border-top:1px solid #e5e7eb;margin:32px 0;">
   <p style="font-size:13px;color:#6b7280;">
-    Questions? Reply to this email or text <strong>${process.env.TWILIO_SMS_FROM ?? "(737) 259-5692"}</strong>.<br>
+    Questions? Reply to this email or call us at <strong>(512) 399-1605</strong>.<br>
     SoloEdge AI Automations · Austin, TX
   </p>
 </body>
@@ -163,7 +163,7 @@ export async function sendWelcomeEmail(
     (tempPassword ? `Temporary password: ${tempPassword}\nPlease change it after first login.\n\n` : "") +
     `Dashboard: ${dashboardUrl}\n\n` +
     `Share ${assignedNumber} with your customers — Riley answers 24/7.\n\n` +
-    `Questions? Reply to this email or text ${process.env.TWILIO_SMS_FROM ?? "(737) 259-5692"}.`;
+    `Questions? Reply to this email or call (512) 399-1605.`;
 
   const payload = {
     personalizations: [{ to: [{ email: toEmail, name: customerName }] }],
