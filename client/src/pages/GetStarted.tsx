@@ -116,7 +116,7 @@ export default function GetStarted() {
             SoloStack
           </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            Pick your plan. Riley starts today.
+            Get started building your SoloStack.
           </h1>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             One-time setup fee + simple monthly subscription. No contracts. Cancel anytime.
