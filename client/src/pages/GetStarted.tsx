@@ -112,6 +112,9 @@ export default function GetStarted() {
             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
             Riley is live and answering calls right now
           </div>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-gradient-to-r from-blue-600 to-sky-500 text-white text-sm font-bold mb-3 shadow-sm">
+            SoloStack
+          </div>
           <h1 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Pick your plan. Riley starts today.
           </h1>
@@ -282,7 +285,7 @@ export default function GetStarted() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             {[
               { icon: Phone,         label: "Dedicated Riley Phone Number",        desc: "Your own dedicated phone number that Riley answers 24/7. No sharing, no confusion." },
-              { icon: MessageSquare, label: "SMS & Call Notifications",            desc: "Instant SMS alerts for every call, booking, or lead. Know what's happening immediately. (Telegram support coming soon)" },
+              { icon: MessageSquare, label: "Telegram & WhatsApp Alerts",          desc: "Instant Telegram or WhatsApp alerts for every call, booking, or lead. Know what's happening immediately." },
               { icon: Calendar,      label: "Google Calendar Appointment Setting", desc: "Riley books appointments directly into your Google Calendar in real time. No double-bookings, no manual entry needed." },
               { icon: BarChart2,     label: "Monthly Summary Report",              desc: "Clear monthly report showing calls answered, leads captured, appointments booked, and time saved." },
             ].map(({ icon: Icon, label, desc }) => (
