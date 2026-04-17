@@ -24,20 +24,20 @@ const LIGHT_BG = [
 // Static modal detail bullets for each service card
 const SERVICE_DETAILS = [
   {
-    title: "AI Receptionist",
+    title: "SoloHub",
     bullets: [
-      "Answers every inbound call 24/7 — no voicemail, no missed leads.",
+      "Your AI specialist center of operations — answers every inbound call 24/7.",
       "Qualifies callers and captures name, number, and reason for calling.",
-      "Sends you an instant text summary after every call.",
+      "Sends you an instant Telegram or WhatsApp summary after every call.",
       "Handles FAQs, hours, pricing, and directions automatically.",
-      "Escalates urgent calls to you immediately via SMS alert.",
+      "Escalates urgent calls to you immediately via Telegram alert.",
     ],
   },
   {
-    title: "Appointment Setting",
+    title: "SoloBooking",
     bullets: [
       "Books appointments directly into your calendar in real time.",
-      "Sends automated confirmation texts and email reminders to clients.",
+      "Sends automated confirmation and reminder messages to clients.",
       "Handles reschedules and cancellations without you lifting a finger.",
       "Follows up with no-shows to rebook and recover lost revenue.",
       "Syncs with Google Calendar — no double-bookings, ever.",
@@ -54,10 +54,10 @@ const SERVICE_DETAILS = [
     ],
   },
   {
-    title: "Email & Admin",
+    title: "EdgeMail",
     bullets: [
-      "Surfaces your most important emails so you see what matters first.",
-      "Drafts routine replies — estimates, confirmations, follow-ups — for one-click send.",
+      "Your AI email agent — surfaces what matters, drafts what's routine.",
+      "Drafts replies — estimates, confirmations, follow-ups — for one-click send.",
       "Flags urgent items and filters out noise and spam automatically.",
       "Organizes your inbox by category: leads, clients, vendors, billing.",
       "Saves 1–2 hours per day on email alone for most customers.",
@@ -74,9 +74,9 @@ const SERVICE_DETAILS = [
     ],
   },
   {
-    title: "Live Interpreter Mode",
+    title: "LiveDesk",
     bullets: [
-      "Real-time spoken translation between English and Spanish on any call.",
+      "Real-time live meeting translator — English, Spanish, and Chinese.",
       "Works on job sites, front desks, and client meetings.",
       "No app download required — works via your existing phone.",
       "Supports 1-on-1 conversations and broadcast mode for crew briefings.",

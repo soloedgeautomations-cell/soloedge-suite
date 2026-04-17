@@ -4,12 +4,12 @@ import Footer from "@/components/Footer";
 import { Building2, HardHat, Check } from "lucide-react";
 
 const PILLARS = [
-  "AI Receptionist (24/7 call answering)",
-  "Appointment Setting & Calendar Sync",
+  "SoloHub — AI specialist center of operations (24/7 call answering)",
+  "SoloBooking — Appointment setting & calendar sync",
   "Lead Follow-Up Automation",
-  "Email & Admin Assistant",
+  "EdgeMail — AI email agent & admin assistant",
   "Bilingual Communication (EN/ES/ZH)",
-  "Live Interpreter Mode",
+  "LiveDesk — Live meeting translator",
 ];
 
 const SUITES = [

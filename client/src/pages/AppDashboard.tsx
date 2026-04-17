@@ -114,7 +114,7 @@ export default function AppDashboard() {
   if (activeView === "construction") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="Construction Tools" logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="Field Tools" logout={logout} />
         <div className="flex-1 overflow-auto p-4">
           <ConstructionTools />
         </div>
@@ -425,13 +425,13 @@ export default function AppDashboard() {
             </div>
             <div className="p-3 grid grid-cols-2 gap-2">
               {[
-                { icon: <Phone size={16} />, label: "Launch Riley", sub: "Receptionist", color: "blue", action: () => setActiveView("receptionist") },
-                { icon: <Globe size={16} />, label: "Interpreter", sub: "Live Desk", color: "cyan", action: () => setActiveView("interpreter") },
-                { icon: <Calendar size={16} />, label: "Calendar", sub: "Bookings", color: "green", action: () => window.location.href = "/app/bookings" },
+                { icon: <Phone size={16} />, label: "SoloHub", sub: "AI Specialist", color: "blue", action: () => setActiveView("receptionist") },
+                { icon: <Globe size={16} />, label: "LiveDesk", sub: "Live Translator", color: "cyan", action: () => setActiveView("interpreter") },
+                { icon: <Calendar size={16} />, label: "SoloBooking", sub: "Appointments", color: "green", action: () => window.location.href = "/app/bookings" },
                 { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
                 { icon: <Users size={16} />, label: "Contacts", sub: "Leads & CRM", color: "purple", action: () => window.location.href = "/app/contacts" },
                 { icon: <CreditCard size={16} />, label: "Billing", sub: "Plan & Invoices", color: "green", action: () => window.location.href = "/app/billing" },
-                ...(stats?.assignedPhoneNumber ? [{ icon: <PhoneCall size={16} />, label: "Test Riley", sub: "Call your number", color: "cyan", action: () => window.open(`tel:${stats.assignedPhoneNumber}`, "_self") }] : []),
+                ...(stats?.assignedPhoneNumber ? [{ icon: <PhoneCall size={16} />, label: "Test SoloHub", sub: "Call your number", color: "cyan", action: () => window.open(`tel:${stats.assignedPhoneNumber}`, "_self") }] : []),
               ].map(item => (
                 <button
                   key={item.label}
