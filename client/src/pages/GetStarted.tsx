@@ -9,6 +9,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { Link } from "wouter";
+
 import { CDN } from "@shared/assets";
 
 const TIER_ICONS: Record<string, React.ElementType> = {
@@ -53,24 +54,34 @@ export default function GetStarted() {
   const { user } = useAuth();
   const [checkingOut, setCheckingOut] = useState<string | null>(null);
   const [showComparison, setShowComparison] = useState(false);
+  const [pendingTierId, setPendingTierId] = useState<string | null>(null);
+  const [telegramUsername, setTelegramUsername] = useState("");
+  const [showTelegramModal, setShowTelegramModal] = useState(false);
 
   const { data: tiers = [], isLoading } = trpc.stripe.getTiers.useQuery();
   const createCheckout = trpc.stripe.createCheckout.useMutation();
   const createGuestCheckout = trpc.stripe.createGuestCheckout.useMutation();
 
-  async function handleGetStarted(tierId: string) {
-    setCheckingOut(tierId);
+  function handleGetStarted(tierId: string) {
+    setPendingTierId(tierId);
+    setShowTelegramModal(true);
+  }
+
+  async function proceedToCheckout() {
+    if (!pendingTierId) return;
+    setShowTelegramModal(false);
+    setCheckingOut(pendingTierId);
     toast.info("Redirecting to secure checkout…");
     try {
       if (user) {
         const { url } = await createCheckout.mutateAsync({
-          tierId,
+          tierId: pendingTierId,
           origin: window.location.origin,
         });
         window.open(url, "_blank");
       } else {
         const { url } = await createGuestCheckout.mutateAsync({
-          tierId,
+          tierId: pendingTierId,
           origin: window.location.origin,
         });
         window.open(url, "_blank");
@@ -80,6 +91,7 @@ export default function GetStarted() {
       console.error(err);
     } finally {
       setCheckingOut(null);
+      setPendingTierId(null);
     }
   }
 
@@ -321,6 +333,53 @@ export default function GetStarted() {
       </main>
 
       {/* Footer */}
+      {/* Telegram Username Modal */}
+      {showTelegramModal && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div className="bg-white rounded-2xl shadow-2xl max-w-md w-full p-6">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center">
+                <MessageSquare className="w-5 h-5 text-blue-600" />
+              </div>
+              <div>
+                <h3 className="font-bold text-gray-900">Where should Riley alert you?</h3>
+                <p className="text-sm text-gray-500">Telegram is free, instant, and works worldwide</p>
+              </div>
+            </div>
+            <div className="mb-4">
+              <label className="block text-sm font-medium text-gray-700 mb-1">Your Telegram Username <span className="text-gray-400 font-normal">(optional)</span></label>
+              <div className="flex items-center border border-gray-300 rounded-lg overflow-hidden focus-within:ring-2 focus-within:ring-blue-500">
+                <span className="px-3 py-2 bg-gray-50 text-gray-500 border-r border-gray-300">@</span>
+                <input
+                  type="text"
+                  placeholder="yourusername"
+                  value={telegramUsername}
+                  onChange={e => setTelegramUsername(e.target.value.replace(/[@\s]/g, ""))}
+                  className="flex-1 px-3 py-2 outline-none text-sm"
+                  autoFocus
+                />
+              </div>
+              <p className="text-xs text-gray-400 mt-1">Riley will send you call alerts, leads, and booking requests here. You can also connect later in your dashboard.</p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => { setShowTelegramModal(false); setTelegramUsername(""); }}
+              >
+                Skip for now
+              </Button>
+              <Button
+                className="flex-1 bg-blue-600 hover:bg-blue-700 text-white"
+                onClick={proceedToCheckout}
+              >
+                Continue to Checkout →
+              </Button>
+            </div>
+            <p className="text-center text-xs text-gray-400 mt-3">🔒 Secure checkout via Stripe · No contracts · Cancel anytime</p>
+          </div>
+        </div>
+      )}
       <footer className="border-t border-gray-200 bg-white py-6 mt-10">
         <p className="text-center text-xs text-gray-400">
           Powered by{" "}
