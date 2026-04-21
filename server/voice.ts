@@ -480,8 +480,38 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
 
     try {
       const lead = await buildLeadSummary(transcriptLines, callerNumber, detectedLanguage);
-      const message = formatTelegramReport(lead, callerNumber);
-      await sendTelegram(message);
+
+      // ── Telegram is sent ONLY by n8n ("New Call Log — SoloEdge Riley").
+      // Do NOT call sendTelegram() here — that creates a duplicate alert.
+      // n8n handles: Telegram notification + Google Calendar + Google Sheets.
+
+      // Fire n8n Agent Router — flat payload (no double-nesting)
+      const n8nUrl = process.env.N8N_WEBHOOK_URL;
+      if (n8nUrl) {
+        const n8nPayload = {
+          caller_name: lead.customerPhone !== "Unknown" ? lead.customerPhone : callerNumber,
+          caller_phone: lead.customerPhone || callerNumber,
+          summary: lead.englishSummary,
+          description: lead.description,
+          suggested_action: lead.suggestedAction,
+          language: lead.languageDetected,
+          job_type: lead.jobType,
+          timestamp: new Date().toISOString(),
+          duration: transcriptLines.length,
+          source: "riley_voice_call",
+        };
+        fetch(n8nUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(n8nPayload),
+        }).then(() => log("POST-CALL", "✓ n8n Agent Router notified"))
+          .catch((e: Error) => log("ERR", `n8n notify failed: ${e.message}`));
+      } else {
+        // Fallback: if n8n is not configured, send Telegram directly
+        const message = formatTelegramReport(lead, callerNumber);
+        await sendTelegram(message);
+        log("POST-CALL", "⚠️ n8n not configured — sent Telegram directly (fallback)");
+      }
     } catch (err) {
       log("ERR", `Post-call notification failed: ${(err as Error).message}`);
     }
