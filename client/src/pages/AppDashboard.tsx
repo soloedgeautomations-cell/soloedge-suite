@@ -8,10 +8,11 @@ import InterpreterDesk from "@/components/InterpreterDesk";
 import CalendarView from "@/components/CalendarView";
 import ConstructionTools from "@/components/ConstructionTools";
 import {
-  Phone, Bot, Globe, Calendar, HardHat, ChevronRight, LogOut,
-  User, TrendingUp, MessageSquare, Users, CheckCircle2, Clock,
-  AlertTriangle, Zap, BarChart3, ArrowUpRight, Activity, Settings as SettingsIcon,
-  CreditCard, Copy, CheckCheck, PhoneCall, Mail, ExternalLink, X, Sparkles,
+  Phone, Bot, Globe, Calendar, HardHat, LogOut,
+  User, MessageSquare, Users, CheckCircle2, Clock,
+  Zap, Settings as SettingsIcon, CreditCard,
+  Copy, CheckCheck, PhoneCall, X, Sparkles,
+  ChevronRight, ExternalLink, ArrowRight,
 } from "lucide-react";
 import { trpc } from "@/lib/trpc";
 
@@ -30,7 +31,7 @@ export default function AppDashboard() {
     refetchInterval: 60_000,
   });
 
-  const { data: todayBookings, isLoading: bookingsLoading } = trpc.dashboard.todayBookings.useQuery(undefined, {
+  const { data: todayBookings } = trpc.dashboard.todayBookings.useQuery(undefined, {
     enabled: isAuthenticated,
     refetchInterval: 30_000,
   });
@@ -64,14 +65,13 @@ export default function AppDashboard() {
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center border border-gray-200 shadow-xl shadow-gray-100">
           <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-10 w-auto mx-auto mb-6 object-contain" />
           <h2 className="font-display text-2xl font-bold text-gray-900 mb-2">SoloEdge Dashboard</h2>
-          <p className="text-gray-500 text-sm mb-6">Sign in to access Riley, the Live Interpreter, and your business tools.</p>
+          <p className="text-gray-500 text-sm mb-6">Sign in to access Riley and your business tools.</p>
           <a
             href={getLoginUrl()}
             className="block w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md shadow-blue-200"
           >
             Sign In to Continue
           </a>
-          <a href="/" className="block mt-3 text-sm text-gray-400 hover:text-gray-600 transition-colors">← Back to soloedgeautomations.com</a>
         </div>
       </div>
     );
@@ -81,7 +81,7 @@ export default function AppDashboard() {
   if (activeView === "receptionist" || activeView === "ops_manager") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title={activeView === "receptionist" ? t.dashboard.launchReceptionist : t.dashboard.launchOpsManager} logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title={activeView === "receptionist" ? "SoloHub — AI Receptionist" : "SoloHub — Ops Manager"} logout={logout} />
         <div className="flex-1 overflow-hidden">
           <RileyChat mode={activeView === "receptionist" ? "receptionist" : "ops_manager"} />
         </div>
@@ -92,7 +92,7 @@ export default function AppDashboard() {
   if (activeView === "interpreter") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title={t.dashboard.startInterpreter} logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="LiveDesk — Live Translator" logout={logout} />
         <div className="flex-1 overflow-hidden">
           <InterpreterDesk />
         </div>
@@ -103,7 +103,7 @@ export default function AppDashboard() {
   if (activeView === "calendar") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title={t.dashboard.viewCalendar} logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="SoloBooking — Calendar" logout={logout} />
         <div className="flex-1 overflow-auto p-4">
           <CalendarView />
         </div>
@@ -122,15 +122,20 @@ export default function AppDashboard() {
     );
   }
 
+  const firstName = user?.name?.split(" ")[0] ?? "there";
+  const rileyNumber = stats?.assignedPhoneNumber;
+  const formattedNumber = rileyNumber
+    ? rileyNumber.replace(/(\+1)(\d{3})(\d{3})(\d{4})/, '($2) $3-$4')
+    : null;
+
   // ── Main Dashboard Home ───────────────────────────────────────────────────
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Top bar */}
-      <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
-        <div className="max-w-4xl mx-auto px-4 h-14 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-9 w-auto object-contain" />
-          </div>
+
+      {/* ── Top Bar ──────────────────────────────────────────────────────── */}
+      <div className="border-b border-gray-200 bg-white sticky top-0 z-40 shadow-sm">
+        <div className="max-w-2xl mx-auto px-4 h-14 flex items-center justify-between">
+          <img src={CDN.logoTransparent} alt="SoloEdge" className="h-8 w-auto object-contain" />
           <div className="flex items-center gap-2">
             <button
               onClick={() => {
@@ -138,198 +143,119 @@ export default function AppDashboard() {
                 const idx = langs.indexOf(lang);
                 setLang(langs[(idx + 1) % langs.length]);
               }}
-              className="px-2.5 py-1 rounded-lg bg-gray-100 border border-gray-200 text-xs text-gray-600 hover:text-blue-700 hover:bg-blue-50 hover:border-blue-200 transition-colors"
+              className="px-2.5 py-1 rounded-lg bg-gray-100 text-xs text-gray-600 hover:bg-blue-50 hover:text-blue-700 transition-colors"
             >
               {lang === "en" ? "🇺🇸 EN" : lang === "es" ? "🇲🇽 ES" : "🇨🇳 ZH"}
             </button>
-            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-gray-100 border border-gray-200">
-              <User size={12} className="text-gray-400" />
-              <span className="text-xs text-gray-600">{user?.name ?? "User"}</span>
-            </div>
-            <a href="/app/contacts" className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Contacts & Leads">
-              <Users size={14} />
+            <a href="/app/settings" className="p-2 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all">
+              <SettingsIcon size={16} />
             </a>
-            <a href="/app/settings" className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all" title="Settings">
-              <SettingsIcon size={14} />
-            </a>
-            <button onClick={() => logout()} className="p-1.5 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all">
-              <LogOut size={14} />
+            <button onClick={() => logout()} className="p-2 rounded-lg text-gray-400 hover:text-red-500 hover:bg-red-50 transition-all">
+              <LogOut size={16} />
             </button>
           </div>
         </div>
       </div>
 
-      <div className="max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <div className="max-w-2xl mx-auto px-4 py-5 space-y-4">
 
-        {/* ── Welcome + Riley Status ─────────────────────────────────────────── */}
-        <div className="flex flex-col sm:flex-row gap-4">
-          {/* Welcome card */}
-          <div className="flex-1 bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
-            <div className="flex items-center gap-3 mb-3">
-              <img src={CDN.logoSymbol} alt="SoloEdge" className="w-12 h-12 object-contain drop-shadow-md" />
-              <div>
-                <h1 className="font-display text-xl font-bold leading-tight">
-                  {greeting}, {user?.name?.split(" ")[0] ?? "there"} 👋
-                </h1>
-                <p className="text-blue-200 text-sm mt-0.5">Your command center is ready.</p>
-              </div>
+        {/* ── Hero Greeting ──────────────────────────────────────────────── */}
+        <div className="bg-gradient-to-br from-blue-600 to-blue-700 rounded-2xl p-5 text-white shadow-lg shadow-blue-200">
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold leading-tight">
+                {greeting}, {firstName} 👋
+              </h1>
+              <p className="text-blue-200 text-sm mt-1">
+                {rileyNumber
+                  ? `Riley is answering calls on ${formattedNumber}`
+                  : "Riley is online and ready."}
+              </p>
             </div>
-            <div className="flex items-center gap-2 mt-4">
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
-                <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
+            <div className="flex flex-col items-end gap-2">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-xs font-medium">
+                <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
                 Riley Online
               </span>
-              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-xs font-medium text-white">
+              <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/20 text-xs font-medium">
                 <Zap size={10} />
                 {stats?.planName ?? "Field Starter"}
               </span>
             </div>
           </div>
 
-          {/* Riley quick launch */}
-          <div className="sm:w-56 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm flex flex-col justify-between">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 flex items-center justify-center">
-                <Bot size={16} className="text-blue-600" />
-              </div>
+          {/* Riley number — prominent inside hero */}
+          {rileyNumber && (
+            <div className="mt-4 flex items-center justify-between bg-white/15 rounded-xl px-4 py-3">
               <div>
-                <div className="text-sm font-semibold text-gray-900">Riley AI</div>
-                <div className="flex items-center gap-1 text-xs text-green-600">
-                  <span className="w-1.5 h-1.5 rounded-full bg-green-500 inline-block" />
-                  Online Now
-                </div>
+                <p className="text-blue-200 text-xs font-medium uppercase tracking-wider">Your Riley Number</p>
+                <p className="text-2xl font-bold font-mono tracking-wide mt-0.5">{formattedNumber}</p>
+              </div>
+              <div className="flex gap-2">
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(rileyNumber!);
+                    setPhoneCopied(true);
+                    setTimeout(() => setPhoneCopied(false), 2000);
+                  }}
+                  className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 transition-all"
+                  title="Copy number"
+                >
+                  {phoneCopied ? <CheckCheck size={16} /> : <Copy size={16} />}
+                </button>
+                <a
+                  href={`tel:${rileyNumber}`}
+                  className="p-2.5 rounded-xl bg-white/20 hover:bg-white/30 transition-all"
+                  title="Test call"
+                >
+                  <PhoneCall size={16} />
+                </a>
               </div>
             </div>
-            <div className="space-y-2">
-              <button
-                onClick={() => setActiveView("receptionist")}
-                className="w-full text-left text-xs px-3 py-2 rounded-lg bg-blue-50 hover:bg-blue-100 text-blue-700 font-medium transition-colors flex items-center justify-between"
-              >
-                <span>Receptionist Mode</span>
-                <ChevronRight size={12} />
-              </button>
-              <button
-                onClick={() => setActiveView("ops_manager")}
-                className="w-full text-left text-xs px-3 py-2 rounded-lg bg-purple-50 hover:bg-purple-100 text-purple-700 font-medium transition-colors flex items-center justify-between"
-              >
-                <span>Ops Manager Mode</span>
-                <ChevronRight size={12} />
-              </button>
+          )}
+
+          {!rileyNumber && !statsLoading && (
+            <div className="mt-4 bg-white/15 rounded-xl px-4 py-3 flex items-center gap-2">
+              <Clock size={14} className="text-blue-200" />
+              <p className="text-blue-200 text-sm">Your Riley number is being provisioned — check back shortly.</p>
             </div>
-          </div>
+          )}
         </div>
 
-        {/* ── Your Riley Number Banner ───────────────────────────────────── */}
-        {stats?.assignedPhoneNumber ? (
-          <div className="bg-gradient-to-r from-sky-50 to-blue-50 border border-sky-200 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-sky-100 flex items-center justify-center flex-shrink-0">
-                <Phone size={20} className="text-sky-600" />
-              </div>
-              <div>
-                <p className="text-xs font-semibold text-sky-600 uppercase tracking-wider mb-0.5">Your Riley AI Number</p>
-                <p className="text-2xl font-bold text-sky-900 tracking-wide font-mono">
-                  {stats.assignedPhoneNumber.replace(/(\+1)(\d{3})(\d{3})(\d{4})/, '($2) $3-$4')}
-                </p>
-                <p className="text-xs text-sky-600 mt-0.5">Share this number — Riley answers 24/7</p>
-              </div>
-            </div>
-            <div className="flex items-center gap-2 sm:flex-shrink-0">
-              <button
-                onClick={() => {
-                  navigator.clipboard.writeText(stats.assignedPhoneNumber!);
-                  setPhoneCopied(true);
-                  setTimeout(() => setPhoneCopied(false), 2000);
-                }}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-sky-100 hover:bg-sky-200 text-sky-700 text-xs font-medium transition-all"
-              >
-                {phoneCopied ? <CheckCheck size={13} /> : <Copy size={13} />}
-                {phoneCopied ? "Copied!" : "Copy Number"}
-              </button>
-              <a
-                href={`tel:${stats.assignedPhoneNumber}`}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-lg bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium transition-all"
-              >
-                <Phone size={13} />
-                Test Call
-              </a>
-            </div>
-          </div>
-        ) : stats && !statsLoading ? (
-          <div className="bg-amber-50 border border-amber-200 rounded-2xl p-4 flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-100 flex items-center justify-center flex-shrink-0">
-              <Phone size={20} className="text-amber-500" />
-            </div>
-            <div>
-              <p className="text-sm font-semibold text-amber-800">Riley number being provisioned…</p>
-              <p className="text-xs text-amber-600 mt-0.5">Your dedicated phone number will appear here shortly. Check back in a few minutes or contact support.</p>
-            </div>
-          </div>
-        ) : null}
-
-        {/* ── Onboarding Checklist ──────────────────────────────────────── */}
+        {/* ── Onboarding Checklist (only if not complete) ────────────────── */}
         {stats && !statsLoading && !(stats.hasSubscription && stats.hasPhone && stats.hasCalendar && stats.hasFirstBooking) && (
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
               <CheckCircle2 size={15} className="text-blue-500" />
               <span className="text-sm font-semibold text-gray-900">Getting Started</span>
               <span className="ml-auto text-xs text-gray-400 mr-2">
-                {[stats.hasSubscription, stats.hasPhone, stats.hasCalendar, stats.hasFirstBooking].filter(Boolean).length}/4 complete
+                {[stats.hasSubscription, stats.hasPhone, stats.hasCalendar, stats.hasFirstBooking].filter(Boolean).length}/4 done
               </span>
               <button
                 onClick={() => { setWizardStep(0); setShowWizard(true); }}
                 className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all"
               >
                 <Sparkles size={11} />
-                Setup Guide
+                Setup
               </button>
             </div>
             <div className="divide-y divide-gray-50">
               {[
-                {
-                  done: stats.hasSubscription,
-                  label: "Subscription active",
-                  sub: "Your plan is live and billing is set up",
-                  action: null,
-                  actionLabel: null,
-                },
-                {
-                  done: stats.hasPhone,
-                  label: "Riley phone number assigned",
-                  sub: stats.hasPhone ? `Your number: ${stats.assignedPhoneNumber}` : "Being provisioned — check back shortly",
-                  action: null,
-                  actionLabel: null,
-                },
-                {
-                  done: stats.hasCalendar,
-                  label: "Google Calendar connected",
-                  sub: stats.hasCalendar ? "Calendar is synced" : "Connect so Riley can book appointments automatically",
-                  action: "/app/settings",
-                  actionLabel: "Connect →",
-                },
-                {
-                  done: stats.hasFirstBooking,
-                  label: "First booking created",
-                  sub: stats.hasFirstBooking ? "You're off to a great start!" : "Test Riley by calling your new number or adding a booking manually",
-                  action: "/app/bookings",
-                  actionLabel: "Add booking →",
-                },
+                { done: stats.hasSubscription, label: "Subscription active", action: null },
+                { done: stats.hasPhone, label: "Riley phone number assigned", action: null },
+                { done: stats.hasCalendar, label: "Google Calendar connected", action: "/app/settings" },
+                { done: stats.hasFirstBooking, label: "First booking created", action: "/app/bookings" },
               ].map((item, i) => (
                 <div key={i} className="flex items-center gap-3 px-4 py-3">
-                  <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
-                    item.done ? "bg-green-100" : "bg-gray-100"
-                  }`}>
+                  <div className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${item.done ? "bg-green-100" : "bg-gray-100"}`}>
                     {item.done
                       ? <CheckCircle2 size={14} className="text-green-600" />
                       : <Clock size={14} className="text-gray-400" />}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <p className={`text-sm font-medium ${ item.done ? "text-gray-400 line-through" : "text-gray-900" }`}>{item.label}</p>
-                    <p className="text-xs text-gray-400 truncate">{item.sub}</p>
-                  </div>
+                  <p className={`text-sm font-medium flex-1 ${item.done ? "text-gray-400 line-through" : "text-gray-900"}`}>{item.label}</p>
                   {!item.done && item.action && (
-                    <a href={item.action} className="text-xs text-blue-600 hover:text-blue-800 font-medium whitespace-nowrap flex items-center gap-0.5 transition-colors">
-                      {item.actionLabel} <ExternalLink size={10} />
+                    <a href={item.action} className="text-xs text-blue-600 hover:text-blue-800 font-medium flex items-center gap-0.5 transition-colors">
+                      Fix <ExternalLink size={10} />
                     </a>
                   )}
                 </div>
@@ -338,155 +264,133 @@ export default function AppDashboard() {
           </div>
         )}
 
-        {/* ── Stats Bar ─────────────────────────────────────────────────────── */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-          <StatCard
-            label="Bookings Today"
-            value={statsLoading ? "—" : String(stats?.bookingsToday ?? 0)}
-            icon={<Calendar size={16} />}
-            color="blue"
-            trend={stats?.bookingsToday ? `+${stats.bookingsToday} today` : "None yet today"}
-          />
-          <StatCard
-            label="Total Bookings"
-            value={statsLoading ? "—" : String(stats?.bookingsTotal ?? 0)}
-            icon={<TrendingUp size={16} />}
-            color="green"
-            trend="All time"
-          />
-          <StatCard
-            label="Conversations"
-            value={statsLoading ? "—" : String(stats?.conversationsTotal ?? 0)}
-            icon={<MessageSquare size={16} />}
-            color="purple"
-            trend="With Riley"
-          />
-          <StatCard
-            label="Leads Captured"
-            value={statsLoading ? "—" : String(stats?.leadsTotal ?? 0)}
-            icon={<Users size={16} />}
-            color="cyan"
-            trend="Via website"
-          />
-        </div>
+        {/* ── 4 Big Action Cards ─────────────────────────────────────────── */}
+        <div className="grid grid-cols-2 gap-3">
 
-        {/* ── Today's Bookings + Quick Actions ──────────────────────────────── */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {/* Today's Bookings */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
-              <div className="flex items-center gap-2">
-                <Calendar size={15} className="text-blue-500" />
-                <span className="text-sm font-semibold text-gray-900">Today's Bookings</span>
+          {/* SoloHub */}
+          <button
+            onClick={() => setActiveView("receptionist")}
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col items-start gap-3 hover:border-blue-200 hover:shadow-md transition-all active:scale-[0.97] text-left"
+          >
+            <div className="w-12 h-12 rounded-xl bg-blue-600 flex items-center justify-center shadow-md shadow-blue-200">
+              <Bot size={24} className="text-white" />
+            </div>
+            <div>
+              <div className="font-bold text-gray-900 text-base">SoloHub</div>
+              <div className="text-xs text-gray-400 mt-0.5">Talk to Riley</div>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-blue-600 font-medium mt-auto">
+              Launch <ArrowRight size={12} />
+            </div>
+          </button>
+
+          {/* SoloBooking */}
+          <button
+            onClick={() => window.location.href = "/app/bookings"}
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col items-start gap-3 hover:border-green-200 hover:shadow-md transition-all active:scale-[0.97] text-left"
+          >
+            <div className="w-12 h-12 rounded-xl bg-green-500 flex items-center justify-center shadow-md shadow-green-200">
+              <Calendar size={24} className="text-white" />
+            </div>
+            <div>
+              <div className="font-bold text-gray-900 text-base">SoloBooking</div>
+              <div className="text-xs text-gray-400 mt-0.5">
+                {todayBookings && todayBookings.length > 0
+                  ? `${todayBookings.length} booking${todayBookings.length > 1 ? "s" : ""} today`
+                  : "View schedule"}
               </div>
-              <button
-                onClick={() => window.location.href = "/app/bookings"}
-                className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors"
-              >
-                View all <ArrowUpRight size={11} />
-              </button>
             </div>
-            <div className="p-3 space-y-2 min-h-[120px]">
-              {bookingsLoading ? (
-                <div className="flex items-center justify-center h-20">
-                  <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
-                </div>
-              ) : todayBookings && todayBookings.length > 0 ? (
-                todayBookings.map(b => (
-                  <div key={b.id} className="flex items-center gap-3 p-2.5 rounded-xl bg-gray-50 hover:bg-gray-100 transition-colors">
-                    <div className={`w-2 h-2 rounded-full flex-shrink-0 ${b.status === "confirmed" ? "bg-green-500" : b.status === "cancelled" ? "bg-red-400" : "bg-yellow-400"}`} />
-                    <div className="flex-1 min-w-0">
-                      <div className="text-sm font-medium text-gray-900 truncate">{b.customerName ?? "Unknown"}</div>
-                      <div className="text-xs text-gray-400 truncate">{b.serviceType ?? "Service"}{b.preferredTime ? ` · ${b.preferredTime}` : ""}</div>
-                    </div>
-                    <StatusBadge status={b.status ?? "pending"} />
-                  </div>
-                ))
-              ) : (
-                <div className="flex flex-col items-center justify-center h-20 text-center">
-                  <Calendar size={20} className="text-gray-200 mb-1.5" />
-                  <p className="text-xs text-gray-400">No bookings scheduled today</p>
-                  <button
-                    onClick={() => window.location.href = "/app/bookings"}
-                    className="mt-2 text-xs text-blue-600 hover:text-blue-800 transition-colors"
-                  >
-                    Add a booking →
-                  </button>
-                </div>
-              )}
+            <div className="flex items-center gap-1 text-xs text-green-600 font-medium mt-auto">
+              Open <ArrowRight size={12} />
             </div>
-          </div>
+          </button>
 
-          {/* Quick Actions */}
-          <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
-              <Zap size={15} className="text-amber-500" />
-              <span className="text-sm font-semibold text-gray-900">Quick Actions</span>
+          {/* LiveDesk */}
+          <button
+            onClick={() => setActiveView("interpreter")}
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col items-start gap-3 hover:border-cyan-200 hover:shadow-md transition-all active:scale-[0.97] text-left"
+          >
+            <div className="w-12 h-12 rounded-xl bg-cyan-500 flex items-center justify-center shadow-md shadow-cyan-200">
+              <Globe size={24} className="text-white" />
             </div>
-            <div className="p-3 grid grid-cols-2 gap-2">
-              {[
-                { icon: <Phone size={16} />, label: "SoloHub", sub: "AI Specialist", color: "blue", action: () => setActiveView("receptionist") },
-                { icon: <Globe size={16} />, label: "LiveDesk", sub: "Live Translator", color: "cyan", action: () => setActiveView("interpreter") },
-                { icon: <Calendar size={16} />, label: "SoloBooking", sub: "Appointments", color: "green", action: () => window.location.href = "/app/bookings" },
-                { icon: <HardHat size={16} />, label: "Field Tools", sub: "Construction", color: "orange", action: () => setActiveView("construction") },
-                { icon: <Users size={16} />, label: "Contacts", sub: "Leads & CRM", color: "purple", action: () => window.location.href = "/app/contacts" },
-                { icon: <CreditCard size={16} />, label: "Billing", sub: "Plan & Invoices", color: "green", action: () => window.location.href = "/app/billing" },
-                ...(stats?.assignedPhoneNumber ? [{ icon: <PhoneCall size={16} />, label: "Test SoloHub", sub: "Call your number", color: "cyan", action: () => window.open(`tel:${stats.assignedPhoneNumber}`, "_self") }] : []),
-              ].map(item => (
-                <button
-                  key={item.label}
-                  onClick={item.action}
-                  className={`flex flex-col items-start gap-1.5 p-3 rounded-xl border transition-all hover:scale-[1.02] active:scale-[0.98]
-                    ${item.color === "blue" ? "bg-blue-50 border-blue-100 hover:bg-blue-100" :
-                      item.color === "cyan" ? "bg-cyan-50 border-cyan-100 hover:bg-cyan-100" :
-                      item.color === "green" ? "bg-green-50 border-green-100 hover:bg-green-100" :
-                      "bg-orange-50 border-orange-100 hover:bg-orange-100"}`}
-                >
-                  <div className={`
-                    ${item.color === "blue" ? "text-blue-600" :
-                      item.color === "cyan" ? "text-cyan-600" :
-                      item.color === "green" ? "text-green-600" :
-                      "text-orange-600"}`}
-                  >
-                    {item.icon}
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-gray-900">{item.label}</div>
-                    <div className="text-xs text-gray-400">{item.sub}</div>
-                  </div>
-                </button>
-              ))}
+            <div>
+              <div className="font-bold text-gray-900 text-base">LiveDesk</div>
+              <div className="text-xs text-gray-400 mt-0.5">Live translator</div>
             </div>
+            <div className="flex items-center gap-1 text-xs text-cyan-600 font-medium mt-auto">
+              Start <ArrowRight size={12} />
+            </div>
+          </button>
+
+          {/* Field Tools */}
+          <button
+            onClick={() => setActiveView("construction")}
+            className="bg-white rounded-2xl border border-gray-100 shadow-sm p-5 flex flex-col items-start gap-3 hover:border-orange-200 hover:shadow-md transition-all active:scale-[0.97] text-left"
+          >
+            <div className="w-12 h-12 rounded-xl bg-orange-500 flex items-center justify-center shadow-md shadow-orange-200">
+              <HardHat size={24} className="text-white" />
+            </div>
+            <div>
+              <div className="font-bold text-gray-900 text-base">Field Tools</div>
+              <div className="text-xs text-gray-400 mt-0.5">Crew & job site</div>
+            </div>
+            <div className="flex items-center gap-1 text-xs text-orange-600 font-medium mt-auto">
+              Open <ArrowRight size={12} />
+            </div>
+          </button>
+
+        </div>
+
+        {/* ── Stats Row ─────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-3 gap-3">
+          <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
+            <div className="text-2xl font-bold text-blue-700">
+              {statsLoading ? "—" : String(stats?.bookingsToday ?? 0)}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">Today</div>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
+            <div className="text-2xl font-bold text-green-700">
+              {statsLoading ? "—" : String(stats?.bookingsTotal ?? 0)}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">Total Bookings</div>
+          </div>
+          <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
+            <div className="text-2xl font-bold text-purple-700">
+              {statsLoading ? "—" : String(stats?.conversationsTotal ?? 0)}
+            </div>
+            <div className="text-xs text-gray-400 mt-1">Conversations</div>
           </div>
         </div>
 
-        {/* ── Recent Activity Feed ───────────────────────────────────────────── */}
+        {/* ── Recent Activity ────────────────────────────────────────────── */}
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="flex items-center gap-2 px-4 py-3 border-b border-gray-50">
-            <Activity size={15} className="text-gray-400" />
+          <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
             <span className="text-sm font-semibold text-gray-900">Recent Activity</span>
+            <a href="/app/agents" className="text-xs text-blue-600 hover:text-blue-800 flex items-center gap-0.5 transition-colors">
+              Agent Center <ChevronRight size={12} />
+            </a>
           </div>
           <div className="divide-y divide-gray-50">
             {activityLoading ? (
-              <div className="flex items-center justify-center h-24">
+              <div className="flex items-center justify-center h-20">
                 <div className="w-5 h-5 border-2 border-blue-200 border-t-blue-500 rounded-full animate-spin" />
               </div>
             ) : recentActivity && recentActivity.length > 0 ? (
-              recentActivity.map(item => (
+              recentActivity.slice(0, 5).map(item => (
                 <div key={item.id} className="flex items-center gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
-                  <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-xs font-bold flex-shrink-0
+                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center text-white flex-shrink-0
                     ${item.badge === "Ops" ? "bg-purple-500" :
                       item.badge === "Safety" ? "bg-red-500" :
                       item.badge === "Log" ? "bg-orange-500" :
                       "bg-blue-500"}`}
                   >
-                    {item.badge === "Ops" ? <Bot size={14} /> :
-                     item.badge === "Safety" ? <AlertTriangle size={14} /> :
-                     item.badge === "Log" ? <HardHat size={14} /> :
-                     <MessageSquare size={14} />}
+                    {item.badge === "Ops" ? <Bot size={15} /> :
+                     item.badge === "Log" ? <HardHat size={15} /> :
+                     <MessageSquare size={15} />}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="text-sm text-gray-800 font-medium truncate capitalize">{item.title}</div>
+                    <div className="text-sm font-medium text-gray-900 truncate capitalize">{item.title}</div>
                     <div className="text-xs text-gray-400">{item.subtitle}</div>
                   </div>
                   <div className="text-xs text-gray-300 whitespace-nowrap">
@@ -496,13 +400,41 @@ export default function AppDashboard() {
               ))
             ) : (
               <div className="flex flex-col items-center justify-center py-10 text-center">
-                <img src={CDN.logoSymbol} alt="" className="w-10 h-10 object-contain mb-2 opacity-30" />
+                <Bot size={28} className="text-gray-200 mb-2" />
                 <p className="text-sm text-gray-400">No activity yet.</p>
-                <p className="text-xs text-gray-300 mt-0.5">Launch Riley to get started.</p>
+                <p className="text-xs text-gray-300 mt-0.5">Call your Riley number to get started.</p>
               </div>
             )}
           </div>
         </div>
+
+        {/* ── More Links ────────────────────────────────────────────────── */}
+        <div className="grid grid-cols-3 gap-2">
+          {[
+            { icon: <Users size={16} />, label: "Contacts", href: "/app/contacts", color: "text-purple-600 bg-purple-50" },
+            { icon: <CreditCard size={16} />, label: "Billing", href: "/app/billing", color: "text-green-600 bg-green-50" },
+            { icon: <Zap size={16} />, label: "Agents", href: "/app/agents", color: "text-amber-600 bg-amber-50" },
+          ].map(item => (
+            <a
+              key={item.label}
+              href={item.href}
+              className="bg-white rounded-xl border border-gray-100 p-3 flex flex-col items-center gap-2 hover:shadow-sm transition-all active:scale-[0.97]"
+            >
+              <div className={`w-9 h-9 rounded-lg flex items-center justify-center ${item.color}`}>
+                {item.icon}
+              </div>
+              <span className="text-xs font-medium text-gray-700">{item.label}</span>
+            </a>
+          ))}
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-xs text-gray-300 pb-4">
+          Powered by{" "}
+          <a href="https://soloedgeautomations.com" className="hover:text-gray-400 transition-colors">
+            SoloEdge
+          </a>
+        </p>
 
       </div>
 
@@ -516,8 +448,6 @@ export default function AppDashboard() {
             >
               <X size={16} />
             </button>
-
-            {/* Step indicator */}
             <div className="flex items-center gap-2 mb-5">
               {[0,1,2].map(i => (
                 <div key={i} className={`h-1.5 flex-1 rounded-full transition-all ${i <= wizardStep ? "bg-blue-600" : "bg-gray-200"}`} />
@@ -531,22 +461,17 @@ export default function AppDashboard() {
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 mb-2">Step 1: Connect Your Business</h2>
                 <p className="text-gray-500 text-sm mb-4">Tell Riley where to find your business info so it can answer questions accurately.</p>
-                <div className="space-y-2 mb-5">
-                  <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group">
-                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center">
-                      <Globe size={16} className="text-gray-500 group-hover:text-blue-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">Add your website or Google listing</p>
-                      <p className="text-xs text-gray-400">Riley will learn from it automatically</p>
-                    </div>
-                    <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-blue-500" />
-                  </a>
-                </div>
-                <button
-                  onClick={() => setWizardStep(1)}
-                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all"
-                >
+                <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-blue-300 hover:bg-blue-50 transition-all group mb-5">
+                  <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-blue-100 flex items-center justify-center">
+                    <Globe size={16} className="text-gray-500 group-hover:text-blue-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Add your website or Google listing</p>
+                    <p className="text-xs text-gray-400">Riley learns from it automatically</p>
+                  </div>
+                  <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-blue-500" />
+                </a>
+                <button onClick={() => setWizardStep(1)} className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all">
                   Next: Connect Calendar →
                 </button>
                 <button onClick={() => setWizardStep(1)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">Skip for now</button>
@@ -559,23 +484,18 @@ export default function AppDashboard() {
                   <Calendar size={24} className="text-green-600" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 mb-2">Step 2: Connect Google Calendar</h2>
-                <p className="text-gray-500 text-sm mb-4">Riley will book appointments directly into your calendar — no double-booking, no missed calls.</p>
-                <div className="space-y-2 mb-5">
-                  <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all group">
-                    <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-green-100 flex items-center justify-center">
-                      <Calendar size={16} className="text-gray-500 group-hover:text-green-600" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">Connect Google Calendar</p>
-                      <p className="text-xs text-gray-400">Takes about 30 seconds</p>
-                    </div>
-                    <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-green-500" />
-                  </a>
-                </div>
-                <button
-                  onClick={() => setWizardStep(2)}
-                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all"
-                >
+                <p className="text-gray-500 text-sm mb-4">Riley books appointments directly into your calendar — no double-booking, no missed calls.</p>
+                <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all group mb-5">
+                  <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-green-100 flex items-center justify-center">
+                    <Calendar size={16} className="text-gray-500 group-hover:text-green-600" />
+                  </div>
+                  <div>
+                    <p className="text-sm font-semibold text-gray-900">Connect Google Calendar</p>
+                    <p className="text-xs text-gray-400">Takes about 30 seconds</p>
+                  </div>
+                  <ChevronRight size={14} className="ml-auto text-gray-300 group-hover:text-green-500" />
+                </a>
+                <button onClick={() => setWizardStep(2)} className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all">
                   Next: Phone Setup →
                 </button>
                 <button onClick={() => setWizardStep(2)} className="w-full mt-2 text-xs text-gray-400 hover:text-gray-600">Skip for now</button>
@@ -588,25 +508,20 @@ export default function AppDashboard() {
                   <Phone size={24} className="text-sky-600" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 mb-2">Step 3: Your Riley Number</h2>
-                <p className="text-gray-500 text-sm mb-4">Riley answers every call 24/7 on your dedicated number. You can use an existing number or get a new one.</p>
-                {stats?.assignedPhoneNumber ? (
+                <p className="text-gray-500 text-sm mb-4">Riley answers every call 24/7 on your dedicated number.</p>
+                {rileyNumber ? (
                   <div className="p-4 rounded-xl bg-green-50 border border-green-200 mb-4">
                     <p className="text-sm font-bold text-green-800">✅ You're all set!</p>
-                    <p className="text-2xl font-bold text-green-700 font-mono mt-1">
-                      {stats.assignedPhoneNumber.replace(/(\ +1)(\d{3})(\d{3})(\d{4})/, '($2) $3-$4')}
-                    </p>
+                    <p className="text-2xl font-bold text-green-700 font-mono mt-1">{formattedNumber}</p>
                     <p className="text-xs text-green-600 mt-1">Share this number — Riley answers 24/7</p>
                   </div>
                 ) : (
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 mb-4">
                     <p className="text-sm font-semibold text-amber-800">⏳ Your number is being set up</p>
-                    <p className="text-xs text-amber-600 mt-1">It usually takes just a few minutes. Contact support if it's been more than 10 minutes.</p>
+                    <p className="text-xs text-amber-600 mt-1">Usually takes a few minutes. Contact support if it's been more than 10 minutes.</p>
                   </div>
                 )}
-                <button
-                  onClick={() => setShowWizard(false)}
-                  className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all"
-                >
+                <button onClick={() => setShowWizard(false)} className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all">
                   🎉 Done — Go to Dashboard
                 </button>
               </div>
@@ -614,51 +529,12 @@ export default function AppDashboard() {
           </div>
         </div>
       )}
+
     </div>
   );
 }
 
 // ── Helper components ─────────────────────────────────────────────────────────
-
-function StatCard({ label, value, icon, color, trend }: {
-  label: string;
-  value: string;
-  icon: React.ReactNode;
-  color: "blue" | "green" | "purple" | "cyan";
-  trend: string;
-}) {
-  const colorMap = {
-    blue: { bg: "bg-blue-50 border-blue-100", icon: "bg-blue-100 text-blue-600", value: "text-blue-700" },
-    green: { bg: "bg-green-50 border-green-100", icon: "bg-green-100 text-green-600", value: "text-green-700" },
-    purple: { bg: "bg-purple-50 border-purple-100", icon: "bg-purple-100 text-purple-600", value: "text-purple-700" },
-    cyan: { bg: "bg-cyan-50 border-cyan-100", icon: "bg-cyan-100 text-cyan-600", value: "text-cyan-700" },
-  };
-  const c = colorMap[color];
-  return (
-    <div className={`rounded-xl p-3.5 border ${c.bg}`}>
-      <div className="flex items-center justify-between mb-2">
-        <div className={`w-7 h-7 rounded-lg flex items-center justify-center ${c.icon}`}>
-          {icon}
-        </div>
-        <BarChart3 size={12} className="text-gray-200" />
-      </div>
-      <div className={`text-2xl font-bold ${c.value}`}>{value}</div>
-      <div className="text-xs text-gray-500 mt-0.5 truncate">{label}</div>
-      <div className="text-xs text-gray-400 mt-0.5 truncate">{trend}</div>
-    </div>
-  );
-}
-
-function StatusBadge({ status }: { status: string }) {
-  const map: Record<string, { label: string; cls: string }> = {
-    confirmed: { label: "Confirmed", cls: "bg-green-100 text-green-700" },
-    pending: { label: "Pending", cls: "bg-yellow-100 text-yellow-700" },
-    cancelled: { label: "Cancelled", cls: "bg-red-100 text-red-600" },
-    completed: { label: "Done", cls: "bg-gray-100 text-gray-500" },
-  };
-  const s = map[status] ?? { label: status, cls: "bg-gray-100 text-gray-500" };
-  return <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${s.cls}`}>{s.label}</span>;
-}
 
 function formatRelativeTime(date: Date): string {
   const diff = Date.now() - date.getTime();
@@ -672,8 +548,8 @@ function formatRelativeTime(date: Date): string {
 
 function DashboardTopBar({ user, onBack, title, logout }: { user: any; onBack: () => void; title: string; logout: () => void }) {
   return (
-    <div className="border-b border-gray-200 bg-white/95 backdrop-blur-xl sticky top-0 z-40 shadow-sm">
-      <div className="max-w-4xl mx-auto px-4 h-14 flex items-center gap-3">
+    <div className="border-b border-gray-200 bg-white sticky top-0 z-40 shadow-sm">
+      <div className="max-w-2xl mx-auto px-4 h-14 flex items-center gap-3">
         <button onClick={onBack} className="flex items-center gap-1.5 text-gray-500 hover:text-blue-700 transition-colors text-sm font-medium">
           ← Back
         </button>
