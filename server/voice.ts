@@ -31,6 +31,7 @@ import { Router, Request, Response } from "express";
 import { WebSocket, WebSocketServer } from "ws";
 import { RILEY_VOICE_PROMPT } from "./prompts/riley";
 import { invokeLLM } from "./_core/llm";
+import { claudeReason } from "./_core/claudeReason";
 
 export const voiceRouter = Router();
 
@@ -208,36 +209,15 @@ Caller transcript lines:
 ${transcriptText || "No transcript captured."}`;
 
   try {
-    const response = await invokeLLM({
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: userContent },
-      ],
-      response_format: {
-        type: "json_schema",
-        json_schema: {
-          name: "lead_summary",
-          strict: true,
-          schema: {
-            type: "object",
-            properties: {
-              job_type: { type: "string" },
-              location: { type: "string" },
-              customer_phone: { type: "string" },
-              description: { type: "string" },
-              suggested_action: { type: "string" },
-              language_detected: { type: "string" },
-              english_summary: { type: "string" },
-            },
-            required: ["job_type", "location", "customer_phone", "description", "suggested_action", "language_detected", "english_summary"],
-            additionalProperties: false,
-          },
-        },
-      },
+    // Use Claude for complex calls (10+ lines or non-English), GPT-4o-mini for simple ones
+    const reasonResult = await claudeReason({
+      systemPrompt,
+      userContent,
+      transcriptLineCount: transcriptLines.length,
+      language,
     });
-
-    const content = response?.choices?.[0]?.message?.content;
-    const parsed = JSON.parse(typeof content === "string" ? content : JSON.stringify(content));
+    console.log(`[voice] Lead summary via ${reasonResult.model} (claude: ${reasonResult.usedClaude})`);
+    const parsed = JSON.parse(reasonResult.content);
 
     return {
       jobType: safeText(parsed.job_type),

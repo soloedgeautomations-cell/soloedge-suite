@@ -17,6 +17,7 @@ import Billing from "./pages/Billing";
 import Login from "./pages/Login";
 import ForTeams from "./pages/ForTeams";
 import PartnerStarter from "./pages/PartnerStarter";
+import AgentCommandCenter from "./pages/AgentCommandCenter";
 
 function Router() {
   return (
@@ -24,6 +25,7 @@ function Router() {
       <Route path="/login" component={Login} />
       <Route path="/" component={Home} />
       <Route path="/app" component={AppDashboard} />
+      <Route path="/app/agents" component={AgentCommandCenter} />
       <Route path="/app/bookings" component={Bookings} />
       <Route path="/app/contacts" component={Contacts} />
       <Route path="/app/settings" component={Settings} />

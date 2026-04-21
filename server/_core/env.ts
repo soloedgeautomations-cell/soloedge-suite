@@ -34,4 +34,11 @@ export const ENV = {
   googleClientId: process.env.GOOGLE_CLIENT_ID ?? "",
   googleClientSecret: process.env.GOOGLE_CLIENT_SECRET ?? "",
   googleRedirectUri: process.env.GOOGLE_REDIRECT_URI ?? "https://soloedge.app/api/auth/google/callback",
+
+  // Anthropic Claude (reasoning upgrade for complex calls)
+  anthropicApiKey: process.env.ANTHROPIC_API_KEY ?? "",
+
+  // n8n Agent Router
+  n8nWebhookUrl: process.env.N8N_WEBHOOK_URL ?? "",
+  googleCalendarId: process.env.GOOGLE_CALENDAR_ID ?? "",
 };
