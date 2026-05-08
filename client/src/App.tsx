@@ -18,6 +18,8 @@ import Login from "./pages/Login";
 import ForTeams from "./pages/ForTeams";
 import PartnerStarter from "./pages/PartnerStarter";
 import AgentCommandCenter from "./pages/AgentCommandCenter";
+import Privacy from "./pages/Privacy";
+import Terms from "./pages/Terms";
 
 function Router() {
   return (
@@ -35,6 +37,8 @@ function Router() {
       <Route path="/admin" component={AdminPanel} />
       <Route path="/for-teams-enterprises" component={ForTeams} />
       <Route path="/partner-starter" component={PartnerStarter} />
+      <Route path="/privacy" component={Privacy} />
+      <Route path="/terms" component={Terms} />
       <Route path="/404" component={NotFound} />
       <Route component={NotFound} />
     </Switch>
