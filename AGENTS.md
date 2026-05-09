@@ -18,7 +18,7 @@ This file tracks every AI agent in the SoloEdge system — their identity, where
 
 **Used by:**
 - Website chat (FloatingRiley widget) → `RILEY_RECEPTIONIST_PROMPT` via `server/routers.ts`
-- Phone calls (737) 259-5692 → `RILEY_VOICE_PROMPT` via `server/voice.ts`
+- Phone calls (512) 399-1605 → `RILEY_VOICE_PROMPT` via `server/voice.ts`
 
 **Voice engine:** OpenAI Realtime API (WebSocket, live audio — NOT text-to-speech)
 **Voice:** shimmer
