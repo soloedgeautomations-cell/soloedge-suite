@@ -67,6 +67,11 @@ async function startServer() {
   app.get("/api/google/callback", handleGoogleCallback);
   app.get("/api/google/status", handleGoogleStatus);
 
+  // Health check — for ops_guardian, n8n, and load balancers (no auth required)
+  app.get("/health", (_req, res) => {
+    res.json({ ok: true, ts: Date.now() });
+  });
+
   // tRPC API
   app.use(
     "/api/trpc",
@@ -108,6 +113,16 @@ async function startServer() {
 }
 
 startServer().catch(console.error);
+
+// ─── Global Express error handler ─────────────────────────────────────────────
+// Catches any unhandled errors thrown by route handlers or middleware.
+// Guards with res.headersSent to prevent ERR_HTTP_HEADERS_SENT crashes.
+process.on("uncaughtException", (err) => {
+  console.error("[Server] Uncaught exception:", err);
+});
+process.on("unhandledRejection", (reason) => {
+  console.error("[Server] Unhandled rejection:", reason);
+});
 
 // ─── One-time startup: link existing Twilio number to admin user ──────────────
 // Runs every boot but only updates if assignedPhoneNumber is not yet set.

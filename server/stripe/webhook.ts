@@ -82,7 +82,9 @@ export async function handleStripeWebhook(req: Request, res: Response): Promise<
     // Return 200 to prevent Stripe from retrying — log the error instead
   }
 
-  res.json({ received: true });
+  if (!res.headersSent) {
+    res.json({ received: true });
+  }
 }
 
 // ─── checkout.session.completed ──────────────────────────────────────────────

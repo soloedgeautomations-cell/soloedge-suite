@@ -201,7 +201,8 @@ class SDKServer {
     cookieValue: string | undefined | null
   ): Promise<{ openId: string; appId: string; name: string } | null> {
     if (!cookieValue) {
-      console.warn("[Auth] Missing session cookie");
+      // Expected for public routes, webhooks (Twilio, Telegram, n8n, Stripe) — not an error
+      console.debug("[Auth] No session cookie present (public/webhook request)");
       return null;
     }
 

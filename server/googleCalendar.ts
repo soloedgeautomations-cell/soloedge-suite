@@ -361,7 +361,9 @@ export async function handleGoogleCallback(req: Request, res: Response): Promise
     res.redirect("/app/settings?gcal=connected");
   } catch (e) {
     console.error("[GoogleCalendar] Callback error:", e);
-    res.redirect("/app/settings?gcal=error");
+    if (!res.headersSent) {
+      res.redirect("/app/settings?gcal=error");
+    }
   }
 }
 

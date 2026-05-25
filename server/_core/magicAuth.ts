@@ -94,7 +94,9 @@ export function registerMagicAuthRoute(app: Express): void {
       res.redirect(302, "/app");
     } catch (err) {
       console.error("[MagicAuth] Error during magic login:", err);
-      res.redirect(302, "/get-started?error=magic_failed");
+      if (!res.headersSent) {
+        res.redirect(302, "/get-started?error=magic_failed");
+      }
     }
   });
 }
