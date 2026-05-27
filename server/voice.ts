@@ -35,7 +35,7 @@ import { claudeReason } from "./_core/claudeReason";
 
 export const voiceRouter = Router();
 
-const REALTIME_MODEL = "gpt-realtime-1.5";
+const REALTIME_MODEL = "gpt-realtime";
 const REALTIME_URL = `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(REALTIME_MODEL)}`;
 
 // ─── Resolve the public WSS base URL once at startup ─────────────────────────
@@ -364,7 +364,6 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   const openAiWs = new WebSocket(REALTIME_URL, {
     headers: {
       Authorization: `Bearer ${openAiKey}`,
-      "OpenAI-Beta": "realtime=v1",
     },
   });
 
@@ -430,19 +429,26 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
       {
         type: "session.update",
         session: {
+          type: "realtime",
           instructions: RILEY_VOICE_PROMPT,
-          input_audio_format: "g711_ulaw",
-          output_audio_format: "g711_ulaw",
-          input_audio_transcription: { model: "whisper-1" },
-          turn_detection: {
-            type: "server_vad",
-            threshold: 0.5,
-            prefix_padding_ms: 300,
-            silence_duration_ms: 700,
-            create_response: true,
+          output_modalities: ["audio"],
+          audio: {
+            input: {
+              format: { type: "audio/pcmu" },
+              transcription: { model: "whisper-1" },
+              turn_detection: {
+                type: "server_vad",
+                threshold: 0.5,
+                prefix_padding_ms: 300,
+                silence_duration_ms: 700,
+                create_response: true,
+              },
+            },
+            output: {
+              format: { type: "audio/pcmu" },
+              voice: "shimmer",
+            },
           },
-          voice: "shimmer",
-          modalities: ["text", "audio"],
           temperature: 0.9,
         },
       },
@@ -580,7 +586,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         }
       }
 
-      if (msg.type === "response.audio.delta" && msg.delta && streamSid) {
+      if (msg.type === "response.output_audio.delta" && msg.delta && streamSid) {
         sendTwilioAudio(msg.delta);
       }
 
