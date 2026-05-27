@@ -35,7 +35,7 @@ import { claudeReason } from "./_core/claudeReason";
 
 export const voiceRouter = Router();
 
-const REALTIME_MODEL = "gpt-4o-realtime-preview-2024-12-17";
+const REALTIME_MODEL = "gpt-realtime-1.5";
 const REALTIME_URL = `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(REALTIME_MODEL)}`;
 
 // ─── Resolve the public WSS base URL once at startup ─────────────────────────
@@ -364,7 +364,6 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   const openAiWs = new WebSocket(REALTIME_URL, {
     headers: {
       Authorization: `Bearer ${openAiKey}`,
-      "OpenAI-Beta": "realtime=v1",
     },
   });
 
@@ -444,7 +443,6 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           voice: "shimmer",
           modalities: ["text", "audio"],
           temperature: 0.9,
-          speed: 1.15,
         },
       },
       "session.update"
