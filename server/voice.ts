@@ -429,6 +429,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
       {
         type: "session.update",
         session: {
+          type: "realtime",
           instructions: RILEY_VOICE_PROMPT,
           input_audio_format: "g711_ulaw",
           output_audio_format: "g711_ulaw",
