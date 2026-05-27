@@ -449,7 +449,6 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
               voice: "shimmer",
             },
           },
-          temperature: 0.9,
         },
       },
       "session.update"
