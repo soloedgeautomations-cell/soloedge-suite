@@ -75,6 +75,42 @@ const INDUSTRIES = [
       "Multilingual executive support",
     ],
   },
+  {
+    key: "roofing",
+    icon: HardHat,
+    title: "Roofing",
+    subtitle: "Storm leads, insurance claims, bilingual crews",
+    img: CDN.constructionTeam, // Using existing as placeholder
+    iconBg: "from-blue-600 to-blue-400",
+    accent: "text-blue-700",
+    border: "border-blue-100 hover:border-blue-300",
+    shadow: "hover:shadow-blue-100",
+    bullets: [
+      "Storm lead qualification & capture",
+      "Bilingual crew dispatch (EN/ES)",
+      "Insurance claim follow-up agent",
+      "Estimate booking & reminders",
+      "Field check-ins from the roof",
+    ],
+  },
+  {
+    key: "auto",
+    icon: Briefcase, // Using Briefcase as placeholder
+    title: "Auto Services",
+    subtitle: "Tow, detail, glass, sales & service",
+    img: CDN.corporateOffice, // Using existing as placeholder
+    iconBg: "from-sky-600 to-cyan-500",
+    accent: "text-sky-700",
+    border: "border-sky-100 hover:border-sky-300",
+    shadow: "hover:shadow-sky-100",
+    bullets: [
+      "Lead qualification for sales & service",
+      "Bay booking & scheduling",
+      "Bilingual customer support (EN/ES)",
+      "Service status text updates",
+      "Parts & vendor coordination",
+    ],
+  },
 ];
 
 export default function IndustriesSection() {

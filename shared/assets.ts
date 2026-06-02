@@ -87,6 +87,16 @@ export const GALLERY = {
     // corporateMeeting (all-Black men at table) removed per user request
     // corporateTeam replaced by new diverse photos
   ],
+  roofing: [
+    CDN.constructionTeam,
+    CDN.constructionWorkers,
+    CDN.constructionSite,
+  ],
+  auto: [
+    CDN.corporateOffice,
+    CDN.corporateMeeting,
+    CDN.corporateTeam,
+  ],
   barber: [
     CDN.barberCutting,
     CDN.barberShop,

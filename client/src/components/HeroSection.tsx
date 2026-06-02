@@ -11,6 +11,8 @@ const INDUSTRY_TEXT: Record<string, string> = {
   gym: "Riley handles membership inquiries, books classes and personal training sessions, manages cancellations, and follows up with trial sign-ups — 24/7.",
   massage: "Riley books appointments, sends reminders, handles reschedules, and upsells packages — so your table stays full without you touching the phone.",
   corporate: "Riley answers your main line professionally, schedules meetings, triages email, and coordinates visitors — like a front-desk team that never calls in sick.",
+  roofing: "SoloCommand answers your phone in English & Spanish, qualifies storm leads, books estimates, and helps you stay on top of insurance claim follow-ups — so you stay on the roof, not on the phone.",
+  auto: "SoloCommand answers calls in English & Spanish across every service — tow, detail, glass, sales — qualifies the lead, books the bay, and texts the owner. Whether you sell cars or service them, the workflow is the same.",
 };
 
 const INDUSTRIES = [
@@ -18,6 +20,8 @@ const INDUSTRIES = [
   { key: "gym" as const, label: "Gym & Fitness" },
   { key: "massage" as const, label: "Massage & Spa" },
   { key: "corporate" as const, label: "Corporate" },
+  { key: "roofing" as const, label: "Roofing" },
+  { key: "auto" as const, label: "Auto" },
 ];
 
 // Waveform bars that animate when Riley is active
