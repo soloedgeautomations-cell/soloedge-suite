@@ -7,12 +7,12 @@ import { trpc } from "@/lib/trpc";
 const CHIP_ICONS = [Phone, Globe, Calendar, Mail, Users];
 
 const INDUSTRY_TEXT: Record<string, string> = {
-  construction: "Riley answers job-site calls, books subs, coordinates crews in English & Spanish, and sends daily progress summaries — so you stay on the tools.",
-  gym: "Riley handles membership inquiries, books classes and personal training sessions, manages cancellations, and follows up with trial sign-ups — 24/7.",
-  massage: "Riley books appointments, sends reminders, handles reschedules, and upsells packages — so your table stays full without you touching the phone.",
-  corporate: "Riley answers your main line professionally, schedules meetings, triages email, and coordinates visitors — like a front-desk team that never calls in sick.",
-  roofing: "SoloCommand answers your phone in English & Spanish, qualifies storm leads, books estimates, and helps you stay on top of insurance claim follow-ups — so you stay on the roof, not on the phone.",
-  auto: "SoloCommand answers calls in English & Spanish across every service — tow, detail, glass, sales — qualifies the lead, books the bay, and texts the owner. Whether you sell cars or service them, the workflow is the same.",
+  construction: "Riley answers job-site calls, books subs, coordinates crews in English & Spanish, and sends daily progress summaries, so you stay on the tools.",
+  gym: "Riley handles membership inquiries, books classes and personal training sessions, manages cancellations, and follows up with trial sign-ups, 24/7.",
+  massage: "Riley books appointments, sends reminders, handles reschedules, and upsells packages, so your table stays full without you touching the phone.",
+  corporate: "Riley answers your main line professionally, schedules meetings, triages email, and coordinates visitors, like a front-desk team that never calls in sick.",
+  roofing: "SoloCommand answers your phone in English & Spanish, qualifies storm leads, books estimates, and helps you stay on top of insurance claim follow-ups, so you stay on the roof, not on the phone.",
+  auto: "SoloCommand answers calls in English & Spanish across every service, tow, detail, glass, sales, qualifies the lead, books the bay, and texts the owner. Whether you sell cars or service them, the workflow is the same.",
 };
 
 const INDUSTRIES = [
@@ -75,7 +75,7 @@ export default function HeroSection() {
       console.error("[heroChat] LLM error:", err);
       setIsLoadingAI(false);
       setIsTyping(false);
-      // Fallback to static response — never crash the page
+      // Fallback to static response, never crash the page
       const fallback = t.hero.responses[activeChip ?? "calls"] ?? "";
       setDisplayedResponse(fallback);
     },
@@ -133,11 +133,11 @@ export default function HeroSection() {
   const gallery = GALLERY[ind.key];
   const currentImg = gallery[galleryIdx % gallery.length];
 
-  const rileyActive = isLoadingAI || isTyping || !!displayedResponse;
+  const rileyActive = isLoadingAI || isTyping || !displayedResponse;
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden pt-16">
-      {/* Background — cycling gallery per industry */}
+      {/* Background, cycling gallery per industry */}
       <div className="absolute inset-0">
         {gallery.map((img, idx) => (
           <img
@@ -204,7 +204,7 @@ export default function HeroSection() {
             {INDUSTRY_TEXT[INDUSTRIES[activeIndustry].key]}
           </p>
 
-          {/* Riley Demo Card — glass, no white box */}
+          {/* Riley Demo Card, glass, no white box */}
           <div className={`backdrop-blur-md bg-white/12 rounded-2xl p-5 mb-6 max-w-xl border transition-all duration-500 shadow-2xl ${
             rileyActive ? "border-blue-400/50 shadow-blue-500/20" : "border-white/25"
           }`}>
@@ -233,7 +233,7 @@ export default function HeroSection() {
 
             <p className="text-sm text-white/70 mb-4">{t.hero.greeting}</p>
 
-            {/* Chips — tap to ask Riley */}
+            {/* Chips, tap to ask Riley */}
             <div className="flex flex-wrap gap-2">
               {t.hero.chips.map((chip, idx) => {
                 const Icon = CHIP_ICONS[idx];

@@ -29,7 +29,7 @@ export default function PartnerStarter() {
             Help sell SoloEdge &amp; get your own AI receptionist for almost nothing.
           </p>
 
-          {/* Pricing card — same style as PricingSection */}
+          {/* Pricing card, same style as PricingSection */}
           <div className="bg-white border border-gray-200 rounded-2xl shadow-sm p-8 text-left">
             {/* Price */}
             <div className="mb-6">
@@ -56,11 +56,11 @@ export default function PartnerStarter() {
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6">
               <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1">Special Deal</p>
               <p className="text-sm text-gray-700 leading-relaxed">
-                Sell just <strong>ONE</strong> full SoloEdge package (Starter, Pro, or Premium) and we will give you your first Partner Starter <strong>free for 3 months</strong> — no setup fee, no monthly fee.
+                Sell just <strong>ONE</strong> full SoloEdge package (Starter, Pro, or Premium) and we will give you your first Partner Starter <strong>free for 3 months</strong>, no setup fee, no monthly fee.
               </p>
             </div>
 
-            {/* CTA button — same style as pricing page */}
+            {/* CTA button, same style as pricing page */}
             <a
               href="mailto:hello@soloedgeautomations.com?subject=Interested%20in%20Partner%20Starter&body=Hi%2C%20I%27m%20interested%20in%20the%20Partner%20Starter%20program.%20Please%20send%20me%20more%20details."
               className="inline-flex items-center justify-center w-full gap-2 px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all shadow-lg shadow-blue-200 active:scale-95"

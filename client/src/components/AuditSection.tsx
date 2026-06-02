@@ -73,7 +73,7 @@ const INCLUSIONS = [
   "Tech stack inventory + risk flags",
   "Top 3 AI opportunities ranked by ROI and ease",
   "Recommended sequence + next-step proposal",
-  "Local-first data plan — your data stays in YOUR accounts, your AI runs on YOUR hardware",
+  "Local-first data plan, your data stays in YOUR accounts, your AI runs on YOUR hardware",
   "Pricing for the build phase (Starter AIOS / Full AIOS / Retainer)",
 ];
 
@@ -171,7 +171,7 @@ export default function AuditSection() {
             className="inline-flex items-center gap-3 px-8 py-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-lg transition-all shadow-lg shadow-blue-200 active:scale-95 mb-4"
           >
             <Phone size={20} />
-            Schedule Your Audit — (512) 399-1605
+            Schedule Your Audit, (512) 399-1605
           </button>
           <p className="text-sm font-medium text-gray-500">
             No long calls, no committee. Murphy answers.

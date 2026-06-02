@@ -81,7 +81,7 @@ export default function AppDashboard() {
   if (activeView === "receptionist" || activeView === "ops_manager") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title={activeView === "receptionist" ? "SoloHub — AI Receptionist" : "SoloHub — Ops Manager"} logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title={activeView === "receptionist" ? "SoloHub, AI Receptionist" : "SoloHub, Ops Manager"} logout={logout} />
         <div className="flex-1 overflow-hidden">
           <RileyChat mode={activeView === "receptionist" ? "receptionist" : "ops_manager"} />
         </div>
@@ -92,7 +92,7 @@ export default function AppDashboard() {
   if (activeView === "interpreter") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="LiveDesk — Live Translator" logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="LiveDesk, Live Translator" logout={logout} />
         <div className="flex-1 overflow-hidden">
           <InterpreterDesk />
         </div>
@@ -103,7 +103,7 @@ export default function AppDashboard() {
   if (activeView === "calendar") {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col">
-        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="SoloBooking — Calendar" logout={logout} />
+        <DashboardTopBar user={user} onBack={() => setActiveView(null)} title="SoloBooking, Calendar" logout={logout} />
         <div className="flex-1 overflow-auto p-4">
           <CalendarView />
         </div>
@@ -184,7 +184,7 @@ export default function AppDashboard() {
             </div>
           </div>
 
-          {/* Riley number — prominent inside hero */}
+          {/* Riley number, prominent inside hero */}
           {rileyNumber && (
             <div className="mt-4 flex items-center justify-between bg-white/15 rounded-xl px-4 py-3">
               <div>
@@ -217,7 +217,7 @@ export default function AppDashboard() {
           {!rileyNumber && !statsLoading && (
             <div className="mt-4 bg-white/15 rounded-xl px-4 py-3 flex items-center gap-2">
               <Clock size={14} className="text-blue-200" />
-              <p className="text-blue-200 text-sm">Your Riley number is being provisioned — check back shortly.</p>
+              <p className="text-blue-200 text-sm">Your Riley number is being provisioned, check back shortly.</p>
             </div>
           )}
         </div>
@@ -345,19 +345,19 @@ export default function AppDashboard() {
         <div className="grid grid-cols-3 gap-3">
           <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
             <div className="text-2xl font-bold text-blue-700">
-              {statsLoading ? "—" : String(stats?.bookingsToday ?? 0)}
+              {statsLoading ? ", " : String(stats?.bookingsToday ?? 0)}
             </div>
             <div className="text-xs text-gray-400 mt-1">Today</div>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
             <div className="text-2xl font-bold text-green-700">
-              {statsLoading ? "—" : String(stats?.bookingsTotal ?? 0)}
+              {statsLoading ? ", " : String(stats?.bookingsTotal ?? 0)}
             </div>
             <div className="text-xs text-gray-400 mt-1">Total Bookings</div>
           </div>
           <div className="bg-white rounded-xl border border-gray-100 p-4 text-center">
             <div className="text-2xl font-bold text-purple-700">
-              {statsLoading ? "—" : String(stats?.conversationsTotal ?? 0)}
+              {statsLoading ? ", " : String(stats?.conversationsTotal ?? 0)}
             </div>
             <div className="text-xs text-gray-400 mt-1">Conversations</div>
           </div>
@@ -484,7 +484,7 @@ export default function AppDashboard() {
                   <Calendar size={24} className="text-green-600" />
                 </div>
                 <h2 className="text-xl font-bold text-gray-900 mb-2">Step 2: Connect Google Calendar</h2>
-                <p className="text-gray-500 text-sm mb-4">Riley books appointments directly into your calendar — no double-booking, no missed calls.</p>
+                <p className="text-gray-500 text-sm mb-4">Riley books appointments directly into your calendar, no double-booking, no missed calls.</p>
                 <a href="/app/settings" className="flex items-center gap-3 p-3 rounded-xl border border-gray-200 hover:border-green-300 hover:bg-green-50 transition-all group mb-5">
                   <div className="w-8 h-8 rounded-lg bg-gray-100 group-hover:bg-green-100 flex items-center justify-center">
                     <Calendar size={16} className="text-gray-500 group-hover:text-green-600" />
@@ -513,7 +513,7 @@ export default function AppDashboard() {
                   <div className="p-4 rounded-xl bg-green-50 border border-green-200 mb-4">
                     <p className="text-sm font-bold text-green-800">✅ You're all set!</p>
                     <p className="text-2xl font-bold text-green-700 font-mono mt-1">{formattedNumber}</p>
-                    <p className="text-xs text-green-600 mt-1">Share this number — Riley answers 24/7</p>
+                    <p className="text-xs text-green-600 mt-1">Share this number, Riley answers 24/7</p>
                   </div>
                 ) : (
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 mb-4">
@@ -522,7 +522,7 @@ export default function AppDashboard() {
                   </div>
                 )}
                 <button onClick={() => setShowWizard(false)} className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all">
-                  🎉 Done — Go to Dashboard
+                  🎉 Done, Go to Dashboard
                 </button>
               </div>
             )}

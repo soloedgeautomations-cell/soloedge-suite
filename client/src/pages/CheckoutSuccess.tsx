@@ -27,7 +27,7 @@ export default function CheckoutSuccess() {
 
   // ── Logged-in path: poll until subscription becomes active ──────────────────
   const { data: sub, isLoading: subLoading } = trpc.stripe.getSubscription.useQuery(undefined, {
-    enabled: !!user && !isGuest,
+    enabled: !user && !isGuest,
     refetchInterval: ready ? false : 3000,
   });
 
@@ -44,7 +44,7 @@ export default function CheckoutSuccess() {
   const { data: magicData } = trpc.stripe.getMagicToken.useQuery(
     { sessionId },
     {
-      enabled: isGuest && !!sessionId && !magicAttempted,
+      enabled: isGuest && !sessionId && !magicAttempted,
       refetchInterval: magicAttempted ? false : 3000,
       retry: 10,
     }

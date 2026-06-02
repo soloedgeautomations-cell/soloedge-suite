@@ -72,10 +72,10 @@ export default function AdminPanel() {
         {/* Stats row */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-6">
           {[
-            { label: "Total Leads", value: leads?.length ?? "—", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
-            { label: "Active Clients", value: clients?.filter(c => c.status === "active").length ?? "—", color: "text-green-600", bg: "bg-green-50 border-green-100" },
-            { label: "Total Clients", value: clients?.length ?? "—", color: "text-cyan-600", bg: "bg-cyan-50 border-cyan-100" },
-            { label: "New Leads", value: leads?.filter(l => l.status === "new").length ?? "—", color: "text-orange-600", bg: "bg-orange-50 border-orange-100" },
+            { label: "Total Leads", value: leads?.length ?? ", ", color: "text-blue-600", bg: "bg-blue-50 border-blue-100" },
+            { label: "Active Clients", value: clients?.filter(c => c.status === "active").length ?? ", ", color: "text-green-600", bg: "bg-green-50 border-green-100" },
+            { label: "Total Clients", value: clients?.length ?? ", ", color: "text-cyan-600", bg: "bg-cyan-50 border-cyan-100" },
+            { label: "New Leads", value: leads?.filter(l => l.status === "new").length ?? ", ", color: "text-orange-600", bg: "bg-orange-50 border-orange-100" },
           ].map(s => (
             <div key={s.label} className={`rounded-xl p-4 text-center border ${s.bg}`}>
               <div className={`text-2xl font-bold ${s.color}`}>{String(s.value)}</div>
@@ -245,7 +245,7 @@ export default function AdminPanel() {
                 onChange={e => setSelectedUserId(e.target.value ? Number(e.target.value) : null)}
                 className="w-full px-3 py-2 border rounded-lg text-sm mb-3"
               >
-                <option value="">— Select a user —</option>
+                <option value="">,  Select a user , </option>
                 {allUsers?.map(u => (
                   <option key={u.id} value={u.id}>{u.email ?? u.name ?? `User #${u.id}`} {u.assignedPhoneNumber ? `(${u.assignedPhoneNumber})` : ""}</option>
                 ))}

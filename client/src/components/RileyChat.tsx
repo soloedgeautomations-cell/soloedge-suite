@@ -165,7 +165,7 @@ export default function RileyChat({ mode: initialMode }: { mode: Mode }) {
           </button>
         </div>
         <p className="text-xs text-gray-400 mt-1.5 text-center">
-          {mode === "ops_manager" ? "SR Ops Manager Mode — proactive coordination & bilingual summaries" : "Receptionist Mode — calls, leads, bookings"}
+          {mode === "ops_manager" ? "SR Ops Manager Mode, proactive coordination & bilingual summaries" : "Receptionist Mode, calls, leads, bookings"}
         </p>
       </div>
     </div>

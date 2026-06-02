@@ -56,9 +56,9 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: "SoloEdge · Online Now",
-      headline1: "Your AI Operating System.",
-      headline2: "Your hardware. Your data. Anthropic inside.",
-      subtext: "SoloCommand is a Done-For-You AIOS for small business — built on Anthropic's Claude, deployed on local hardware in your shop. We come to you, sit down for 90 minutes, and write you a real plan.",
+      headline1: "An AI Operating System for your shop,",
+      headline2: "not a SaaS dashboard.",
+      subtext: "SoloCommand runs on a small box that sits in your office. Not a cloud. Not a portal you log into. Your AI lives where you do.",
       cta: "See Pricing →",
       ctaSecondary: "Get Started Free",
       greeting: "What's taking up too much of your time?",
@@ -70,7 +70,7 @@ const translations: Record<Language, Translations> = {
         { label: "Crew coordination & updates", key: "crew" },
       ],
       responses: {
-        calls: "Riley picks up when you can't — qualifies the caller, captures the lead, and sends you a text. You stay focused on the job.",
+        calls: "Riley picks up when you can't, qualifies the caller, captures the lead, and sends you a text. You stay focused on the job.",
         language: "English, Spanish, and Chinese across calls, texts, field notes, and client updates. Your crew and your clients stay on the same page.",
         appointments: "Riley handles the back-and-forth, confirms the time, and sends reminders. Your calendar fills without you managing it.",
         email: "Priority messages surface. Routine replies get drafted. The clutter clears. You check in when it makes sense.",
@@ -81,11 +81,11 @@ const translations: Record<Language, Translations> = {
       title: "Built for the Person Running the Show",
       subtitle: "Two focused suites. One system that works while you work.",
       items: [
-        { title: "SoloHub", desc: "Your AI specialist center of operations — every call answered, every lead captured, around the clock." },
+        { title: "SoloHub", desc: "Your AI specialist center of operations, every call answered, every lead captured, around the clock." },
         { title: "SoloBooking", desc: "Appointments land in your calendar. Riley handles the conversation and sends reminders." },
         { title: "Lead Follow-Up", desc: "Instant responses and timely follow-ups. Nothing falls through the cracks." },
-        { title: "EdgeMail", desc: "Your AI email agent — inbox stays manageable, routine replies drafted automatically." },
-        { title: "Bilingual Communication", desc: "English, Spanish, and Chinese across every channel — automatically." },
+        { title: "EdgeMail", desc: "Your AI email agent, inbox stays manageable, routine replies drafted automatically." },
+        { title: "Bilingual Communication", desc: "English, Spanish, and Chinese across every channel, automatically." },
         { title: "LiveDesk", desc: "Real-time live meeting translator for job sites, front desks, and client calls." },
       ],
     },
@@ -102,10 +102,10 @@ const translations: Record<Language, Translations> = {
     },
     contact: {
       title: "Have Questions?",
-      subtitle: "The SoloEdge team is happy to walk you through what fits your business. No pressure — just a straightforward conversation.",
+      subtitle: "The SoloEdge team is happy to walk you through what fits your business. No pressure, just a straightforward conversation.",
       name: "Your Name", phone: "Phone Number", email: "Email Address",
       businessType: "Business Type", message: "Tell us a bit about your business",
-      submit: "Send Message", success: "Got it — the SoloEdge team will follow up within 24 hours.",
+      submit: "Send Message", success: "Got it, the SoloEdge team will follow up within 24 hours.",
       demoLabel: "Or call our team directly",
       demoNumber: "(512) 702-9685",
     },
@@ -147,9 +147,9 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: "SoloEdge · En Línea",
-      headline1: "Tu Sistema Operativo de IA.",
-      headline2: "Tu hardware. Tus datos. Anthropic por dentro.",
-      subtext: "SoloCommand es un AIOS hecho para ti para pequeñas empresas — construido sobre Claude de Anthropic, implementado en hardware local en tu taller. Vamos a donde estés, nos sentamos por 90 minutos y te escribimos un plan real.",
+      headline1: "Un Sistema Operativo AI para tu taller,",
+      headline2: "no un panel de SaaS.",
+      subtext: "SoloCommand se ejecuta en una pequeña caja que se encuentra en su oficina. No es una nube. No es un portal en el que inicia sesión. Su IA vive donde usted vive.",
       cta: "Ver Cómo Funciona →",
       ctaSecondary: "Hablar con el Equipo",
       greeting: "¿Qué te está quitando demasiado tiempo?",
@@ -161,7 +161,7 @@ const translations: Record<Language, Translations> = {
         { label: "Coordinación de cuadrilla", key: "crew" },
       ],
       responses: {
-        calls: "Riley contesta cuando no puedes — califica al cliente, captura el prospecto y te manda un mensaje. Tú te quedas enfocado en el trabajo.",
+        calls: "Riley contesta cuando no puedes, califica al cliente, captura el prospecto y te manda un mensaje. Tú te quedas enfocado en el trabajo.",
         language: "Inglés, español y chino en llamadas, mensajes, notas de campo y actualizaciones. Tu cuadrilla y tus clientes siempre en la misma página.",
         appointments: "Riley maneja la conversación, confirma el horario y manda recordatorios. Tu agenda se llena sin que tengas que administrarla.",
         email: "Los mensajes importantes aparecen primero. Las respuestas rutinarias se redactan solas. El desorden desaparece.",
@@ -172,11 +172,11 @@ const translations: Record<Language, Translations> = {
       title: "Hecho para Quien Lleva el Negocio",
       subtitle: "Dos suites enfocadas. Un sistema que trabaja mientras tú trabajas.",
       items: [
-        { title: "SoloHub", desc: "Tu centro de operaciones AI — cada llamada contestada, cada prospecto capturado, las 24 horas." },
+        { title: "SoloHub", desc: "Tu centro de operaciones AI, cada llamada contestada, cada prospecto capturado, las 24 horas." },
         { title: "SoloBooking", desc: "Las reservas llegan a tu calendario. Riley maneja la conversación y envía recordatorios." },
         { title: "Seguimiento de Prospectos", desc: "Respuestas rápidas y seguimiento oportuno. Nada se pierde." },
-        { title: "EdgeMail", desc: "Tu agente de correo AI — bandeja manejable, respuestas rutinarias redactadas automáticamente." },
-        { title: "Comunicación Bilingüe", desc: "Inglés, español y chino en cada canal — automáticamente." },
+        { title: "EdgeMail", desc: "Tu agente de correo AI, bandeja manejable, respuestas rutinarias redactadas automáticamente." },
+        { title: "Comunicación Bilingüe", desc: "Inglés, español y chino en cada canal, automáticamente." },
         { title: "LiveDesk", desc: "Traductor en vivo para reuniones, obras, recepciones y llamadas con clientes." },
       ],
     },
@@ -193,10 +193,10 @@ const translations: Record<Language, Translations> = {
     },
     contact: {
       title: "¿Tienes Preguntas?",
-      subtitle: "El equipo de SoloEdge puede explicarte qué encaja mejor con tu negocio. Sin presión — solo una conversación directa.",
+      subtitle: "El equipo de SoloEdge puede explicarte qué encaja mejor con tu negocio. Sin presión, solo una conversación directa.",
       name: "Tu Nombre", phone: "Número de Teléfono", email: "Correo Electrónico",
       businessType: "Tipo de Negocio", message: "Cuéntanos un poco sobre tu negocio",
-      submit: "Enviar Mensaje", success: "Recibido — el equipo de SoloEdge te contactará en 24 horas.",
+      submit: "Enviar Mensaje", success: "Recibido, el equipo de SoloEdge te contactará en 24 horas.",
       demoLabel: "O llama a nuestro equipo",
       demoNumber: "(512) 702-9685",
     },
@@ -238,9 +238,9 @@ const translations: Record<Language, Translations> = {
     },
     hero: {
       badge: "SoloEdge · 在线",
-      headline1: "您的 AI 操作系统。",
-      headline2: "您的硬件。您的数据。内置 Anthropic。",
-      subtext: "SoloCommand 是专为小微企业打造的一站式 AIOS —— 基于 Anthropic 的 Claude 构建，部署在您店内的本地硬件上。我们亲自上门，为您提供 90 分钟的深度咨询，并制定一份切实可行的方案。",
+      headline1: "为您店面打造的 AI 操作系统，",
+      headline2: "而非 SaaS 控制面板。",
+      subtext: "SoloCommand 运行在您办公室的一个小盒子里。不是云端。不是您登录的门户网站。您的 AI 与您同在。",
       cta: "了解工作原理 →",
       ctaSecondary: "联系团队",
       greeting: "什么事情占用了您太多时间？",
@@ -252,7 +252,7 @@ const translations: Record<Language, Translations> = {
         { label: "团队协调和更新", key: "crew" },
       ],
       responses: {
-        calls: "Riley 在您无法接听时代为接听——筛选来电、记录客户信息并发短信通知您。您专注于工作本身。",
+        calls: "Riley 在您无法接听时代为接听, 筛选来电、记录客户信息并发短信通知您。您专注于工作本身。",
         language: "英语、西班牙语和中文覆盖电话、短信、现场记录和客户更新。您的团队和客户始终保持同步。",
         appointments: "Riley 处理预约沟通、确认时间并发送提醒。日历自动填满，无需您手动管理。",
         email: "重要邮件优先显示，常规回复自动起草，杂乱信息自动清理。",
@@ -263,10 +263,10 @@ const translations: Record<Language, Translations> = {
       title: "为独立运营者而建",
       subtitle: "两套专注的系统。一个在您工作时同步运转的平台。",
       items: [
-        { title: "SoloHub", desc: "AI运营中心——全天候接听每一个电话，记录每一个客户。" },
+        { title: "SoloHub", desc: "AI运营中心, 全天候接听每一个电话，记录每一个客户。" },
         { title: "SoloBooking", desc: "预约直接进入您的日历，Riley 负责沟通并发送提醒。" },
         { title: "客户跟进", desc: "快速响应和及时跟进，不遗漏任何机会。" },
-        { title: "EdgeMail", desc: "AI邮件助手——收件筱整洁，常规回复自动起草。" },
+        { title: "EdgeMail", desc: "AI邮件助手, 收件筱整洁，常规回复自动起草。" },
         { title: "多语言沟通", desc: "英语、西班牙语和中文覆盖所有渠道，自动切换。" },
         { title: "LiveDesk", desc: "实时会议翻译工具，适用于工地、前台和客户通话。" },
       ],
@@ -284,10 +284,10 @@ const translations: Record<Language, Translations> = {
     },
     contact: {
       title: "有问题？",
-      subtitle: "SoloEdge 团队很乐意为您介绍适合您业务的方案。没有压力——只是一次直接的对话。",
+      subtitle: "SoloEdge 团队很乐意为您介绍适合您业务的方案。没有压力, 只是一次直接的对话。",
       name: "您的姓名", phone: "电话号码", email: "电子邮件",
       businessType: "业务类型", message: "简单介绍一下您的业务",
-      submit: "发送消息", success: "已收到——SoloEdge 团队将在 24 小时内联系您。",
+      submit: "发送消息", success: "已收到, SoloEdge 团队将在 24 小时内联系您。",
       demoLabel: "或直接联系我们团队",
       demoNumber: "(512) 702-9685",
     },
@@ -298,50 +298,53 @@ const translations: Record<Language, Translations> = {
     dashboard: {
       welcome: "欢迎回来",
       launchReceptionist: "启动 SoloHub",
-      launchOpsManager: "启动 SoloHub 运营",
-      startInterpreter: "开始 LiveDesk",
+      launchOpsManager: "启动 SoloHub Ops",
+      startInterpreter: "启动 LiveDesk",
       viewCalendar: "SoloBooking 日历",
       recentActivity: "最近活动",
-      callsHandled: "已处理电话",
+      callsHandled: "已处理通话",
       bookingsToday: "今日预约",
       activeLang: "当前语言",
-      planTier: "套餐级别",
+      planTier: "套餐等级",
     },
     interpreter: {
       title: "LiveDesk",
-      subtitle: "实时会议翻译，适用于工地和前台",
+      subtitle: "工地和前台的实时会议翻译",
       start: "开始会话", stop: "结束会话",
       langA: "语言 A", langB: "语言 B",
       speaking: "正在说话...", translating: "正在翻译...",
-      broadcast: "广播模式", oneOnOne: "一对一模式",
+      broadcast: "广播模式", oneOnOne: "1对1模式",
     },
     construction: {
       checkIn: "现场签到", subCoord: "分包协调",
-      safetyAlert: "安全警报", progressLog: "进度记录",
-      jargonHint: "试试：粗装、竣工清单、变更单、材料申请...",
+      safetyAlert: "安全警报", progressLog: "进度日志",
+      jargonHint: "尝试：粗装、收尾清单、变更单、材料申请...",
     },
   },
 };
 
-type LanguageContextType = {
-  lang: Language;
-  setLang: (l: Language) => void;
+interface LanguageContextType {
+  language: Language;
+  setLanguage: (lang: Language) => void;
   t: Translations;
-};
+}
 
-const LanguageContext = createContext<LanguageContextType | null>(null);
+const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: ReactNode }) {
-  const [lang, setLang] = useState<Language>("en");
+  const [language, setLanguage] = useState<Language>("en");
+
   return (
-    <LanguageContext.Provider value={{ lang, setLang, t: translations[lang] }}>
+    <LanguageContext.Provider value={{ language, setLanguage, t: translations[language] }}>
       {children}
     </LanguageContext.Provider>
   );
 }
 
-export function useLang() {
-  const ctx = useContext(LanguageContext);
-  if (!ctx) throw new Error("useLang must be used inside LanguageProvider");
-  return ctx;
+export function useLanguage() {
+  const context = useContext(LanguageContext);
+  if (context === undefined) {
+    throw new Error("useLanguage must be used within a LanguageProvider");
+  }
+  return context;
 }

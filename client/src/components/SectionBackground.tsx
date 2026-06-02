@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { GALLERY } from "../../../shared/assets";
 
-// Section background pool — round-robin across all 6 industries
+// Section background pool, round-robin across all 6 industries
 // Removed: gymBodybuilder, massageHotstone, corporateMeeting
 // Added: Caucasian + Hispanic female gym photos
 // Barber + restaurant: section background only (NOT hero rotation)
@@ -63,7 +63,7 @@ export default function SectionBackground({
           }`}
         />
       ))}
-      {/* Overlay — 85% keeps photos visible but content stays fully readable */}
+      {/* Overlay, 85% keeps photos visible but content stays fully readable */}
       <div className={`absolute inset-0 ${overlayClass}`} />
     </div>
   );

@@ -10,7 +10,7 @@ const STATIC_PLANS = [
     id: "starter",
     name: "Starter",
     subtitle: "Basic Riley",
-    description: "Riley answers every call, captures leads, and handles basic inquiries — 24/7, no days off.",
+    description: "Riley answers every call, captures leads, and handles basic inquiries, 24/7, no days off.",
     setupAmount: 14900,
     monthlyAmount: 5900,
     popular: false,
@@ -55,7 +55,7 @@ const STATIC_PLANS = [
     id: "premium",
     name: "Premium",
     subtitle: "Advanced Riley",
-    description: "A fully customized Riley built around your business — with Slack integration, extra phone lines, deep analytics, and a dedicated support team.",
+    description: "A fully customized Riley built around your business, with Slack integration, extra phone lines, deep analytics, and a dedicated support team.",
     setupAmount: 49900,
     monthlyAmount: 17900,
     popular: false,
@@ -266,7 +266,7 @@ export default function PricingSection() {
                 Great for solo operators who just need calls answered and leads captured.
               </div>
               <div className="md:border-x border-gray-100 md:px-4">
-                <div className="font-semibold text-blue-700 mb-1">Pro — Smart Choice</div>
+                <div className="font-semibold text-blue-700 mb-1">Pro, Smart Choice</div>
                 Scheduling + follow-up automation pays for itself with just 1–2 extra bookings per month.
               </div>
               <div>

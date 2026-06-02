@@ -26,7 +26,7 @@ const SERVICE_DETAILS = [
   {
     title: "SoloHub",
     bullets: [
-      "Your AI specialist center of operations — answers every inbound call 24/7.",
+      "Your AI specialist center of operations, answers every inbound call 24/7.",
       "Qualifies callers and captures name, number, and reason for calling.",
       "Sends you an instant Telegram or WhatsApp summary after every call.",
       "Handles FAQs, hours, pricing, and directions automatically.",
@@ -40,13 +40,13 @@ const SERVICE_DETAILS = [
       "Sends automated confirmation and reminder messages to clients.",
       "Handles reschedules and cancellations without you lifting a finger.",
       "Follows up with no-shows to rebook and recover lost revenue.",
-      "Syncs with Google Calendar — no double-bookings, ever.",
+      "Syncs with Google Calendar, no double-bookings, ever.",
     ],
   },
   {
     title: "Lead Follow-Up",
     bullets: [
-      "Responds to new leads within seconds — before they call a competitor.",
+      "Responds to new leads within seconds, before they call a competitor.",
       "Sends a personalized follow-up sequence over 3–5 days automatically.",
       "Tracks which leads opened messages and flags hot prospects for you.",
       "Handles objections and FAQs via text so you only talk to ready buyers.",
@@ -56,8 +56,8 @@ const SERVICE_DETAILS = [
   {
     title: "EdgeMail",
     bullets: [
-      "Your AI email agent — surfaces what matters, drafts what's routine.",
-      "Drafts replies — estimates, confirmations, follow-ups — for one-click send.",
+      "Your AI email agent, surfaces what matters, drafts what's routine.",
+      "Drafts replies, estimates, confirmations, follow-ups, for one-click send.",
       "Flags urgent items and filters out noise and spam automatically.",
       "Organizes your inbox by category: leads, clients, vendors, billing.",
       "Saves 1–2 hours per day on email alone for most customers.",
@@ -70,15 +70,15 @@ const SERVICE_DETAILS = [
       "Switches languages automatically based on the caller or client.",
       "Translates field notes and crew updates into clean English reports.",
       "Sends client-facing messages in their preferred language.",
-      "No interpreter needed — Riley bridges the gap in real time.",
+      "No interpreter needed, Riley bridges the gap in real time.",
     ],
   },
   {
     title: "LiveDesk",
     bullets: [
-      "Real-time live meeting translator — English, Spanish, and Chinese.",
+      "Real-time live meeting translator, English, Spanish, and Chinese.",
       "Works on job sites, front desks, and client meetings.",
-      "No app download required — works via your existing phone.",
+      "No app download required, works via your existing phone.",
       "Supports 1-on-1 conversations and broadcast mode for crew briefings.",
       "Logs translated conversations for your records automatically.",
     ],

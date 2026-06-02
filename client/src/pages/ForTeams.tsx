@@ -4,12 +4,12 @@ import Footer from "@/components/Footer";
 import { Building2, HardHat, Check } from "lucide-react";
 
 const PILLARS = [
-  "SoloHub — AI specialist center of operations (24/7 call answering)",
-  "SoloBooking — Appointment setting & calendar sync",
+  "SoloHub, AI specialist center of operations (24/7 call answering)",
+  "SoloBooking, Appointment setting & calendar sync",
   "Lead Follow-Up Automation",
-  "EdgeMail — AI email agent & admin assistant",
+  "EdgeMail, AI email agent & admin assistant",
   "Bilingual Communication (EN/ES/ZH)",
-  "LiveDesk — Live meeting translator",
+  "LiveDesk, Live meeting translator",
 ];
 
 const SUITES = [
@@ -68,7 +68,7 @@ export default function ForTeams() {
             For Teams &amp; Enterprises
           </h1>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-10">
-            The same powerful automation you love — now scaled for larger teams
+            The same powerful automation you love, now scaled for larger teams
             and growing companies with options for self-service or assisted
             setup.
           </p>

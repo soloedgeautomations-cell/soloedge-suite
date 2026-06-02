@@ -198,7 +198,7 @@ export default function GetStarted() {
                     )}
                     {tier.id === "premium" && (
                       <div className="mt-2 text-xs text-violet-600 font-semibold">
-                        Full concierge — nothing left out
+                        Full concierge, nothing left out
                       </div>
                     )}
                   </div>
@@ -226,7 +226,7 @@ export default function GetStarted() {
                           : "bg-gray-900 hover:bg-gray-800 text-white"
                       }`}
                       onClick={() => handleGetStarted(tier.id)}
-                      disabled={!!checkingOut}
+                      disabled={!checkingOut}
                     >
                       {isProcessing ? (
                         <><Loader2 className="w-4 h-4 mr-2 animate-spin" />Opening Checkout…</>
@@ -272,17 +272,17 @@ export default function GetStarted() {
                 <div className="p-3.5 flex justify-center items-center">
                   {row.starter
                     ? <Check className="w-4 h-4 text-green-500" />
-                    : <span className="text-gray-300 text-lg leading-none">—</span>}
+                    : <span className="text-gray-300 text-lg leading-none">, </span>}
                 </div>
                 <div className="p-3.5 flex justify-center items-center bg-blue-50/30">
                   {row.pro
                     ? <Check className="w-4 h-4 text-blue-500" />
-                    : <span className="text-gray-300 text-lg leading-none">—</span>}
+                    : <span className="text-gray-300 text-lg leading-none">, </span>}
                 </div>
                 <div className="p-3.5 flex justify-center items-center">
                   {row.premium
                     ? <Check className="w-4 h-4 text-violet-500" />
-                    : <span className="text-gray-300 text-lg leading-none">—</span>}
+                    : <span className="text-gray-300 text-lg leading-none">, </span>}
                 </div>
               </div>
             ))}

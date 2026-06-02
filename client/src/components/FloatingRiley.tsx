@@ -20,7 +20,7 @@ export default function FloatingRiley() {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "riley", text: "Hi, I'm Riley — the AI behind SoloEdge. Happy to answer questions about what we do, how it works, or whether it's a good fit for your business." },
+    { role: "riley", text: "Hi, I'm Riley, the AI behind SoloEdge. Happy to answer questions about what we do, how it works, or whether it's a good fit for your business." },
   ]);
   const [input, setInput] = useState("");
   const [pulse, setPulse] = useState(true);

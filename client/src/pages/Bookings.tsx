@@ -380,7 +380,7 @@ export default function Bookings() {
         <Modal title="Reschedule Booking" onClose={() => setShowRescheduleForm(false)}>
           <div className="space-y-4">
             <p className="text-sm text-gray-600">
-              Rescheduling <strong>{selectedBooking.customerName}</strong> — {selectedBooking.serviceType}
+              Rescheduling <strong>{selectedBooking.customerName}</strong>, {selectedBooking.serviceType}
             </p>
             <div className="grid grid-cols-2 gap-3">
               <div>

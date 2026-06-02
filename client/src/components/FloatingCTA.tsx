@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 
 /**
- * FloatingCTA — a slim "Choose Your Plan →" pill fixed to the bottom-left.
+ * FloatingCTA, a slim "Choose Your Plan →" pill fixed to the bottom-left.
  * Appears after the user scrolls past the hero (300px), so it doesn't
  * compete with the hero CTAs. Sits on the opposite side from FloatingRiley.
  */

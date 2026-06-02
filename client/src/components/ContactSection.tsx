@@ -35,7 +35,7 @@ export default function ContactSection() {
         <div className="max-w-5xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
 
-            {/* Left — info */}
+            {/* Left, info */}
             <div className="glass rounded-2xl p-8">
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-5 tracking-wide uppercase">
                 Get in Touch
@@ -47,7 +47,7 @@ export default function ContactSection() {
                 {t.contact.subtitle}
               </p>
 
-              {/* Phone — primary, prominent */}
+              {/* Phone, primary, prominent */}
               <a
                 href="tel:+15127029685"
                 className="flex items-center gap-4 mb-4 group"
@@ -91,7 +91,7 @@ export default function ContactSection() {
               </div>
             </div>
 
-            {/* Right — Form */}
+            {/* Right, Form */}
             <div className="glass rounded-2xl p-7">
               {submitted ? (
                 <div className="flex flex-col items-center justify-center py-10 text-center">
