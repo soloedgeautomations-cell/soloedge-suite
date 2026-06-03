@@ -142,7 +142,7 @@ export default function AuditSection() {
                 </ul>
 
                 <a
-                  href="tel:+15123991605"
+                  href="tel:+15127029685"
                   className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all ${
                     tier.popular
                       ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200"
@@ -190,7 +190,7 @@ export default function AuditSection() {
                 </ul>
 
                 <a
-                  href="tel:+15123991605"
+                  href="tel:+15127029685"
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
                 >
                   {tier.id === "corporate" ? "Request a Custom Quote" : `Schedule ${tier.name}`}
@@ -235,11 +235,11 @@ export default function AuditSection() {
         {/* Bottom CTA */}
         <div className="text-center">
           <a
-            href="tel:+15123991605"
+            href="tel:+15127029685"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-semibold text-sm transition-all shadow-lg active:scale-95"
           >
             <Phone size={14} />
-            Schedule Your Audit. (512) 399-1605
+            Schedule Your Audit. (512) 702-9685
           </a>
           <p className="text-xs text-gray-400 mt-2">
             No long calls. No committee. Murphy answers.
