@@ -144,7 +144,7 @@ export default function PricingSection() {
           </p>
           {/* Action tagline */}
           <p className="mt-5 text-base font-semibold text-gray-800">
-            Ready to get your own Riley? Choose your plan below and be live in 24–48 hours.
+            Ready to get started? Pick a plan and you are live in 24 to 48 hours.
           </p>
         </div>
 
@@ -279,7 +279,7 @@ export default function PricingSection() {
 
         {/* Footer note */}
         <p className="text-center text-sm text-gray-400 mt-8">
-          All plans include a 24–48 hour setup. No long-term contracts. Cancel anytime.{" "}
+          All plans include a 24 to 48 hour setup. No long-term contracts. Cancel anytime.{" "}
           Questions?{" "}
           <a href="tel:+15123991605" className="text-blue-600 hover:underline font-medium">
             (512) 399-1605
@@ -295,7 +295,7 @@ export default function PricingSection() {
             Get Riley Now
             <ArrowRight size={15} />
           </a>
-          <p className="text-xs text-gray-400 mt-2">Setup takes 24–48 hours. No contracts.</p>
+          <p className="text-xs text-gray-400 mt-2">Setup takes 24 to 48 hours. No contracts.</p>
         </div>
       </div>
     </section>
