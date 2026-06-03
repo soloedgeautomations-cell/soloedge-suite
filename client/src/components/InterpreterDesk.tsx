@@ -120,7 +120,7 @@ export default function InterpreterDesk() {
               <Volume2 size={20} className="text-cyan-600" />
             </div>
             <p className="text-sm text-gray-400">Type or speak to start translating</p>
-            <p className="text-xs text-gray-300 mt-1">Supports noisy environments — type clearly for best results</p>
+            <p className="text-xs text-gray-300 mt-1">Supports noisy environments. Type clearly for best results.</p>
           </div>
         ) : (
           translations.map((entry, idx) => (
@@ -201,7 +201,7 @@ export default function InterpreterDesk() {
           </div>
         </div>
         <p className="text-xs text-gray-400 text-center">
-          {sessionMode === "broadcast" ? "Broadcast mode — all participants see translations" : "1-on-1 mode — private session"}
+          {sessionMode === "broadcast" ? "Broadcast mode. All participants see translations." : "1-on-1 mode. Private session."}
         </p>
       </div>
     </div>

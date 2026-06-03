@@ -198,7 +198,7 @@ export default function GetStarted() {
                     )}
                     {tier.id === "premium" && (
                       <div className="mt-2 text-xs text-violet-600 font-semibold">
-                        Full concierge — nothing left out
+                        Full concierge. Nothing left out
                       </div>
                     )}
                   </div>

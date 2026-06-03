@@ -98,7 +98,7 @@ export default function ConstructionTools() {
     <div className="max-w-3xl mx-auto space-y-4">
       <div>
         <h2 className="font-display text-xl font-bold text-gray-900">Construction Tools</h2>
-        <p className="text-sm text-gray-500 mt-0.5">Field check-in, sub coordination, safety alerts, and progress logs — powered by Riley Ops Manager</p>
+        <p className="text-sm text-gray-500 mt-0.5">Field check-in, sub coordination, safety alerts, and progress logs. Powered by SoloHub Ops Manager mode.</p>
       </div>
 
       {/* Log type selector */}

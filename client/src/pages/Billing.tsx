@@ -158,7 +158,7 @@ export default function Billing() {
           <div className="text-center">
             <Link href="/get-started">
               <Button className="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-8">
-                Get Started — View All Plans
+                Get Started. View All Plans
               </Button>
             </Link>
           </div>
