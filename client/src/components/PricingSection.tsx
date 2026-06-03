@@ -266,7 +266,7 @@ export default function PricingSection() {
                 Great for solo operators who just need calls answered and leads captured.
               </div>
               <div className="md:border-x border-gray-100 md:px-4">
-                <div className="font-semibold text-blue-700 mb-1">Pro — Smart Choice</div>
+                <div className="font-semibold text-blue-700 mb-1">Pro. Smart Choice</div>
                 Scheduling + follow-up automation pays for itself with just 1–2 extra bookings per month.
               </div>
               <div>

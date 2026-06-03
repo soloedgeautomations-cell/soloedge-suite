@@ -522,7 +522,7 @@ export default function AppDashboard() {
                   </div>
                 )}
                 <button onClick={() => setShowWizard(false)} className="w-full py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all">
-                  🎉 Done — Go to Dashboard
+                  🎉 Done. Go to Dashboard
                 </button>
               </div>
             )}

@@ -323,7 +323,7 @@ export default function Settings() {
                     </button>
                   ))}
                   <p className="text-xs text-gray-400 pt-2">
-                    Riley supports bilingual conversations — you can also switch languages mid-conversation from the chat interface.
+                    SoloHub supports bilingual conversations. You can also switch languages mid-conversation from the chat interface.
                   </p>
                 </div>
               </div>
@@ -338,7 +338,7 @@ export default function Settings() {
                 </div>
                 <div className="p-5 space-y-4">
                   {[
-                    { icon: <Phone size={16} />, title: "Telegram Alerts", desc: "Instant alerts for every call, lead, and booking — recommended", active: true, badge: "Recommended" },
+                    { icon: <Phone size={16} />, title: "Telegram Alerts", desc: "Instant alerts for every call, lead, and booking. Recommended.", active: true, badge: "Recommended" },
                     { icon: <MessageSquare size={16} />, title: "WhatsApp Alerts", desc: "Get Riley's reports and lead summaries on WhatsApp", active: false, badge: "Coming Soon" },
                     { icon: <Mail size={16} />, title: "Email Digest", desc: "Daily summary of all activity sent to your inbox", active: false, badge: "Coming Soon" },
                   ].map(item => (
@@ -593,7 +593,7 @@ export default function Settings() {
                         </a>
 
                         <p className="text-xs text-gray-400 text-center">
-                          You'll be redirected to Google to grant calendar access. SoloEdge only requests permission to create and manage events — it cannot read your existing calendar events.
+                          You'll be redirected to Google to grant calendar access. SoloEdge only requests permission to create and manage events. It cannot read your existing calendar events.
                         </p>
                       </>
                     )}
@@ -610,7 +610,7 @@ export default function Settings() {
                     </div>
                     <div className="flex-1 min-w-0">
                       <h2 className="font-display text-base font-bold text-gray-900">Connect Telegram</h2>
-                      <p className="text-xs text-gray-400 mt-0.5">Or connect Telegram to avoid additional SMS regulatory steps — Riley will answer messages here too.</p>
+                      <p className="text-xs text-gray-400 mt-0.5">Or connect Telegram to avoid additional SMS regulatory steps. SoloHub answers messages here too.</p>
                     </div>
                     {tgConnected ? (
                       <span className="flex items-center gap-1.5 text-xs font-semibold text-green-700 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full flex-shrink-0">
@@ -632,7 +632,7 @@ export default function Settings() {
                           <div>
                             <div className="text-sm font-semibold text-green-800">Riley is active on Telegram</div>
                             <div className="text-xs text-green-600 mt-0.5">
-                              Anyone who messages your connected Telegram chat will get an instant AI response from Riley — 24/7, no phone call required.
+                              Anyone who messages your connected Telegram chat will get an instant AI response from SoloHub. 24/7, no phone call required.
                             </div>
                           </div>
                         </div>
@@ -706,7 +706,7 @@ export default function Settings() {
                             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
                               <div className="text-sm font-semibold text-blue-800 mb-1">Connect Telegram to Riley</div>
                               <div className="text-xs text-blue-600">
-                                Once connected, Riley will automatically respond to messages sent to your Telegram chat — the same AI that handles your phone calls.
+                                Once connected, SoloHub automatically responds to messages sent to your Telegram chat. Same AI that handles your phone calls.
                               </div>
                             </div>
                             <div className="space-y-2">
@@ -830,7 +830,7 @@ export default function Settings() {
                     <Shield size={18} className="text-green-600 flex-shrink-0" />
                     <div>
                       <div className="text-sm font-semibold text-green-800">Secured with Manus OAuth</div>
-                      <div className="text-xs text-green-600">Your account uses OAuth 2.0 — no passwords stored.</div>
+                      <div className="text-xs text-green-600">Your account uses OAuth 2.0. No passwords stored..</div>
                     </div>
                   </div>
                   <div className="space-y-2">
