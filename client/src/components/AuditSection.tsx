@@ -5,7 +5,7 @@ import SectionBackground from "@/components/SectionBackground";
 const AUDIT_TIERS = [
   {
     id: "solo",
-    name: "SoloAudit",
+    name: "Single User Audit",
     subtitle: "1 to 3 people",
     price: "$500",
     sessionTime: "60-minute sit-down",
@@ -17,7 +17,7 @@ const AUDIT_TIERS = [
   },
   {
     id: "crew",
-    name: "CrewAudit",
+    name: "Team Audit",
     subtitle: "4 to 10 people",
     price: "$750",
     sessionTime: "90-minute sit-down",
@@ -29,7 +29,7 @@ const AUDIT_TIERS = [
   },
   {
     id: "team",
-    name: "TeamAudit",
+    name: "Full Enterprise Audit",
     subtitle: "11 to 25 people",
     price: "$1,500",
     sessionTime: "2-hour sit-down + 1 sub-interview",
@@ -87,7 +87,7 @@ export default function AuditSection() {
             AI Adoption Audit
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-            Start with a 90-minute sit-down.<br className="hidden md:block" /> $500.
+            Get Your Custom AI Readiness Audit
           </h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             I come to you. I write you a real plan. The plan is yours whether you build with me or not.
@@ -149,7 +149,7 @@ export default function AuditSection() {
                       : "bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
                   }`}
                 >
-                  Schedule {tier.name}
+                  Request Audit
                 </a>
               </div>
             );

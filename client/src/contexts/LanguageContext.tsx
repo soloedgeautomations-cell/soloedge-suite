@@ -339,5 +339,3 @@ export function useLang() {
   if (!ctx) throw new Error("useLang must be used inside LanguageProvider");
   return ctx;
 }
-</content>
-</invoke>

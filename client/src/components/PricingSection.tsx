@@ -26,7 +26,7 @@ const STATIC_PLANS = [
       "Monthly call summary report",
       "Email support",
     ],
-    cta: "Get Started",
+    cta: "Deploy Starter",
   },
   {
     id: "pro",
@@ -49,7 +49,7 @@ const STATIC_PLANS = [
       "Weekly performance reports",
       "Priority support",
     ],
-    cta: "Start with Pro",
+    cta: "Deploy Pro",
   },
   {
     id: "premium",
@@ -72,7 +72,7 @@ const STATIC_PLANS = [
       "Dedicated onboarding specialist",
       "Priority phone & Slack support",
     ],
-    cta: "Go Premium",
+    cta: "Deploy Premium",
   },
 ];
 
