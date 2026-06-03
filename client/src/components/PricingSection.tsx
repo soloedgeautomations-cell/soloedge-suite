@@ -9,8 +9,8 @@ const STATIC_PLANS = [
   {
     id: "starter",
     name: "Starter",
-    subtitle: "Basic Riley",
-    description: "Riley answers every call, captures leads, and handles basic inquiries — 24/7, no days off.",
+    subtitle: "Basic AI Receptionist",
+    description: "Your AI Receptionist answers every call, captures leads, and handles basic inquiries. 24/7, no days off.",
     setupAmount: 14900,
     monthlyAmount: 5900,
     popular: false,
@@ -31,8 +31,8 @@ const STATIC_PLANS = [
   {
     id: "pro",
     name: "Pro",
-    subtitle: "Focused Riley",
-    description: "Riley learns your industry, handles full scheduling, and follows up with leads automatically. The smart choice for growing businesses.",
+    subtitle: "Focused AI Receptionist",
+    description: "Your AI Receptionist learns your industry, handles full scheduling, and follows up with leads automatically. The smart choice for growing businesses.",
     setupAmount: 24900,
     monthlyAmount: 9900,
     popular: true,
@@ -54,8 +54,8 @@ const STATIC_PLANS = [
   {
     id: "premium",
     name: "Premium",
-    subtitle: "Advanced Riley",
-    description: "A fully customized Riley built around your business — with Slack integration, extra phone lines, deep analytics, and a dedicated support team.",
+    subtitle: "Advanced AI Receptionist",
+    description: "A fully customized AI Receptionist built around your business, with Slack integration, extra phone lines, deep analytics, and a dedicated support team.",
     setupAmount: 49900,
     monthlyAmount: 17900,
     popular: false,

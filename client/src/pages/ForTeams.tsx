@@ -4,12 +4,10 @@ import Footer from "@/components/Footer";
 import { Building2, HardHat, Check } from "lucide-react";
 
 const PILLARS = [
-  "SoloHub — AI specialist center of operations (24/7 call answering)",
-  "SoloBooking — Appointment setting & calendar sync",
-  "Lead Follow-Up Automation",
-  "EdgeMail — AI email agent & admin assistant",
-  "Bilingual Communication (EN/ES/ZH)",
-  "LiveDesk — Live meeting translator",
+  "SoloHub. AI Receptionist (24/7 call answering in English and Spanish)",
+  "SoloBooking. Appointment setting and calendar sync",
+  "EdgeMail. AI email agent and admin assistant",
+  "LiveDesk. Live meeting translator (EN / ES / ZH)",
 ];
 
 const SUITES = [
@@ -68,9 +66,8 @@ export default function ForTeams() {
             For Teams &amp; Enterprises
           </h1>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto mb-10">
-            The same powerful automation you love — now scaled for larger teams
-            and growing companies with options for self-service or assisted
-            setup.
+            The same SoloCommand AIOS, scaled for larger teams and growing
+            companies. Self-service or assisted setup, your call.
           </p>
 
           {/* Tab switcher */}
@@ -111,7 +108,7 @@ export default function ForTeams() {
             {/* 6 Core Pillars */}
             <div className={`rounded-xl border p-4 mb-6 ${suite.bg}`}>
               <p className="text-xs font-bold text-gray-700 uppercase tracking-wide mb-3">
-                Includes our 6 Core Pillars
+                Includes the 4 SoloCommand agents
               </p>
               <ul className="space-y-2">
                 {PILLARS.map((p, i) => (
@@ -165,7 +162,7 @@ export default function ForTeams() {
               {[
                 {
                   title: "Zero-Touch Automation",
-                  desc: "Pay once and Riley is live with a dedicated number in minutes.",
+                  desc: "Pay once and Tess is live with a dedicated number in minutes.",
                 },
                 {
                   title: "Assisted Option",

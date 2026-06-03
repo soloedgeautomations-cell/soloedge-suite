@@ -29,12 +29,12 @@ export default function RileyChat({ mode: initialMode }: { mode: Mode }) {
   // Initial greeting
   useEffect(() => {
     const greeting = mode === "receptionist"
-      ? lang === "es" ? "¡Hola! Soy Riley, tu recepcionista de SoloEdge. ¿En qué puedo ayudarte hoy?"
-        : lang === "zh" ? "你好！我是Riley，您的SoloEdge接待员。今天我能帮您什么？"
-        : "Hi! I'm Riley, your SoloEdge AI Receptionist. How can I help you today?"
-      : lang === "es" ? "¡Hola! Soy Riley en modo Gerente de Operaciones. Estoy aquí para coordinar tu obra, cuadrilla y tareas. ¿Qué necesitas?"
-        : lang === "zh" ? "你好！我是Riley运营经理模式。我在这里协调您的工地、团队和任务。需要什么帮助？"
-        : "Hello! I'm Riley in SR Operations Manager mode. I'm here to help coordinate your job site, crew, and tasks. What do you need?";
+      ? lang === "es" ? "¡Hola! Soy Tess, tu recepcionista de SoloEdge. ¿En qué puedo ayudarte hoy?"
+        : lang === "zh" ? "你好！我是 Tess，您的 SoloEdge 接待员。今天我能帮您什么？"
+        : "Hi, I'm Tess at SoloEdge. How can I help you today?"
+      : lang === "es" ? "¡Hola! Soy Tess en modo Gerente de Operaciones. Estoy aquí para coordinar tu obra, cuadrilla y tareas. ¿Qué necesitas?"
+        : lang === "zh" ? "你好！我是 Tess 运营经理模式。我在这里协调您的工地、团队和任务。需要什么帮助？"
+        : "Hi, I'm Tess in Ops Manager mode. I'm here to help coordinate your job site, crew, and tasks. What do you need?";
     setMessages([{ role: "assistant", content: greeting }]);
   }, [mode, lang]);
 
@@ -107,7 +107,7 @@ export default function RileyChat({ mode: initialMode }: { mode: Mode }) {
             {msg.role === "assistant" ? (
               <img
                 src={CDN.logoSymbol}
-                alt="Riley"
+                alt="Tess"
                 className="w-11 h-11 rounded-full flex-shrink-0 object-contain bg-white border-2 border-blue-200 p-0.5 shadow-md"
               />
             ) : (
@@ -165,7 +165,7 @@ export default function RileyChat({ mode: initialMode }: { mode: Mode }) {
           </button>
         </div>
         <p className="text-xs text-gray-400 mt-1.5 text-center">
-          {mode === "ops_manager" ? "SR Ops Manager Mode — proactive coordination & bilingual summaries" : "Receptionist Mode — calls, leads, bookings"}
+          {mode === "ops_manager" ? "Ops Manager Mode. Proactive coordination and bilingual summaries." : "Receptionist Mode. Calls, leads, bookings."}
         </p>
       </div>
     </div>

@@ -1,8 +1,44 @@
 import { CDN } from "../../../shared/assets";
-import { HardHat, Dumbbell, Sparkles, Briefcase, ArrowRight } from "lucide-react";
+import { HardHat, Dumbbell, Sparkles, Briefcase, Home, Car, ArrowRight } from "lucide-react";
 import SectionBackground from "@/components/SectionBackground";
 
 const INDUSTRIES = [
+  {
+    key: "roofing",
+    icon: Home,
+    title: "Roofing",
+    subtitle: "Insurance claims, storm leads, crew scheduling",
+    img: CDN.constructionTeam,
+    iconBg: "from-red-500 to-orange-400",
+    accent: "text-red-600",
+    border: "border-red-100 hover:border-red-300",
+    shadow: "hover:shadow-red-100",
+    bullets: [
+      "Bilingual phone coverage for storm leads",
+      "Insurance claim status follow-up",
+      "Estimate booking and reminders",
+      "Crew + sub coordination",
+      "Customer status updates during multi-day jobs",
+    ],
+  },
+  {
+    key: "auto",
+    icon: Car,
+    title: "Auto",
+    subtitle: "Service shops, dealers, recon, tow, glass, tint",
+    img: CDN.corporateOffice,
+    iconBg: "from-slate-600 to-gray-500",
+    accent: "text-slate-700",
+    border: "border-slate-100 hover:border-slate-300",
+    shadow: "hover:shadow-slate-100",
+    bullets: [
+      "24/7 tow dispatch + sales line coverage",
+      "Bilingual customer intake (EN/ES)",
+      "Appointment booking + no-show recovery",
+      "Insurance and warranty paperwork tracking",
+      "Test-drive and detail scheduling",
+    ],
+  },
   {
     key: "construction",
     icon: HardHat,
@@ -15,9 +51,9 @@ const INDUSTRIES = [
     shadow: "hover:shadow-orange-100",
     bullets: [
       "Bilingual crew communication (EN/ES)",
-      "Sub coordinator & task routing",
+      "Sub coordinator and task routing",
       "Field voice check-in agent",
-      "Change order & punch list handling",
+      "Change order and punch list handling",
       "Daily progress summaries",
     ],
   },
@@ -33,9 +69,9 @@ const INDUSTRIES = [
     shadow: "hover:shadow-green-100",
     bullets: [
       "24/7 membership inquiry handling",
-      "Class & personal training bookings",
+      "Class and personal training bookings",
       "Trial sign-up automation",
-      "Cancellation & freeze requests",
+      "Cancellation and freeze requests",
       "Multilingual member support",
     ],
   },
@@ -50,10 +86,10 @@ const INDUSTRIES = [
     border: "border-purple-100 hover:border-purple-300",
     shadow: "hover:shadow-purple-100",
     bullets: [
-      "Appointment booking & reminders",
+      "Appointment booking and reminders",
       "Service upsell conversations",
-      "Cancellation & reschedule handling",
-      "Gift card & package inquiries",
+      "Cancellation and reschedule handling",
+      "Gift card and package inquiries",
       "Multilingual client communication",
     ],
   },
@@ -69,9 +105,9 @@ const INDUSTRIES = [
     shadow: "hover:shadow-blue-100",
     bullets: [
       "Professional call answering",
-      "Meeting & conference scheduling",
-      "Visitor & vendor coordination",
-      "Email triage & admin automation",
+      "Meeting and conference scheduling",
+      "Visitor and vendor coordination",
+      "Email triage and admin automation",
       "Multilingual executive support",
     ],
   },
@@ -90,7 +126,7 @@ export default function IndustriesSection() {
             Built for Your Industry
           </h2>
           <p className="text-lg text-gray-500 max-w-xl mx-auto">
-            SoloEdge is trained on the specific language, workflows, and needs of each industry.
+            SoloCommand is trained on the language, workflows, and tools your industry already uses.
           </p>
         </div>
 
@@ -110,7 +146,6 @@ export default function IndustriesSection() {
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent to-white/80" />
-                  {/* Icon badge overlapping image bottom */}
                   <div className={`absolute bottom-4 left-6 w-12 h-12 rounded-xl bg-gradient-to-br ${ind.iconBg} flex items-center justify-center shadow-lg`}>
                     <Icon size={22} className="text-white" />
                   </div>
@@ -130,10 +165,10 @@ export default function IndustriesSection() {
                   </ul>
 
                   <a
-                    href="/get-started"
+                    href="#audit"
                     className={`inline-flex items-center gap-1.5 text-sm font-semibold ${ind.accent} hover:opacity-70 transition-opacity`}
                   >
-                    Get started for {ind.title.split(" ")[0]}
+                    Start a SoloAudit for {ind.title.split(" ")[0]}
                     <ArrowRight size={14} />
                   </a>
                 </div>
@@ -145,10 +180,10 @@ export default function IndustriesSection() {
         {/* Funnel CTA */}
         <div className="text-center mt-12">
           <a
-            href="#pricing"
+            href="#audit"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm transition-all shadow-md shadow-blue-200"
           >
-            See Pricing &amp; Get Riley Now
+            See SoloAudit Pricing
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
           </a>
         </div>
