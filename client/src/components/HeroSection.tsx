@@ -7,13 +7,17 @@ import { trpc } from "@/lib/trpc";
 const CHIP_ICONS = [Phone, Globe, Calendar, Mail, Users];
 
 const INDUSTRY_TEXT: Record<string, string> = {
-  construction: "Riley answers job-site calls, books subs, coordinates crews in English & Spanish, and sends daily progress summaries — so you stay on the tools.",
-  gym: "Riley handles membership inquiries, books classes and personal training sessions, manages cancellations, and follows up with trial sign-ups — 24/7.",
-  massage: "Riley books appointments, sends reminders, handles reschedules, and upsells packages — so your table stays full without you touching the phone.",
-  corporate: "Riley answers your main line professionally, schedules meetings, triages email, and coordinates visitors — like a front-desk team that never calls in sick.",
+  roofing: "SoloCommand answers your phone in English and Spanish, qualifies storm leads, books estimates, and helps you stay on top of insurance claim follow-up. You stay on the roof, not on the phone.",
+  auto: "SoloCommand answers calls in English and Spanish across every service. Tow, detail, glass, sales. Qualifies the lead, books the bay, texts the owner. Whether you sell cars or service them, the workflow is the same.",
+  construction: "SoloCommand answers job-site calls, books subs, coordinates crews in English and Spanish, and sends daily progress summaries. You stay on the tools.",
+  gym: "SoloCommand handles membership inquiries, books classes and personal training, manages cancellations, and follows up with trial sign-ups. 24/7.",
+  massage: "SoloCommand books appointments, sends reminders, handles reschedules, and upsells packages. Your table stays full without you touching the phone.",
+  corporate: "SoloCommand answers your main line professionally, schedules meetings, triages email, and coordinates visitors. A front-desk team that never calls in sick.",
 };
 
 const INDUSTRIES = [
+  { key: "roofing" as const, label: "Roofing" },
+  { key: "auto" as const, label: "Auto" },
   { key: "construction" as const, label: "Construction" },
   { key: "gym" as const, label: "Gym & Fitness" },
   { key: "massage" as const, label: "Massage & Spa" },
@@ -208,7 +212,7 @@ export default function HeroSection() {
               <div className={`relative w-14 h-14 rounded-full flex-shrink-0 transition-all duration-300 ${rileyActive ? "ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent" : ""}`}>
                 <img
                   src={CDN.logoSymbol}
-                  alt="Riley"
+                  alt="Tess"
                   className="w-full h-full rounded-full object-contain bg-white/20 border border-white/30 p-0.5 shadow-md"
                 />
                 {rileyActive && (
@@ -216,7 +220,7 @@ export default function HeroSection() {
                 )}
               </div>
               <div>
-                <div className="text-sm font-semibold text-white">Riley · SoloEdge AI</div>
+                <div className="text-sm font-semibold text-white">Tess · SoloEdge AI</div>
                 <div className="flex items-center gap-1.5 text-xs text-green-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
                   {isLoadingAI ? "Thinking..." : isTyping ? "Speaking..." : "Online Now"}
@@ -257,7 +261,7 @@ export default function HeroSection() {
                 <div className="flex items-start gap-2.5">
                   <img
                     src={CDN.logoSymbol}
-                    alt="Riley"
+                    alt="Tess"
                     className="w-9 h-9 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 flex-shrink-0 mt-0.5"
                   />
                   {isLoadingAI ? (

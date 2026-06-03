@@ -9,8 +9,8 @@ const STATIC_PLANS = [
   {
     id: "starter",
     name: "Starter",
-    subtitle: "Basic Riley",
-    description: "Riley answers every call, captures leads, and handles basic inquiries — 24/7, no days off.",
+    subtitle: "Basic AI Receptionist",
+    description: "Your AI Receptionist answers every call, captures leads, and handles basic inquiries. 24/7, no days off.",
     setupAmount: 14900,
     monthlyAmount: 5900,
     popular: false,
@@ -31,8 +31,8 @@ const STATIC_PLANS = [
   {
     id: "pro",
     name: "Pro",
-    subtitle: "Focused Riley",
-    description: "Riley learns your industry, handles full scheduling, and follows up with leads automatically. The smart choice for growing businesses.",
+    subtitle: "Focused AI Receptionist",
+    description: "Your AI Receptionist learns your industry, handles full scheduling, and follows up with leads automatically. The smart choice for growing businesses.",
     setupAmount: 24900,
     monthlyAmount: 9900,
     popular: true,
@@ -54,8 +54,8 @@ const STATIC_PLANS = [
   {
     id: "premium",
     name: "Premium",
-    subtitle: "Advanced Riley",
-    description: "A fully customized Riley built around your business — with Slack integration, extra phone lines, deep analytics, and a dedicated support team.",
+    subtitle: "Advanced AI Receptionist",
+    description: "A fully customized AI Receptionist built around your business, with Slack integration, extra phone lines, deep analytics, and a dedicated support team.",
     setupAmount: 49900,
     monthlyAmount: 17900,
     popular: false,
@@ -144,7 +144,7 @@ export default function PricingSection() {
           </p>
           {/* Action tagline */}
           <p className="mt-5 text-base font-semibold text-gray-800">
-            Ready to get your own Riley? Choose your plan below and be live in 24–48 hours.
+            Ready to get started? Pick a plan and you are live in 24 to 48 hours.
           </p>
         </div>
 
@@ -266,7 +266,7 @@ export default function PricingSection() {
                 Great for solo operators who just need calls answered and leads captured.
               </div>
               <div className="md:border-x border-gray-100 md:px-4">
-                <div className="font-semibold text-blue-700 mb-1">Pro — Smart Choice</div>
+                <div className="font-semibold text-blue-700 mb-1">Pro. Smart Choice</div>
                 Scheduling + follow-up automation pays for itself with just 1–2 extra bookings per month.
               </div>
               <div>
@@ -279,7 +279,7 @@ export default function PricingSection() {
 
         {/* Footer note */}
         <p className="text-center text-sm text-gray-400 mt-8">
-          All plans include a 24–48 hour setup. No long-term contracts. Cancel anytime.{" "}
+          All plans include a 24 to 48 hour setup. No long-term contracts. Cancel anytime.{" "}
           Questions?{" "}
           <a href="tel:+15123991605" className="text-blue-600 hover:underline font-medium">
             (512) 399-1605
@@ -295,7 +295,7 @@ export default function PricingSection() {
             Get Riley Now
             <ArrowRight size={15} />
           </a>
-          <p className="text-xs text-gray-400 mt-2">Setup takes 24–48 hours. No contracts.</p>
+          <p className="text-xs text-gray-400 mt-2">Setup takes 24 to 48 hours. No contracts.</p>
         </div>
       </div>
     </section>

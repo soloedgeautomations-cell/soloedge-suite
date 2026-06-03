@@ -56,7 +56,7 @@ export default function PartnerStarter() {
             <div className="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6">
               <p className="text-xs font-bold text-blue-700 uppercase tracking-wide mb-1">Special Deal</p>
               <p className="text-sm text-gray-700 leading-relaxed">
-                Sell just <strong>ONE</strong> full SoloEdge package (Starter, Pro, or Premium) and we will give you your first Partner Starter <strong>free for 3 months</strong> — no setup fee, no monthly fee.
+                Sell just <strong>ONE</strong> full SoloEdge package (Starter, Pro, or Premium) and we will give you your first Partner Starter <strong>free for 3 months</strong>. No setup fee. No monthly fee.
               </p>
             </div>
 

@@ -24,7 +24,7 @@ const AGENTS: AgentCard[] = [
   {
     id: "solohub",
     name: "SoloHub",
-    tagline: "AI Receptionist — answers every call",
+    tagline: "AI Receptionist. Answers every call.",
     icon: Bot,
     color: "text-sky-600",
     bgColor: "bg-sky-50 border-sky-200",
@@ -36,7 +36,7 @@ const AGENTS: AgentCard[] = [
   {
     id: "solobooking",
     name: "SoloBooking",
-    tagline: "Scheduling Agent — books appointments",
+    tagline: "Scheduling Agent. Books appointments.",
     icon: Calendar,
     color: "text-emerald-600",
     bgColor: "bg-emerald-50 border-emerald-200",
@@ -48,7 +48,7 @@ const AGENTS: AgentCard[] = [
   {
     id: "edgemail",
     name: "EdgeMail",
-    tagline: "Email Agent — triages and drafts replies",
+    tagline: "Email Agent. Triages and drafts replies.",
     icon: Mail,
     color: "text-violet-600",
     bgColor: "bg-violet-50 border-violet-200",
@@ -60,7 +60,7 @@ const AGENTS: AgentCard[] = [
   {
     id: "livedesk",
     name: "LiveDesk",
-    tagline: "Translation Agent — EN ↔ ES ↔ ZH",
+    tagline: "Translation Agent. EN ↔ ES ↔ ZH.",
     icon: Globe,
     color: "text-amber-600",
     bgColor: "bg-amber-50 border-amber-200",
@@ -136,7 +136,7 @@ export default function AgentCommandCenter() {
             Agent Command Center
           </h1>
           <p className="text-slate-500 text-sm mt-0.5">
-            Your SoloStack agents — working 24/7 so you don't have to
+            Your SoloCommand agents. Working 24/7 so you do not have to.
           </p>
         </div>
         <Badge className="bg-sky-100 text-sky-700 border-sky-200 text-xs px-3 py-1">
