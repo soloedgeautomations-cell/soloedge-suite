@@ -58,6 +58,14 @@ export const CDN = {
 
 // ── Per-industry photo galleries for hero rotation ────────────────────────
 export const GALLERY = {
+  roofing: [
+    CDN.constructionTeam,
+    CDN.constructionWorkers,
+  ],
+  auto: [
+    CDN.corporateOffice,
+    CDN.corporateTeam,
+  ],
   construction: [
     CDN.constructionWorkers,
     CDN.constructionSite,
