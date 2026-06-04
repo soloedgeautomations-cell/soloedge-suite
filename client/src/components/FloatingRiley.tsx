@@ -7,7 +7,7 @@ import { useLang } from "@/contexts/LanguageContext";
 
 const SESSION_ID = nanoid();
 
-type Msg = { role: "tess" | "user"; text: string };
+type Msg = { role: "riley" | "user"; text: string };
 
 const QUICK_PROMPTS = [
   "What problems does SoloCommand solve?",
@@ -20,7 +20,7 @@ export default function FloatingRiley() {
   const { lang } = useLang();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Msg[]>([
-    { role: "tess", text: "Hi, I'm Tess at SoloEdge. Ask me about SoloCommand, the SoloAudit, or what Murphy can build for your shop." },
+    { role: "riley", text: "Hi, I'm Riley at SoloEdge. Ask me about SoloCommand, the SoloAudit, or what Murphy can build for your shop." },
   ]);
   const [input, setInput] = useState("");
   const [pulse, setPulse] = useState(true);
@@ -28,7 +28,7 @@ export default function FloatingRiley() {
 
   const chat = trpc.riley.chat.useMutation({
     onSuccess: (data) => {
-      setMessages(prev => [...prev, { role: "tess", text: data.reply }]);
+      setMessages(prev => [...prev, { role: "riley", text: data.reply }]);
     },
   });
 
@@ -62,12 +62,12 @@ export default function FloatingRiley() {
         className={`fixed bottom-6 right-6 z-50 w-16 h-16 rounded-full shadow-2xl shadow-blue-500/30 flex items-center justify-center transition-all duration-300 hover:scale-110 active:scale-95 ${
           open ? "bg-gray-800 rotate-0" : "bg-gradient-to-br from-blue-600 to-blue-800"
         }`}
-        aria-label="Chat with Tess"
+        aria-label="Chat with Riley"
       >
         {open ? (
           <X size={22} className="text-white" />
         ) : (
-          <img src={CDN.logoSymbol} alt="Tess" className="w-11 h-11 object-contain" />
+          <img src={CDN.logoSymbol} alt="Riley" className="w-11 h-11 object-contain" />
         )}
         {!open && pulse && (
           <span className="absolute inset-0 rounded-full bg-blue-500/40 animate-ping" />
@@ -83,11 +83,11 @@ export default function FloatingRiley() {
           {/* Header */}
           <div className="flex items-center gap-3 px-4 py-3 bg-gradient-to-r from-blue-700 to-blue-600 flex-shrink-0">
             <div className="relative">
-              <img src={CDN.logoSymbol} alt="Tess" className="w-11 h-11 rounded-full object-contain bg-white/20 p-1 border border-white/30" />
+              <img src={CDN.logoSymbol} alt="Riley" className="w-11 h-11 rounded-full object-contain bg-white/20 p-1 border border-white/30" />
               <span className="absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full bg-green-400 border-2 border-blue-700 pulse-dot" />
             </div>
             <div>
-              <div className="text-sm font-semibold text-white">Tess · SoloEdge AI</div>
+              <div className="text-sm font-semibold text-white">Riley · SoloEdge AI</div>
               <div className="text-xs text-blue-200">
                 {chat.isPending ? "Typing..." : "Online Now"}
               </div>
@@ -101,8 +101,8 @@ export default function FloatingRiley() {
           <div className="flex-1 overflow-y-auto px-4 py-3 space-y-3 min-h-0 bg-gray-50">
             {messages.map((m, i) => (
               <div key={i} className={`flex gap-2 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}>
-                {m.role === "tess" && (
-                  <img src={CDN.logoSymbol} alt="Tess" className="w-9 h-9 rounded-full object-contain bg-blue-100 border border-blue-200 p-1 flex-shrink-0 mt-0.5" />
+                {m.role === "riley" && (
+                  <img src={CDN.logoSymbol} alt="Riley" className="w-9 h-9 rounded-full object-contain bg-blue-100 border border-blue-200 p-1 flex-shrink-0 mt-0.5" />
                 )}
                 <div className={`max-w-[80%] px-3 py-2 rounded-2xl text-sm leading-relaxed ${
                   m.role === "user"
@@ -115,7 +115,7 @@ export default function FloatingRiley() {
             ))}
             {chat.isPending && (
               <div className="flex gap-2">
-                <img src={CDN.logoSymbol} alt="Tess" className="w-9 h-9 rounded-full object-contain bg-blue-100 border border-blue-200 p-1 flex-shrink-0 mt-0.5" />
+                <img src={CDN.logoSymbol} alt="Riley" className="w-9 h-9 rounded-full object-contain bg-blue-100 border border-blue-200 p-1 flex-shrink-0 mt-0.5" />
                 <div className="bg-white border border-gray-200 rounded-2xl rounded-tl-sm px-3 py-2 shadow-sm">
                   <div className="flex gap-1 items-center h-4">
                     <span className="w-1.5 h-1.5 rounded-full bg-gray-400 animate-bounce" style={{ animationDelay: "0ms" }} />
@@ -155,7 +155,7 @@ export default function FloatingRiley() {
               value={input}
               onChange={e => setInput(e.target.value)}
               onKeyDown={e => e.key === "Enter" && !e.shiftKey && send()}
-              placeholder="Ask Tess anything..."
+              placeholder="Ask Riley anything..."
               className="flex-1 px-3 py-2 rounded-xl bg-gray-50 border border-gray-200 text-gray-900 placeholder-gray-400 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
             />
             <button

@@ -1,78 +1,122 @@
 import { Check, Phone, Zap, Users, Building, Briefcase, Crown, FileText } from "lucide-react";
 import SectionBackground from "@/components/SectionBackground";
 
-// SoloAudit pricing tiers. Locked 2026-06-02. Foot-in-door product line for SoloCommand.
+// SoloAudit pricing tiers. Bullet content rewritten 2026-06-05 to show visible value escalation per tier.
+// Each tier shows its FULL deliverable set (cumulative), not a delta — so prospects scanning the cards
+// see obvious value growth from $500 → $5,000+. AI Playbook = the deliverable name (replaces "written report").
 const AUDIT_TIERS = [
   {
-    id: "solo",
-    name: "SoloAudit",
+    id: "single",
+    name: "Single System Audit",
     subtitle: "1 to 3 people",
     price: "$500",
-    sessionTime: "60-minute sit-down",
-    deliverable: "2 to 3 page written report",
     icon: Zap,
     color: "from-blue-500 to-blue-400",
     popular: false,
     badge: null,
+    bullets: [
+      "60-min sit-down with you",
+      "AI Playbook (3-page game plan)",
+      "Tech stack inventory + risk flags",
+      "Top 3 AI opportunities, ranked by ROI",
+      "Bilingual customer-loss estimate (your Spanish gap)",
+      "Audit fee credits toward install*",
+    ],
   },
   {
-    id: "crew",
-    name: "CrewAudit",
+    id: "team",
+    name: "Team Audit",
     subtitle: "4 to 10 people",
     price: "$750",
-    sessionTime: "90-minute sit-down",
-    deliverable: "4-page written report",
     icon: Users,
     color: "from-sky-600 to-cyan-500",
     popular: true,
     badge: "Most Common",
+    bullets: [
+      "90-min sit-down with you",
+      "15-min pre-call before the session",
+      "AI Playbook (5-page game plan)",
+      "Tech stack inventory + risk flags",
+      "Top 5 AI opportunities, ranked",
+      "Bilingual customer-loss estimate",
+      "Phased 90-day implementation roadmap",
+      "Audit fee credits toward install*",
+    ],
   },
   {
-    id: "team",
-    name: "TeamAudit",
+    id: "enterprise",
+    name: "Full Enterprise Audit",
     subtitle: "11 to 25 people",
     price: "$1,500",
-    sessionTime: "2-hour sit-down + 1 sub-interview",
-    deliverable: "6-page written report",
     icon: Building,
     color: "from-emerald-600 to-emerald-500",
     popular: false,
     badge: null,
+    bullets: [
+      "2-hour sit-down with you",
+      "30-min pre-call with you",
+      "1 employee deep-dive interview (office mgr or front desk)",
+      "AI Playbook (7-page game plan)",
+      "Tech stack inventory + risk flags",
+      "Top 5 AI opportunities, ranked",
+      "Bilingual customer-loss estimate",
+      "Phased 90-day implementation roadmap",
+      "ROI calculator customized to YOUR numbers",
+      "30-min follow-up clarification call",
+      "Audit fee credits toward install*",
+    ],
   },
   {
     id: "contractor",
     name: "ContractorAudit",
     subtitle: "26 to 50 people",
     price: "$2,500",
-    sessionTime: "2 to 3 hours + 2 to 3 sub-interviews",
-    deliverable: "8-page report + 30-minute summary call",
     icon: Briefcase,
     color: "from-violet-600 to-purple-500",
     popular: false,
     badge: null,
+    bullets: [
+      "2-3 hour deep session with you",
+      "30-min pre-call with you",
+      "2-3 staff interviews (office, dispatch, field)",
+      "AI Playbook (10-page game plan)",
+      "Tech stack inventory + risk flags",
+      "Top opportunities ranked across departments",
+      "Bilingual customer-loss estimate",
+      "Phased 90-day implementation roadmap",
+      "ROI calculator customized to YOUR numbers",
+      "Vendor consolidation review (what you pay for and don't need)",
+      "Compliance + data-sovereignty scan",
+      "30-min summary delivery call",
+      "30-day check-in call",
+      "Audit fee credits toward install*",
+    ],
   },
   {
     id: "corporate",
     name: "CorporateAudit",
     subtitle: "50+ people",
     price: "Starts at $5,000",
-    sessionTime: "Multi-day",
-    deliverable: "Custom scope, executive presentation",
     icon: Crown,
     color: "from-amber-600 to-orange-500",
     popular: false,
     badge: null,
+    bullets: [
+      "Multi-day on-site engagement",
+      "Stakeholder mapping + custom-scoped interviews",
+      "AI Playbook (executive-ready, custom length)",
+      "Tech stack inventory + risk flags",
+      "AI opportunities ranked across all departments",
+      "Multilingual coverage analysis",
+      "Implementation roadmap with vendor evaluation",
+      "Custom ROI model",
+      "In-person or video executive presentation",
+      "Compliance + data-sovereignty scan",
+      "60-day implementation check-in + quarterly review",
+      "Priority direct access to Murphy",
+      "Audit fee credits toward install*",
+    ],
   },
-];
-
-const INCLUDED_IN_EVERY_AUDIT = [
-  "Industry-tuned discovery (Roofing, Auto, or your vertical)",
-  "Bilingual coverage check (English and Spanish)",
-  "Tech stack inventory and risk flags",
-  "Top 3 AI opportunities ranked by ROI and ease",
-  "Recommended sequence and next-step proposal",
-  "Local-first data plan. Your data stays in YOUR accounts. Your AI runs on YOUR hardware.",
-  "Pricing for the build phase (Starter, Full, or Retainer)",
 ];
 
 export default function AuditSection() {
@@ -87,7 +131,7 @@ export default function AuditSection() {
             AI Adoption Audit
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-            Start with a 90-minute sit-down.<br className="hidden md:block" /> $500.
+            Get Your Custom AI Readiness Audit
           </h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             I come to you. I write you a real plan. The plan is yours whether you build with me or not.
@@ -131,14 +175,12 @@ export default function AuditSection() {
                 </div>
 
                 <ul className="space-y-2.5 mb-7 flex-1 text-sm text-gray-600">
-                  <li className="flex items-start gap-2.5">
-                    <Check size={14} className={`flex-shrink-0 mt-0.5 ${tier.popular ? "text-blue-600" : "text-green-500"}`} />
-                    {tier.sessionTime}
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <Check size={14} className={`flex-shrink-0 mt-0.5 ${tier.popular ? "text-blue-600" : "text-green-500"}`} />
-                    {tier.deliverable}
-                  </li>
+                  {tier.bullets.map((bullet, i) => (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <Check size={14} className={`flex-shrink-0 mt-0.5 ${tier.popular ? "text-blue-600" : "text-green-500"}`} />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
                 </ul>
 
                 <a
@@ -149,7 +191,7 @@ export default function AuditSection() {
                       : "bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
                   }`}
                 >
-                  Schedule {tier.name}
+                  Start Your Audit
                 </a>
               </div>
             );
@@ -157,7 +199,7 @@ export default function AuditSection() {
         </div>
 
         {/* Tier cards row 2 — Contractor + Corporate */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto items-start mb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto items-start mb-8">
           {AUDIT_TIERS.slice(3).map((tier) => {
             const Icon = tier.icon;
             return (
@@ -179,42 +221,30 @@ export default function AuditSection() {
                 </div>
 
                 <ul className="space-y-2.5 mb-7 flex-1 text-sm text-gray-600">
-                  <li className="flex items-start gap-2.5">
-                    <Check size={14} className="flex-shrink-0 mt-0.5 text-green-500" />
-                    {tier.sessionTime}
-                  </li>
-                  <li className="flex items-start gap-2.5">
-                    <Check size={14} className="flex-shrink-0 mt-0.5 text-green-500" />
-                    {tier.deliverable}
-                  </li>
+                  {tier.bullets.map((bullet, i) => (
+                    <li key={i} className="flex items-start gap-2.5">
+                      <Check size={14} className="flex-shrink-0 mt-0.5 text-green-500" />
+                      <span>{bullet}</span>
+                    </li>
+                  ))}
                 </ul>
 
                 <a
                   href="tel:+15127029685"
                   className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
                 >
-                  {tier.id === "corporate" ? "Request a Custom Quote" : `Schedule ${tier.name}`}
+                  Start Your Audit
                 </a>
               </div>
             );
           })}
         </div>
 
-        {/* Every Audit Includes callout */}
-        <div className="max-w-3xl mx-auto mb-8">
-          <div className="glass rounded-2xl p-6 border border-gray-100">
-            <p className="text-center text-sm font-semibold text-gray-800 mb-4">
-              Every Audit includes
-            </p>
-            <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-gray-700">
-              {INCLUDED_IN_EVERY_AUDIT.map((item, i) => (
-                <li key={i} className="flex items-start gap-2.5">
-                  <Check size={14} className="flex-shrink-0 mt-0.5 text-blue-600" />
-                  {item}
-                </li>
-              ))}
-            </ul>
-          </div>
+        {/* Audit credit disclaimer */}
+        <div className="max-w-3xl mx-auto mb-8 text-center">
+          <p className="text-xs text-gray-500">
+            *Audit fee credits toward your install if you sign within 30 days.
+          </p>
         </div>
 
         {/* Privacy / Data Sovereignty trust band */}
@@ -239,7 +269,7 @@ export default function AuditSection() {
             className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gray-900 hover:bg-gray-800 text-white font-semibold text-sm transition-all shadow-lg active:scale-95"
           >
             <Phone size={14} />
-            Schedule Your Audit. (512) 702-9685
+            Start Your Audit. (512) 702-9685
           </a>
           <p className="text-xs text-gray-400 mt-2">
             No long calls. No committee. Murphy answers.
