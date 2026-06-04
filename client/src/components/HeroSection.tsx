@@ -84,7 +84,8 @@ export default function HeroSection() {
   // Rotate gallery photos every 3.5s per industry
   useEffect(() => {
     if (userPaused) return;
-    const gallery = GALLERY[INDUSTRIES[activeIndustry].key];
+    const gallery = GALLERY[INDUSTRIES[activeIndustry].key] ?? GALLERY.construction;
+    if (!gallery || gallery.length === 0) return;
     const timer = setInterval(() => {
       setGalleryIdx(i => (i + 1) % gallery.length);
     }, 3500);
@@ -130,7 +131,9 @@ export default function HeroSection() {
   };
 
   const ind = INDUSTRIES[activeIndustry];
-  const gallery = GALLERY[ind.key];
+  const gallery = (GALLERY[ind.key] && GALLERY[ind.key].length > 0)
+    ? GALLERY[ind.key]
+    : GALLERY.construction;
   const currentImg = gallery[galleryIdx % gallery.length];
 
   const rileyActive = isLoadingAI || isTyping || !!displayedResponse;

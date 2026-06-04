@@ -57,7 +57,22 @@ export const CDN = {
 };
 
 // ── Per-industry photo galleries for hero rotation ────────────────────────
-export const GALLERY = {
+export const GALLERY: Record<string, string[]> = {
+  roofing: [
+    CDN.constructionSafety,       // hardhat / safety scenes work for roofers
+    CDN.constructionWorkers,
+    CDN.constructionCrew,
+    CDN.constructionSite,
+    CDN.fieldWorker,
+  ],
+  auto: [
+    // No auto-specific CDN images yet. Using corporate/team imagery as placeholder
+    // until proper auto-themed photos are added. Lookup is defensive (see HeroSection).
+    CDN.corporateWhiteOwner,
+    CDN.corporateDiverseTeam,
+    CDN.fieldWorker,
+    CDN.corporateOffice,
+  ],
   construction: [
     CDN.constructionWorkers,
     CDN.constructionSite,
