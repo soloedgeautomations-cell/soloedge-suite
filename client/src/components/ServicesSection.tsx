@@ -18,7 +18,7 @@ const LIGHT_BG = [
 ];
 
 // Static modal detail bullets for each agent card. Four agents inside SoloCommand.
-// Bilingual is a feature of all four. Lead follow-up is what SoloHub does. No separate cards for either.
+// Multilingual is a feature of all four. Lead follow-up is what SoloHub does. No separate cards for either.
 const SERVICE_DETAILS = [
   {
     title: "SoloHub",
