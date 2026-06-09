@@ -58,10 +58,10 @@ export default function AIOSSection() {
         {/* Header */}
         <div className="text-center mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-xs font-semibold mb-4 tracking-wide uppercase">
-            What is AIOS?
+            SoloEdgeStack
           </div>
           <h2 className="font-display text-4xl md:text-5xl font-bold text-gray-900 mb-4 leading-tight">
-            An AI Operating System for your shop.<br className="hidden md:block" /> Not a SaaS dashboard.
+            SoloEdgeStack.<br className="hidden md:block" /> Your operation, your hardware, your data.
           </h2>
           <p className="text-lg text-gray-500 max-w-2xl mx-auto">
             SoloCommand is the product I build for small businesses that don't have time to learn another app. It runs on a small box in your shop. Your AI lives there.
