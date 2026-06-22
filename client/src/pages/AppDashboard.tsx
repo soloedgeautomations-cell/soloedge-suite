@@ -217,7 +217,7 @@ export default function AppDashboard() {
           {!rileyNumber && !statsLoading && (
             <div className="mt-4 bg-white/15 rounded-xl px-4 py-3 flex items-center gap-2">
               <Clock size={14} className="text-blue-200" />
-              <p className="text-blue-200 text-sm">Your Tess number is being provisioned. Check back shortly.</p>
+              <p className="text-blue-200 text-sm">Your Riley number is being provisioned. Check back shortly.</p>
             </div>
           )}
         </div>
@@ -513,7 +513,7 @@ export default function AppDashboard() {
                   <div className="p-4 rounded-xl bg-green-50 border border-green-200 mb-4">
                     <p className="text-sm font-bold text-green-800">✅ You're all set!</p>
                     <p className="text-2xl font-bold text-green-700 font-mono mt-1">{formattedNumber}</p>
-                    <p className="text-xs text-green-600 mt-1">Share this number. Tess answers 24/7</p>
+                    <p className="text-xs text-green-600 mt-1">Share this number. Riley answers 24/7</p>
                   </div>
                 ) : (
                   <div className="p-4 rounded-xl bg-amber-50 border border-amber-200 mb-4">

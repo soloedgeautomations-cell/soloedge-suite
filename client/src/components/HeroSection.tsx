@@ -84,7 +84,8 @@ export default function HeroSection() {
   // Rotate gallery photos every 3.5s per industry
   useEffect(() => {
     if (userPaused) return;
-    const gallery = GALLERY[INDUSTRIES[activeIndustry].key];
+    const gallery = GALLERY[INDUSTRIES[activeIndustry].key] ?? GALLERY.construction;
+    if (!gallery || gallery.length === 0) return;
     const timer = setInterval(() => {
       setGalleryIdx(i => (i + 1) % gallery.length);
     }, 3500);
@@ -130,7 +131,9 @@ export default function HeroSection() {
   };
 
   const ind = INDUSTRIES[activeIndustry];
-  const gallery = GALLERY[ind.key];
+  const gallery = (GALLERY[ind.key] && GALLERY[ind.key].length > 0)
+    ? GALLERY[ind.key]
+    : GALLERY.construction;
   const currentImg = gallery[galleryIdx % gallery.length];
 
   const rileyActive = isLoadingAI || isTyping || !!displayedResponse;
@@ -212,7 +215,7 @@ export default function HeroSection() {
               <div className={`relative w-14 h-14 rounded-full flex-shrink-0 transition-all duration-300 ${rileyActive ? "ring-2 ring-blue-400 ring-offset-2 ring-offset-transparent" : ""}`}>
                 <img
                   src={CDN.logoSymbol}
-                  alt="Tess"
+                  alt="Riley"
                   className="w-full h-full rounded-full object-contain bg-white/20 border border-white/30 p-0.5 shadow-md"
                 />
                 {rileyActive && (
@@ -220,7 +223,7 @@ export default function HeroSection() {
                 )}
               </div>
               <div>
-                <div className="text-sm font-semibold text-white">Tess · SoloEdge AI</div>
+                <div className="text-sm font-semibold text-white">Riley · SoloEdge AI</div>
                 <div className="flex items-center gap-1.5 text-xs text-green-300">
                   <span className="w-1.5 h-1.5 rounded-full bg-green-400 pulse-dot" />
                   {isLoadingAI ? "Thinking..." : isTyping ? "Speaking..." : "Online Now"}
@@ -261,7 +264,7 @@ export default function HeroSection() {
                 <div className="flex items-start gap-2.5">
                   <img
                     src={CDN.logoSymbol}
-                    alt="Tess"
+                    alt="Riley"
                     className="w-9 h-9 rounded-full object-contain bg-white/20 border border-white/30 p-0.5 flex-shrink-0 mt-0.5"
                   />
                   {isLoadingAI ? (

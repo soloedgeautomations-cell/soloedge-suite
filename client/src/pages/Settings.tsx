@@ -23,7 +23,7 @@ const PLAN_CONFIG: Record<string, { label: string; color: string; badge: string;
     label: "Field Starter",
     color: "text-blue-600",
     badge: "bg-blue-50 text-blue-700 border-blue-200",
-    features: ["500 AI messages/month", "EN + ES bilingual", "Booking calendar", "Riley Receptionist", "SMS notifications"],
+    features: ["500 AI messages/month", "EN + ES multilingual", "Booking calendar", "Riley Receptionist", "SMS notifications"],
   },
   "Field Pro": {
     label: "Field Pro",
@@ -323,7 +323,7 @@ export default function Settings() {
                     </button>
                   ))}
                   <p className="text-xs text-gray-400 pt-2">
-                    SoloHub supports bilingual conversations. You can also switch languages mid-conversation from the chat interface.
+                    SoloHub supports multilingual conversations. You can also switch languages mid-conversation from the chat interface.
                   </p>
                 </div>
               </div>

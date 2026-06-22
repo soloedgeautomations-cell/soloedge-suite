@@ -162,7 +162,7 @@ export default function ForTeams() {
               {[
                 {
                   title: "Zero-Touch Automation",
-                  desc: "Pay once and Tess is live with a dedicated number in minutes.",
+                  desc: "Pay once and Riley is live with a dedicated number in minutes.",
                 },
                 {
                   title: "Assisted Option",
