@@ -35,7 +35,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-18 md:h-20">
           {/* Logo */}
           <Link href="/" className="flex items-center gap-2 group">
-            <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-10 md:h-12 w-auto object-contain" />
+            <img src={CDN.logoTransparent} alt="SoloEdge AI" className="h-10 md:h-12 w-auto object-contain" />
           </Link>
 
           {/* Desktop Nav */}

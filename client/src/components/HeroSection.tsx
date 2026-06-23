@@ -170,7 +170,7 @@ export default function HeroSection() {
       <div className="relative container py-16 md:py-24">
         <div className="max-w-full">
           {/* Hero logo */}
-          <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-14 md:h-16 mb-6 object-contain" />
+          <img src={CDN.logoTransparent} alt="SoloEdge AI" className="h-14 md:h-16 mb-6 object-contain" />
 
 
           {/* Headline */}

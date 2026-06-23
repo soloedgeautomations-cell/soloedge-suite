@@ -196,7 +196,7 @@ export const appRouter = router({
                   <a href="${resetUrl}" style="display:inline-block;background:#0ea5e9;color:white;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600;margin:16px 0">Reset Password</a>
                   <p style="color:#666;font-size:13px">If you didn't request this, you can safely ignore this email.</p>
                   <hr style="border:none;border-top:1px solid #eee;margin:24px 0">
-                  <p style="color:#999;font-size:12px">Powered by SoloEdge Automations</p>
+                  <p style="color:#999;font-size:12px">Powered by SoloEdge AI</p>
                 </div>`,
               }],
             }),

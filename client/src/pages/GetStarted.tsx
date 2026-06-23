@@ -101,7 +101,7 @@ export default function GetStarted() {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40">
         <div className="container flex items-center justify-between h-16">
           <Link href="/">
-            <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-8 object-contain" />
+            <img src={CDN.logoTransparent} alt="SoloEdge AI" className="h-8 object-contain" />
           </Link>
           <div className="flex items-center gap-3">
             {user ? (
@@ -384,7 +384,7 @@ export default function GetStarted() {
         <p className="text-center text-xs text-gray-400">
           Powered by{" "}
           <a href="https://soloedgeautomations.com" className="hover:text-gray-600 underline" target="_blank" rel="noopener noreferrer">
-            SoloEdge Automations
+            SoloEdge AI
           </a>
           {" "}· Questions?{" "}
           <a href="mailto:support@soloedge.app" className="hover:text-gray-600 underline">

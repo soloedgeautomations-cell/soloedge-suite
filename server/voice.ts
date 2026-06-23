@@ -461,7 +461,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         type: "response.create",
         response: {
           instructions:
-            'Speak warm, natural, and Texan — like a real person who picked up the phone and is genuinely glad you called. Friendly but not fake. Cool but not cold. Say something like: "Hey, you\'ve reached SoloEdge — Riley here. How can I help ya?" or "SoloEdge Automations, this is Riley — what can I do for ya today?" Keep it short, warm, and real. Mention SoloEdge. Sound like a Texan who knows what they\'re doing. Then stop and listen. Do not sound like a recording. Do not say a long intro. Do not ask about language first — just greet them naturally and let them tell you what they need.',
+            'Speak warm, natural, and Texan — like a real person who picked up the phone and is genuinely glad you called. Friendly but not fake. Cool but not cold. Say something like: "Hey, you\'ve reached SoloEdge — Riley here. How can I help ya?" or "SoloEdge AI, this is Riley — what can I do for ya today?" Keep it short, warm, and real. Mention SoloEdge. Sound like a Texan who knows what they\'re doing. Then stop and listen. Do not sound like a recording. Do not say a long intro. Do not ask about language first — just greet them naturally and let them tell you what they need.',
         },
       },
       "initial greeting"

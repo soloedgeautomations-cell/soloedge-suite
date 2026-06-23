@@ -12,7 +12,7 @@ export default function Terms() {
             <section>
               <h2 className="text-xl font-semibold text-slate-900 mb-3">SoloEdge SMS Service</h2>
               <p>
-                These Terms and Conditions govern your participation in the SoloEdge Automations
+                These Terms and Conditions govern your participation in the SoloEdge AI
                 ("SoloEdge") SMS messaging program ("Service"). By opting in to receive text
                 messages from SoloEdge or any of our Contractor partners through our Riley AI
                 platform, you agree to these Terms.

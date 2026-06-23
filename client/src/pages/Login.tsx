@@ -395,7 +395,7 @@ export default function Login() {
       <div className="text-center py-4 text-gray-700 text-xs border-t border-gray-800/40">
         Powered by{" "}
         <a href="https://soloedgeautomations.com" className="text-gray-600 hover:text-sky-400 transition-colors">
-          SoloEdge Automations
+          SoloEdge AI
         </a>
       </div>
     </div>

@@ -12,7 +12,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-3">
-              <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-12 w-auto object-contain" />
+              <img src={CDN.logoTransparent} alt="SoloEdge AI" className="h-12 w-auto object-contain" />
             </div>
             <p className="text-sm text-gray-500 max-w-xs leading-relaxed mb-4">
               {t.footer.tagline}
@@ -71,7 +71,7 @@ export default function Footer() {
 
         <div className="pt-6 border-t border-gray-100 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs text-gray-400">
-            © {new Date().getFullYear()} SoloEdge Automations. {t.footer.rights}
+            © {new Date().getFullYear()} SoloEdge AI. {t.footer.rights}
           </p>
           <div className="flex items-center gap-4">
             <a href="#" className="text-xs text-gray-400 hover:text-gray-600 transition-colors">Privacy Policy</a>

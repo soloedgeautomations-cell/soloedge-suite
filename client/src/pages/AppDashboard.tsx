@@ -63,7 +63,7 @@ export default function AppDashboard() {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
         <div className="bg-white rounded-2xl p-8 max-w-sm w-full text-center border border-gray-200 shadow-xl shadow-gray-100">
-          <img src={CDN.logoTransparent} alt="SoloEdge Automations" className="h-10 w-auto mx-auto mb-6 object-contain" />
+          <img src={CDN.logoTransparent} alt="SoloEdge AI" className="h-10 w-auto mx-auto mb-6 object-contain" />
           <h2 className="font-display text-2xl font-bold text-gray-900 mb-2">SoloEdge Dashboard</h2>
           <p className="text-gray-500 text-sm mb-6">Sign in to access Riley and your business tools.</p>
           <a

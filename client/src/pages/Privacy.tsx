@@ -10,7 +10,7 @@ export default function Privacy() {
 
           <div className="space-y-6 text-slate-700 leading-relaxed">
             <p>
-              SoloEdge Automations ("SoloEdge," "we," "our," or "us") respects your privacy. This
+              SoloEdge AI ("SoloEdge AI," "we," "our," or "us") respects your privacy. This
               Privacy Policy explains how we collect, use, disclose, and protect your information
               when you interact with our AI-powered call-handling and messaging services, including
               the Riley AI product, on behalf of contractors and businesses ("Contractors") that use
