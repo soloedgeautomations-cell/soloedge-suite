@@ -431,7 +431,7 @@ export default function AppDashboard() {
         {/* Footer */}
         <p className="text-center text-xs text-gray-300 pb-4">
           Powered by{" "}
-          <a href="https://soloedgeautomations.com" className="hover:text-gray-400 transition-colors">
+          <a href="https://soloedgeai.com" className="hover:text-gray-400 transition-colors">
             SoloEdge
           </a>
         </p>

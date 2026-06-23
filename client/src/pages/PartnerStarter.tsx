@@ -62,7 +62,7 @@ export default function PartnerStarter() {
 
             {/* CTA button — same style as pricing page */}
             <a
-              href="mailto:hello@soloedgeautomations.com?subject=Interested%20in%20Partner%20Starter&body=Hi%2C%20I%27m%20interested%20in%20the%20Partner%20Starter%20program.%20Please%20send%20me%20more%20details."
+              href="mailto:murphy@soloedgeai.com?subject=Interested%20in%20Partner%20Starter&body=Hi%2C%20I%27m%20interested%20in%20the%20Partner%20Starter%20program.%20Please%20send%20me%20more%20details."
               className="inline-flex items-center justify-center w-full gap-2 px-7 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm transition-all shadow-lg shadow-blue-200 active:scale-95"
             >
               <Mail size={15} />

@@ -65,7 +65,7 @@ export default function ContactSection() {
 
               {/* Email */}
               <a
-                href="mailto:hello@soloedgeautomations.com"
+                href="mailto:murphy@soloedgeai.com"
                 className="flex items-center gap-4 mb-4 group"
               >
                 <div className="w-12 h-12 rounded-2xl bg-cyan-50 border border-cyan-200 flex items-center justify-center group-hover:bg-cyan-100 transition-colors">
@@ -74,7 +74,7 @@ export default function ContactSection() {
                 <div>
                   <p className="text-xs text-gray-400 font-medium mb-0.5">Email</p>
                   <p className="text-sm font-medium text-gray-700 group-hover:text-cyan-700 transition-colors">
-                    hello@soloedgeautomations.com
+                    murphy@soloedgeai.com
                   </p>
                 </div>
               </a>

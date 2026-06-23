@@ -58,8 +58,8 @@ const translations: Record<Language, Translations> = {
       badge: "SoloEdge · Online Now",
       headline1: "Your AI runs your front office.",
       headline2: "On your hardware. With your accounts. Anthropic inside.",
-      subtext: "SoloCommand is what I build for small business. It runs on a small box that sits in your shop, answers your phone in English and Spanish, books your appointments, drafts your routine emails, and writes to the Google Sheets and Calendar you already use. I sit down with you for 90 minutes first. I write you a plan. We build only what you need.",
-      cta: "See Pricing →",
+      subtext: "Before I set up anything, I walk through your business with you — what AI is already touching your accounts, what's exposed, what needs a guardrail. Most small businesses have more risk than they realize. Then we build your native AI layer one step at a time: phone coverage, scheduling, email, follow-up. Your tools. Your accounts. Your hardware. Nothing gets added without your approval.",
+      cta: "Book a Free AI Check →",
       ctaSecondary: "Get Started",
       greeting: "What's taking up too much of your time?",
       chips: [
@@ -147,8 +147,8 @@ const translations: Record<Language, Translations> = {
       badge: "SoloEdge · En Línea",
       headline1: "Tu IA maneja tu oficina.",
       headline2: "En tu hardware. Con tus cuentas. Anthropic adentro.",
-      subtext: "SoloCommand es lo que construyo para pequeños negocios. Corre en una caja pequeña que vive en tu taller, contesta tu teléfono en inglés y español, agenda tus citas, redacta tus correos rutinarios, y escribe en las hojas de Google y el calendario que ya usas. Me siento contigo 90 minutos primero. Te escribo un plan. Construimos solo lo que necesitas.",
-      cta: "Ver Precios →",
+      subtext: "Antes de instalar nada, reviso tu negocio contigo — qué IA ya toca tus cuentas, qué está expuesto, qué necesita protección. La mayoría de los pequeños negocios tienen más riesgo del que creen. Luego construimos tu capa nativa de IA un paso a la vez: teléfono, agenda, correo, seguimiento. Tus herramientas. Tus cuentas. Tu hardware. Nada se agrega sin tu aprobación.",
+      cta: "Agenda una Revisión Gratis →",
       ctaSecondary: "Comenzar",
       greeting: "¿Qué te está quitando demasiado tiempo?",
       chips: [
@@ -236,8 +236,8 @@ const translations: Record<Language, Translations> = {
       badge: "SoloEdge · 在线",
       headline1: "您的 AI 运行您的前台。",
       headline2: "在您的硬件上。用您的账户。内置 Anthropic。",
-      subtext: "SoloCommand 是我为小企业打造的产品。它运行在放在您店里的小盒子上，用英语和西班牙语接听电话，预约时间，起草日常邮件，并写入您已经在使用的 Google 表格和日历。我先和您坐下来 90 分钟，给您写一份计划，我们只构建您需要的部分。",
-      cta: "查看价格 →",
+      subtext: "在安装任何东西之前，我先和您一起梳理您的业务——哪些 AI 已经在接触您的账户，哪里存在风险，需要先做什么防护。大多数小企业的风险比他们意识到的更多。然后我们一步一步构建您的原生 AI 层：电话接待、预约管理、邮件处理、跟进回访。您的工具。您的账户。您的硬件。任何添加都需要您的批准。",
+      cta: "预约免费 AI 检查 →",
       ctaSecondary: "开始使用",
       greeting: "什么事情占用了您太多时间？",
       chips: [

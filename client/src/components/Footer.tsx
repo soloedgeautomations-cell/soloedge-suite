@@ -61,7 +61,7 @@ export default function Footer() {
                   (512) 702-9685 · Murphy
                 </a>
               </li>
-              <li><a href="mailto:hello@soloedgeautomations.com" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">hello@soloedgeautomations.com</a></li>
+              <li><a href="mailto:murphy@soloedgeai.com" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">murphy@soloedgeai.com</a></li>
               <li><a href="#pricing" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">Pricing</a></li>
               <li><a href="#industries" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">Industries</a></li>
               <li><Link href="/app" className="text-sm text-gray-500 hover:text-blue-700 transition-colors">Customer Dashboard</Link></li>

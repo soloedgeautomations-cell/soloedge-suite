@@ -134,8 +134,6 @@ export default function HeroSection() {
   const gallery = (GALLERY[ind.key] && GALLERY[ind.key].length > 0)
     ? GALLERY[ind.key]
     : GALLERY.construction;
-  const currentImg = gallery[galleryIdx % gallery.length];
-
   const rileyActive = isLoadingAI || isTyping || !!displayedResponse;
 
   return (
@@ -285,7 +283,7 @@ export default function HeroSection() {
           {/* CTAs */}
           <div className="flex flex-wrap gap-3">
             <a
-              href="#pricing"
+              href="#contact"
               className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-blue-600 hover:bg-blue-500 hover:scale-105 hover:shadow-blue-500/50 text-white font-semibold text-sm transition-all shadow-lg shadow-blue-900/40 active:scale-95"
             >
               {t.hero.cta}

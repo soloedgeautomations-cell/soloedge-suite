@@ -383,7 +383,7 @@ export default function GetStarted() {
       <footer className="border-t border-gray-200 bg-white py-6 mt-10">
         <p className="text-center text-xs text-gray-400">
           Powered by{" "}
-          <a href="https://soloedgeautomations.com" className="hover:text-gray-600 underline" target="_blank" rel="noopener noreferrer">
+          <a href="https://soloedgeai.com" className="hover:text-gray-600 underline" target="_blank" rel="noopener noreferrer">
             SoloEdge AI
           </a>
           {" "}· Questions?{" "}

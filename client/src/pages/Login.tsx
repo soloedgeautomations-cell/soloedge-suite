@@ -108,7 +108,7 @@ export default function Login() {
     <div className="min-h-screen bg-gray-950 flex flex-col">
       {/* Top bar */}
       <div className="flex items-center justify-between px-6 py-4 border-b border-gray-800/60">
-        <a href="https://soloedgeautomations.com" className="flex items-center gap-2.5 group">
+        <a href="https://soloedgeai.com" className="flex items-center gap-2.5 group">
           <div className="w-8 h-8 bg-sky-500 rounded-lg flex items-center justify-center shadow-lg shadow-sky-500/20">
             <Phone className="w-4 h-4 text-white" />
           </div>
@@ -394,7 +394,7 @@ export default function Login() {
       {/* Footer */}
       <div className="text-center py-4 text-gray-700 text-xs border-t border-gray-800/40">
         Powered by{" "}
-        <a href="https://soloedgeautomations.com" className="text-gray-600 hover:text-sky-400 transition-colors">
+        <a href="https://soloedgeai.com" className="text-gray-600 hover:text-sky-400 transition-colors">
           SoloEdge AI
         </a>
       </div>
