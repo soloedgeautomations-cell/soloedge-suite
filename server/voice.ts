@@ -30,7 +30,6 @@
 import { Router, Request, Response } from "express";
 import { WebSocket, WebSocketServer } from "ws";
 import { RILEY_VOICE_PROMPT } from "./prompts/riley";
-import { invokeLLM } from "./_core/llm";
 import { claudeReason } from "./_core/claudeReason";
 
 export const voiceRouter = Router();
@@ -364,7 +363,6 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   const openAiWs = new WebSocket(REALTIME_URL, {
     headers: {
       Authorization: `Bearer ${openAiKey}`,
-      "OpenAI-Beta": "realtime=v1",
     },
   });
 
@@ -444,7 +442,6 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           voice: "shimmer",
           modalities: ["text", "audio"],
           temperature: 0.9,
-          speed: 1.15,
         },
       },
       "session.update"
