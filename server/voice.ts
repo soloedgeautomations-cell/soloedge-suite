@@ -431,7 +431,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           instructions: RILEY_VOICE_PROMPT,
           input_audio_format: "g711_ulaw",
           output_audio_format: "g711_ulaw",
-          input_audio_transcription: { model: "whisper-1" },
+          input_audio_transcription: { model: "gpt-realtime-whisper" },
           turn_detection: {
             type: "server_vad",
             threshold: 0.5,
@@ -439,7 +439,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
             silence_duration_ms: 700,
             create_response: true,
           },
-          voice: "shimmer",
+          voice: "marin",
           modalities: ["text", "audio"],
           temperature: 0.9,
         },
@@ -458,7 +458,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         type: "response.create",
         response: {
           instructions:
-            'Speak warm, natural, and Texan — like a real person who picked up the phone and is genuinely glad you called. Friendly but not fake. Cool but not cold. Say something like: "Hey, you\'ve reached SoloEdge — Riley here. How can I help ya?" or "SoloEdge AI, this is Riley — what can I do for ya today?" Keep it short, warm, and real. Mention SoloEdge. Sound like a Texan who knows what they\'re doing. Then stop and listen. Do not sound like a recording. Do not say a long intro. Do not ask about language first — just greet them naturally and let them tell you what they need.',
+            "Deliver your greeting now exactly as instructed. Ultra short. Warm. Stop and listen.",
         },
       },
       "initial greeting"
