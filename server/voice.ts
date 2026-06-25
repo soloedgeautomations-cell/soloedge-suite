@@ -34,7 +34,7 @@ import { claudeReason } from "./_core/claudeReason";
 
 export const voiceRouter = Router();
 
-const REALTIME_MODEL = "gpt-4o-realtime-preview-2024-12-17";
+const REALTIME_MODEL = "gpt-4o-realtime-preview";
 const REALTIME_URL = `wss://api.openai.com/v1/realtime?model=${encodeURIComponent(REALTIME_MODEL)}`;
 
 // ─── Resolve the public WSS base URL once at startup ─────────────────────────
