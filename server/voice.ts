@@ -424,24 +424,34 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
 
   function sendSessionUpdate() {
     log("5-SESSION", "Sending session.update to OpenAI");
+    // GA schema (gpt-realtime-2): session.type is required and audio config is
+    // nested under session.audio.input / session.audio.output — the old beta-era
+    // flat fields (input_audio_format, output_audio_format, voice, modalities at
+    // the top level) are rejected outright, which silently stalls the whole call
+    // (session.updated never arrives, so the greeting never fires).
     sendToOpenAI(
       {
         type: "session.update",
         session: {
+          type: "realtime",
           instructions: RILEY_VOICE_PROMPT,
-          input_audio_format: "g711_ulaw",
-          output_audio_format: "g711_ulaw",
-          input_audio_transcription: { model: "gpt-realtime-whisper" },
-          turn_detection: {
-            type: "server_vad",
-            threshold: 0.5,
-            prefix_padding_ms: 300,
-            silence_duration_ms: 700,
-            create_response: true,
+          audio: {
+            input: {
+              format: { type: "audio/pcmu" },
+              transcription: { model: "gpt-realtime-whisper" },
+              turn_detection: {
+                type: "server_vad",
+                threshold: 0.5,
+                prefix_padding_ms: 300,
+                silence_duration_ms: 700,
+                create_response: true,
+              },
+            },
+            output: {
+              format: { type: "audio/pcmu" },
+              voice: "marin",
+            },
           },
-          voice: "marin",
-          modalities: ["text", "audio"],
-          temperature: 0.9,
         },
       },
       "session.update"
@@ -578,7 +588,14 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
         }
       }
 
-      if (msg.type === "response.audio.delta" && msg.delta && streamSid) {
+      // GA renamed this event from "response.audio.delta" to
+      // "response.output_audio.delta" — kept both so a future model/version
+      // change on either side doesn't silently reintroduce dead air.
+      if (
+        (msg.type === "response.output_audio.delta" || msg.type === "response.audio.delta") &&
+        msg.delta &&
+        streamSid
+      ) {
         sendTwilioAudio(msg.delta);
       }
 
