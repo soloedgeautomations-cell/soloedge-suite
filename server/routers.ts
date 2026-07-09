@@ -1,5 +1,7 @@
 import z from "zod";
+import Stripe from "stripe";
 import bcrypt from "bcryptjs";
+import { AUDIT_TIER_MAP } from "../shared/auditTiers";
 import { COOKIE_NAME, ONE_YEAR_MS } from "@shared/const";
 import { getSessionCookieOptions } from "./_core/cookies";
 import { systemRouter } from "./_core/systemRouter";
@@ -426,6 +428,64 @@ export const appRouter = router({
         const db = await getDb();
         if (!db) throw new Error("Database unavailable");
         await db.update(leads).set({ status: input.status }).where(eq(leads.id, input.id));
+        return { success: true };
+      }),
+  }),
+  // ─── SoloAudit intake (post-payment) ───────────────────────────────────────
+  // Customer pays via stripeRouter.createAuditCheckout, lands on /audit-intake,
+  // fills this form. We verify the session actually paid before accepting it —
+  // this endpoint is publicProcedure (no login), so that check is the only
+  // thing stopping someone from submitting a fake "paid" intake.
+  audit: router({
+    submitIntake: publicProcedure
+      .input(z.object({
+        sessionId: z.string().min(1),
+        tierId: z.string(),
+        businessName: z.string().min(1),
+        contactName: z.string().min(1),
+        phone: z.string().min(1),
+        email: z.string().email(),
+        preferredTimes: z.string().min(1),
+        notes: z.string().optional(),
+      }))
+      .mutation(async ({ input }) => {
+        const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+          apiVersion: "2026-03-25.dahlia",
+        });
+        const session = await stripe.checkout.sessions.retrieve(input.sessionId);
+        if (session.payment_status !== "paid") {
+          throw new Error("Payment not confirmed for this session — cannot schedule an unpaid Audit.");
+        }
+
+        const tier = AUDIT_TIER_MAP[input.tierId];
+        const tierName = tier?.name ?? input.tierId;
+
+        const db = await getDb();
+        if (db) {
+          await db.insert(leads).values({
+            name: input.contactName,
+            phone: input.phone,
+            email: input.email,
+            business_type: input.businessName,
+            message: `AUDIT PAID — ${tierName}. Preferred times: ${input.preferredTimes}. Notes: ${input.notes ?? "(none)"}`,
+            source: "audit_intake",
+            status: "paid_awaiting_schedule",
+          });
+        }
+
+        const notifMsg = [
+          "💰 <b>SoloAudit PAID — needs scheduling</b>",
+          `📦 Tier: ${tierName}`,
+          `🏢 Business: ${input.businessName}`,
+          `👤 Contact: ${input.contactName}`,
+          `📞 Phone: ${input.phone}`,
+          `✉️ Email: ${input.email}`,
+          `🗓️ Preferred times: ${input.preferredTimes}`,
+          `📝 Notes: ${input.notes || "—"}`,
+        ].join("\n");
+        const smsMsg = `SoloAudit PAID: ${tierName} — ${input.businessName} — ${input.phone}. Schedule them.`;
+        await notifySoloEdgeTeam(notifMsg, smsMsg);
+
         return { success: true };
       }),
   }),

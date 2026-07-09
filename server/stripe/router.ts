@@ -7,6 +7,7 @@ import { z } from "zod";
 import Stripe from "stripe";
 import { router, protectedProcedure, publicProcedure } from "../_core/trpc";
 import { getActiveTiers } from "./products";
+import { AUDIT_TIER_MAP } from "../../shared/auditTiers";
 import { getDb } from "../db";
 import { users } from "../../drizzle/schema";
 import { eq } from "drizzle-orm";
@@ -141,6 +142,51 @@ export const stripeRouter = router({
         // poll the server for the magic auto-login token
         success_url: `${input.origin}/app/checkout-success?session_id={CHECKOUT_SESSION_ID}&tier=${tier.id}&guest=1`,
         cancel_url: `${input.origin}/get-started?cancelled=1`,
+      });
+
+      return { url: session.url! };
+    }),
+
+  /**
+   * Create a one-time Stripe Checkout Session for a SoloAudit tier.
+   * Guest-accessible — no login required, matches the trust-first "pay first,
+   * get scheduled" flow. Unlike the subscription tiers, no Stripe Dashboard
+   * product/price needs to exist ahead of time: the price is defined inline
+   * from shared/auditTiers.ts (the single source of truth for Audit pricing)
+   * via price_data, same pattern already used here for setup fees.
+   */
+  createAuditCheckout: publicProcedure
+    .input(z.object({
+      auditTierId: z.string(),
+      origin: z.string(),
+    }))
+    .mutation(async ({ input }) => {
+      const tier = AUDIT_TIER_MAP[input.auditTierId];
+      if (!tier) throw new Error(`Unknown audit tier: ${input.auditTierId}`);
+
+      const session = await stripe.checkout.sessions.create({
+        mode: "payment",
+        allow_promotion_codes: true,
+        phone_number_collection: { enabled: true },
+        metadata: {
+          audit_tier_id: tier.id,
+          audit_tier_name: tier.name,
+        },
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              unit_amount: tier.priceCents,
+              product_data: {
+                name: `SoloAudit — ${tier.name}`,
+                description: `AI Safety Check + Playbook, ${tier.subtitle}`,
+              },
+            },
+            quantity: 1,
+          },
+        ],
+        success_url: `${input.origin}/audit-intake?session_id={CHECKOUT_SESSION_ID}&tier=${tier.id}`,
+        cancel_url: `${input.origin}/#audit`,
       });
 
       return { url: session.url! };

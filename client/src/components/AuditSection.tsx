@@ -1,5 +1,9 @@
-import { Check, Phone, Zap, Users, Building, Briefcase, Crown, FileText } from "lucide-react";
+import { useState } from "react";
+import { Check, Phone, Zap, Users, Building, Briefcase, Crown, FileText, Loader2 } from "lucide-react";
 import SectionBackground from "@/components/SectionBackground";
+import { trpc } from "@/lib/trpc";
+import { AUDIT_TIER_MAP, formatAuditPrice } from "@shared/auditTiers";
+import { toast } from "sonner";
 
 // SoloAudit pricing tiers. Bullet content rewritten 2026-06-05 to show visible value escalation per tier.
 // Each tier shows its FULL deliverable set (cumulative), not a delta — so prospects scanning the cards
@@ -9,7 +13,6 @@ const AUDIT_TIERS = [
     id: "single",
     name: "Single System Audit",
     subtitle: "1 to 3 people",
-    price: "$500",
     icon: Zap,
     color: "from-blue-500 to-blue-400",
     popular: false,
@@ -28,7 +31,6 @@ const AUDIT_TIERS = [
     id: "team",
     name: "Team Audit",
     subtitle: "4 to 10 people",
-    price: "$750",
     icon: Users,
     color: "from-sky-600 to-cyan-500",
     popular: true,
@@ -48,7 +50,6 @@ const AUDIT_TIERS = [
     id: "enterprise",
     name: "Full Enterprise Audit",
     subtitle: "11 to 25 people",
-    price: "$1,500",
     icon: Building,
     color: "from-emerald-600 to-emerald-500",
     popular: false,
@@ -71,7 +72,6 @@ const AUDIT_TIERS = [
     id: "contractor",
     name: "ContractorAudit",
     subtitle: "26 to 50 people",
-    price: "$2,500",
     icon: Briefcase,
     color: "from-violet-600 to-purple-500",
     popular: false,
@@ -96,7 +96,6 @@ const AUDIT_TIERS = [
     id: "corporate",
     name: "CorporateAudit",
     subtitle: "50+ people",
-    price: "Starts at $5,000",
     icon: Crown,
     color: "from-amber-600 to-orange-500",
     popular: false,
@@ -121,6 +120,25 @@ const AUDIT_TIERS = [
 ];
 
 export default function AuditSection() {
+  const [checkingOut, setCheckingOut] = useState<string | null>(null);
+  const createAuditCheckout = trpc.stripe.createAuditCheckout.useMutation();
+
+  async function handleStartAudit(tierId: string) {
+    setCheckingOut(tierId);
+    toast.info("Redirecting to secure checkout…");
+    try {
+      const { url } = await createAuditCheckout.mutateAsync({
+        auditTierId: tierId,
+        origin: window.location.origin,
+      });
+      window.location.href = url;
+    } catch (err) {
+      toast.error("Could not start checkout. Please try again or call (512) 702-9685.");
+      console.error(err);
+      setCheckingOut(null);
+    }
+  }
+
   return (
     <section id="audit" className="section-pad bg-white relative overflow-hidden">
       <SectionBackground overlayClass="bg-white/72" offset={2} />
@@ -172,7 +190,7 @@ export default function AuditSection() {
                 </div>
 
                 <div className={`py-5 mb-5 border-y ${tier.popular ? "border-blue-100" : "border-gray-100"}`}>
-                  <div className="text-3xl font-bold text-gray-900">{tier.price}</div>
+                  <div className="text-3xl font-bold text-gray-900">{formatAuditPrice(AUDIT_TIER_MAP[tier.id])}</div>
                 </div>
 
                 <ul className="space-y-2.5 mb-7 flex-1 text-sm text-gray-600">
@@ -184,15 +202,23 @@ export default function AuditSection() {
                   ))}
                 </ul>
 
-                <a
-                  href="tel:+15127029685"
-                  className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all ${
+                <button
+                  onClick={() => handleStartAudit(tier.id)}
+                  disabled={checkingOut === tier.id}
+                  className={`flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all disabled:opacity-60 ${
                     tier.popular
                       ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-200"
                       : "bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
                   }`}
                 >
-                  Start Your Audit
+                  {checkingOut === tier.id ? <Loader2 size={15} className="animate-spin" /> : null}
+                  {checkingOut === tier.id ? "Redirecting…" : "Pay & Schedule Your Audit"}
+                </button>
+                <a
+                  href="tel:+15127029685"
+                  className="text-xs text-gray-400 hover:text-gray-600 text-center mt-2 transition-colors"
+                >
+                  or talk first — (512) 702-9685
                 </a>
               </div>
             );
@@ -218,7 +244,7 @@ export default function AuditSection() {
                 </div>
 
                 <div className="py-5 mb-5 border-y border-gray-100">
-                  <div className="text-2xl font-bold text-gray-900">{tier.price}</div>
+                  <div className="text-2xl font-bold text-gray-900">{formatAuditPrice(AUDIT_TIER_MAP[tier.id])}</div>
                 </div>
 
                 <ul className="space-y-2.5 mb-7 flex-1 text-sm text-gray-600">
@@ -230,11 +256,19 @@ export default function AuditSection() {
                   ))}
                 </ul>
 
+                <button
+                  onClick={() => handleStartAudit(tier.id)}
+                  disabled={checkingOut === tier.id}
+                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200 disabled:opacity-60"
+                >
+                  {checkingOut === tier.id ? <Loader2 size={15} className="animate-spin" /> : null}
+                  {checkingOut === tier.id ? "Redirecting…" : "Pay & Schedule Your Audit"}
+                </button>
                 <a
                   href="tel:+15127029685"
-                  className="flex items-center justify-center gap-2 w-full py-3 rounded-xl text-sm font-semibold transition-all bg-gray-900 hover:bg-gray-800 text-white shadow-md shadow-gray-200"
+                  className="text-xs text-gray-400 hover:text-gray-600 text-center mt-2 transition-colors"
                 >
-                  Start Your Audit
+                  or talk first — (512) 702-9685
                 </a>
               </div>
             );

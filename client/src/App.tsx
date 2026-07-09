@@ -12,6 +12,7 @@ import Bookings from "./pages/Bookings";
 import Contacts from "./pages/Contacts";
 import Settings from "./pages/Settings";
 import GetStarted from "./pages/GetStarted";
+import AuditIntake from "./pages/AuditIntake";
 import CheckoutSuccess from "./pages/CheckoutSuccess";
 import Billing from "./pages/Billing";
 import Login from "./pages/Login";
@@ -34,6 +35,7 @@ function Router() {
       <Route path="/app/billing" component={Billing} />
       <Route path="/app/checkout-success" component={CheckoutSuccess} />
       <Route path="/get-started" component={GetStarted} />
+      <Route path="/audit-intake" component={AuditIntake} />
       <Route path="/admin" component={AdminPanel} />
       <Route path="/for-teams-enterprises" component={ForTeams} />
       <Route path="/partner-starter" component={PartnerStarter} />
