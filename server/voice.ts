@@ -342,6 +342,15 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   let notificationsSent = false;
   let detectedLanguage = "Unknown";
   let firstAudioSent = false;
+  let callSid: string | null = null;
+  let transferInProgress = false;
+
+  // Same intent-detection wordlist as the pre-rewrite Twilio Gather version —
+  // matching on what the CALLER says, not on the model's spoken output. A
+  // realtime audio model can't reliably be trusted to silently emit a control
+  // tag without ever vocalizing it, so detection lives here instead.
+  const HUMAN_HANDOFF_PATTERN =
+    /\b(human|person|someone|agent|representative|rep|real person|talk to|speak to|connect me|transfer)\b/i;
 
   // Transcript accumulation — captures everything the caller says
   const transcriptLines: string[] = [];
@@ -420,6 +429,49 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
   function clearTwilioBuffer() {
     if (!streamSid) return;
     twilioSocket.send(JSON.stringify({ event: "clear", streamSid }));
+  }
+
+  // ─── Human handoff — redirects the LIVE call to Murphy's cell via Twilio's
+  // REST API. The old pre-WebSocket version of this app could just swap TwiML
+  // mid-call; this architecture holds the call open in a media stream, so the
+  // only way to hand off is telling Twilio (out of band) to redirect the call
+  // in progress. Same Basic Auth pattern as server/stripe/provision.ts.
+  async function transferToHuman(reason: string) {
+    if (transferInProgress) return;
+    if (!callSid) {
+      log("ERR", `transferToHuman requested but no CallSid captured — reason: ${reason}`);
+      return;
+    }
+    transferInProgress = true;
+    log("TRANSFER", `Redirecting call ${callSid} to human — reason: ${reason}`);
+
+    const sid = process.env.TWILIO_ACCOUNT_SID ?? "";
+    const token = process.env.TWILIO_AUTH_TOKEN ?? "";
+    const humanNumber = process.env.MURPHY_PERSONAL_NUMBER || "+15127029685";
+    const twiml = `<?xml version="1.0" encoding="UTF-8"?><Response><Dial>${humanNumber}</Dial></Response>`;
+
+    try {
+      const auth = "Basic " + Buffer.from(`${sid}:${token}`).toString("base64");
+      const res = await fetch(
+        `https://api.twilio.com/2010-04-01/Accounts/${sid}/Calls/${callSid}.json`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: auth,
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
+          body: new URLSearchParams({ Twiml: twiml }).toString(),
+        }
+      );
+      if (!res.ok) {
+        const errText = await res.text();
+        log("ERR", `Twilio call redirect failed: ${res.status} ${errText}`);
+      } else {
+        log("TRANSFER", `✓ Call ${callSid} redirected to ${humanNumber}`);
+      }
+    } catch (err) {
+      log("ERR", `Twilio call redirect error: ${(err as Error).message}`);
+    }
   }
 
   function sendSessionUpdate() {
@@ -588,6 +640,28 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           detectedLanguage = "Chinese";
           clearLanguageFollowupTimer();
         }
+
+        // Human handoff \u2014 detected from what the CALLER said, not from the
+        // model's spoken output (see HUMAN_HANDOFF_PATTERN comment above).
+        if (!transferInProgress && HUMAN_HANDOFF_PATTERN.test(msg.transcript)) {
+          log("TRANSFER", `Handoff phrase detected in caller transcript: "${msg.transcript}"`);
+          if (responseInProgress) {
+            sendToOpenAI({ type: "response.cancel" }, "cancel before handoff");
+          }
+          sendToOpenAI(
+            {
+              type: "response.create",
+              response: {
+                instructions: 'Say exactly this, word for word, then stop: "Let me grab someone for you."',
+              },
+            },
+            "handoff acknowledgment"
+          );
+          // Give the phrase time to actually play over the phone line before
+          // redirecting \u2014 response.done fires when the model finishes
+          // generating, not when Twilio finishes playing the audio back.
+          setTimeout(() => transferToHuman("caller requested human"), 3000);
+        }
       }
 
       // GA renamed this event from "response.audio.delta" to
@@ -653,6 +727,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
 
         case "start":
           streamSid = data.start?.streamSid || null;
+          callSid = data.start?.callSid || null;
           callerNumber =
             data.start?.customParameters?.from ||
             data.start?.from ||
@@ -660,6 +735,7 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
           log("6-STREAM", "══════════════════════════════════════════");
           log("6-STREAM", `✓ Twilio stream started`);
           log("6-STREAM", `  streamSid    = ${streamSid}`);
+          log("6-STREAM", `  callSid      = ${callSid}`);
           log("6-STREAM", `  callerNumber = ${callerNumber}`);
           log("6-STREAM", `  openAiReady  = ${openAiReady}`);
           log("6-STREAM", `  sessionReady = ${sessionReady}`);
