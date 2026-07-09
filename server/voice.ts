@@ -449,7 +449,8 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
             },
             output: {
               format: { type: "audio/pcmu" },
-              voice: "marin",
+              voice: "cedar", // male voice — "marin" is female and contradicts the
+              // "sounds like Murphy picked up the phone" persona in riley.ts
             },
           },
         },
