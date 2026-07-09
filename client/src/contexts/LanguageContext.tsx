@@ -58,7 +58,7 @@ const translations: Record<Language, Translations> = {
       badge: "SoloEdge · Online Now",
       headline1: "Your AI runs your front office.",
       headline2: "On your hardware. With your accounts. Anthropic inside.",
-      subtext: "Before I set up anything, I walk through your business with you — what AI is already touching your accounts, what's exposed, what needs a guardrail. Most small businesses have more risk than they realize. Then we build your native AI layer one step at a time: phone coverage, scheduling, email, follow-up. Your tools. Your accounts. Your hardware. Nothing gets added without your approval.",
+      subtext: "Before I install anything, I walk your business through what AI already touches, what's exposed, and what needs a guardrail. Most owners have more risk than they realize. From there, it's your call: a full AI Safety Check with a real written plan, or a tool running today, like phone answering, scheduling, email, or follow-up. Your tools. Your accounts. Your hardware. Nothing added without you.",
       cta: "Book a Free AI Check →",
       ctaSecondary: "Get Started",
       greeting: "What's taking up too much of your time?",
