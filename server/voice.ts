@@ -29,7 +29,7 @@
 
 import { Router, Request, Response } from "express";
 import { WebSocket, WebSocketServer } from "ws";
-import { RILEY_VOICE_PROMPT } from "./prompts/riley";
+import { RILEY_VOICE_PROMPT, RILEY_VOICE_GREETING } from "./prompts/riley";
 import { claudeReason } from "./_core/claudeReason";
 
 export const voiceRouter = Router();
@@ -468,8 +468,9 @@ mediaStreamWss.on("connection", (twilioSocket: WebSocket) => {
       {
         type: "response.create",
         response: {
-          instructions:
-            "Deliver your greeting now exactly as instructed. Ultra short. Warm. Stop and listen.",
+          // Literal text, not "as instructed" — the model was paraphrasing that
+          // into a generic "hello" instead of reciting the actual greeting.
+          instructions: `Say exactly this, word for word, then stop and listen: "${RILEY_VOICE_GREETING}"`,
         },
       },
       "initial greeting"
