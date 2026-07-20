@@ -108,7 +108,7 @@ const translations: Record<Language, Translations> = {
       demoNumber: "(512) 702-9685",
     },
     footer: {
-      tagline: "One person. Every edge covered.",
+      tagline: "Your AI business builders.",
       rights: "All rights reserved.",
     },
     dashboard: {
@@ -197,7 +197,7 @@ const translations: Record<Language, Translations> = {
       demoNumber: "(512) 702-9685",
     },
     footer: {
-      tagline: "Una persona. Cada ventaja cubierta.",
+      tagline: "Tus constructores de negocios con IA.",
       rights: "Todos los derechos reservados.",
     },
     dashboard: {
@@ -286,7 +286,7 @@ const translations: Record<Language, Translations> = {
       demoNumber: "(512) 702-9685",
     },
     footer: {
-      tagline: "一人。每一个优势都覆盖到。",
+      tagline: "您的AI业务缔造者。",
       rights: "版权所有。",
     },
     dashboard: {
