@@ -1,0 +1,8 @@
+User-agent: *
+Disallow: /app/
+Disallow: /admin
+Disallow: /login
+Disallow: /audit-intake
+Disallow: /404
+
+Sitemap: https://soloedgeai.com/sitemap.xml
